@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:verymemo/features/memo/domain/models/memo_list_model.dart';
 import 'package:verymemo/features/memo/presentation/memo_home_viewmodel.dart';
+import 'package:verymemo/features/memo/presentation/image_detail_view.dart';
 
 class GalleryView extends ConsumerWidget {
   final Function(String imageUrl)? onImageTap;
@@ -27,7 +28,17 @@ class GalleryView extends ConsumerWidget {
         final memo = memos[index];
         return GalleryItem(
           memo: memo,
-          onTap: () => onImageTap?.call(memo.imageUrls!.first),
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (context) => ImageDetailView(
+                imageUrl: memo.imageUrls!.first,
+                imageUrls: memo.imageUrls!,
+                currentIndex: 0,
+                onClose: () => Navigator.pop(context),
+              ),
+            );
+          },
         );
       },
     );

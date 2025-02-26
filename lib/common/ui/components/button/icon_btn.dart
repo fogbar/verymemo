@@ -47,6 +47,7 @@ class IconConfig {
     "trash": "assets/icons/trash.svg",
     "mic": "assets/icons/mic.svg",
     "sync": "assets/icons/sync.svg",
+    "check": "assets/icons/check.svg",
   };
 
   /// 📌 아이콘 크기 가져오기 (기본값 medium)

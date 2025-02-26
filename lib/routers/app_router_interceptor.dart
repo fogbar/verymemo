@@ -46,7 +46,7 @@ class AppRouterInterceptor {
       case AppRoute.profileSetting:
         return const ProfileSettingRoute();
       case AppRoute.home:
-        return const HomeRoute();
+        return HomeRoute();
       case AppRoute.edit:
         return const EditRoute();
       case AppRoute.feed:

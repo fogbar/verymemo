@@ -14,6 +14,7 @@ abstract class AppRoute {
   static const settings = "/settings";
 
   static const profileSetting = "/profileSetting";
+  static const String imageDetail = '/image-detail';
 }
 
 // ✅ Navigator Key
