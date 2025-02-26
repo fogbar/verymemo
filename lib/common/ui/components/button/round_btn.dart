@@ -41,7 +41,6 @@ class RoundBtn extends StatelessWidget {
   final bool isExpanded;
   final dynamic leadingIcon;
   final double iconSpacing;
-  final bool preserveIconColor;
 
   const RoundBtn({
     super.key,
@@ -51,7 +50,6 @@ class RoundBtn extends StatelessWidget {
     this.state = ButtonState.primary,
     this.autoDisable = false,
     this.isExpanded = false,
-    this.preserveIconColor = false,
     this.leadingIcon,
     this.iconSpacing = 8.0,
   });
@@ -93,7 +91,7 @@ class RoundBtn extends StatelessWidget {
               IconBtn(
                 iconKey: leadingIcon,
                 size: IconSize.medium,
-                color: preserveIconColor ? null : foregroundColor,
+                color: foregroundColor,
               ),
               SizedBox(width: iconSpacing),
             ],

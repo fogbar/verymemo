@@ -65,15 +65,16 @@ class MemoListViewModel extends ChangeNotifier {
   ];
 
   List<LinkData> extractLinks() {
-    // 이 메모 리스트를 기존에 파일에서
-    //생성한 리스트를 가져오기에 이렇게 파라미터로 받아와서 사용했습니다.
-    List<LinkData> allLinks = [];
-    for (var memo in memoList) {
-      if (memo.links != null) {
-        allLinks.addAll(memo.links!);
-      }
-    }
-    return allLinks;
+    return memoList
+        .where((memo) => memo.links != null && memo.links!.isNotEmpty)
+        .expand((memo) => memo.links!) //메모안에 복수의 링크가 있으면 모두 새로운 리스트로 
+        .toList();
+  }
+
+  List<MemoListModel> extractImages() {
+    return memoList
+        .where((memo) => memo.imageUrls != null && memo.imageUrls!.isNotEmpty)
+        .toList();
   }
 
   // 이미지 관련 로직 추가

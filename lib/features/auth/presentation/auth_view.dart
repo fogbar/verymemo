@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:verymemo/common/configs/login_channel_config.dart';
-import 'package:verymemo/common/extensions/widget_extension.dart';
 import 'package:verymemo/common/types/login_channel.dart';
 import 'package:verymemo/common/ui/components/layout/gap.dart';
 import 'package:verymemo/common/utils/image_util.dart';
@@ -25,7 +24,7 @@ class AuthView extends ConsumerStatefulWidget {
 class _AuthViewState extends ConsumerState<AuthView>
     with SingleTickerProviderStateMixin {
   double _opacity = 0.0;
-  double _offset = -30;
+  double _offset = 10;
   late AnimationController _animationController;
 
   @override
@@ -62,56 +61,53 @@ class _AuthViewState extends ConsumerState<AuthView>
         },
       );
     });
-    return Stack(
-      children: [
-        Positioned.fill(
-          child: ImageUtil.showFullImage(
-            "assets/images/img_join_screen.jpg",
+    return Scaffold(
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/img_join_screen.jpg"),
+            fit: BoxFit.cover,
           ),
         ),
-        Column(
-          children: [
-            Container(
-                    // color: Colors.red,
-                    )
-                .flex(6),
-            Column(children: [
-              AnimatedContainer(
+        child: SafeArea(
+          bottom: false,
+          child: Column(
+            children: [
+              const Spacer(),
+              // 로고와 텍스트 섹션
+              AnimatedOpacity(
+                opacity: _opacity,
                 duration: const Duration(milliseconds: 2000),
-                curve: Curves.easeOut,
-                transform: Matrix4.translationValues(0, _offset, 0),
-                child: AnimatedOpacity(
-                  opacity: _opacity,
+                child: AnimatedContainer(
                   duration: const Duration(milliseconds: 2000),
-                  curve: Curves.easeIn,
-                  child: ImageUtil.showImage(
-                    "assets/images/logo.svg",
-                    size: const Size(50, 25),
+                  transform: Matrix4.translationValues(0, _offset, 0),
+                  child: Column(
+                    children: [
+                      ImageUtil.showImage(
+                        "assets/images/logo.svg",
+                        size: const Size(50, 25),
+                      ),
+                      const Gap(8),
+                      Text(
+                        "어디서든, 빠르게, 베리 메모",
+                        style:
+                            Theme.of(context).textTheme.labelMedium?.copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurfaceVariant,
+                                ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-              const Gap(8),
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 2000),
-                curve: Curves.easeOut,
-                transform: Matrix4.translationValues(0, _offset, 0),
-                child: AnimatedOpacity(
-                  opacity: _opacity,
-                  duration: const Duration(milliseconds: 2000),
-                  curve: Curves.easeIn,
-                  child: Text(
-                    "어디서든, 빠르게, 베리 메모",
-                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
-                  ),
-                ),
-              ),
+              const Gap(32),
               LoginButtonColumn(channels: loginChannelConfigs),
-            ]).flex(5),
-          ],
+              const Gap(56),
+            ],
+          ),
         ),
-      ],
+      ),
     );
   }
 }
@@ -142,14 +138,16 @@ class _LoginButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final horizontalPadding = screenWidth * 0.16; // 화면 너비의 24%
+
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 56, vertical: 6),
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 6),
       child: RoundBtn(
         size: BoxSize.small,
         iconSpacing: 4,
         text: channel.title,
         leadingIcon: channel.logo,
-        preserveIconColor: true,
         onPressed: channel.isUser
             ? () {
                 if (channel.title == "Google") {
