@@ -15,6 +15,7 @@ class ImageUtil {
     Color? color,
     ColorFilter? colorFilter,
     BoxFit? fit,
+    bool preserveColor = false,
   }) {
     const emptyImage = '';
 
@@ -42,8 +43,9 @@ class ImageUtil {
           path,
           fit: fit ?? BoxFit.cover,
           width: size?.width,
-          height: height ?? size?.height, //사라 - 너비 기준으로 높이 자동 조절되게 수정
-          colorFilter: colorFilter,
+          height: size?.height,
+          colorFilter: preserveColor ? null : (colorFilter ??
+              (color != null ? ColorFilter.mode(color, BlendMode.srcIn) : null)),
         );
       } else if (path.contains('.json')) {
         return ShowLotti(

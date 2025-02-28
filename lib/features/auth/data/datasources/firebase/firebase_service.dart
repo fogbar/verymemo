@@ -1,25 +1,19 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-import 'package:verymemo/common/configs/storage_key.dart';
 import 'package:verymemo/common/utils/string_util.dart';
-import 'package:verymemo/externals/storage/storage_service.dart';
 import 'package:verymemo/features/auth/domain/models/user_model.dart';
 
 final firebaseServiceProvider = Provider<FirebaseService>((ref) {
-  final _storageService = ref.watch(storageProvider);
-  return FirebaseService(_storageService);
+  return FirebaseService();
 });
 
 class FirebaseService {
-  final StorageService _storageService;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  FirebaseService(this._storageService);
+  FirebaseService();
 
   UserModel? getCurrentUser() {
     final user = _auth.currentUser;

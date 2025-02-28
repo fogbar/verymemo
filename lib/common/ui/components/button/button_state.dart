@@ -6,6 +6,7 @@ enum ButtonState {
   secondary,
   tertiary,
   transparent,
+  white,
   black,
   disabled,
 }
@@ -30,6 +31,8 @@ class ButtonStateConfig {
         return (colorScheme.inverseSurface, colorScheme.onInverseSurface);
       case ButtonState.primary:
         return (colorScheme.primary, colorScheme.onPrimary);
+      case ButtonState.white:
+        return (colorScheme.onInverseSurface, colorScheme.inverseSurface);
     }
   }
 

@@ -46,8 +46,21 @@ class SettingsView extends ConsumerWidget {
               toggleValue: settingsState.isKeypadEnabled,
               onToggleChanged: (value) => settingsVM.toggleKeypad(value),
             ),
-            title: '진입시 키패드',
+            title: '진입시 키패드 모드',
             onTap: () => debugPrint("진입시 키패드 클릭!"),
+          ),
+           ListItem(
+            config: ListItemConfig(
+              leadingType: ListItemType.icon,
+              leadingIconKey: 'edit',
+              leadingIconSize: IconSize.medium,
+              leadingIconColor: Theme.of(context).colorScheme.primary,
+              trailingType: ListItemType.toggle,
+              toggleValue: settingsState.isKeypadEnabled,
+              onToggleChanged: (value) => settingsVM.toggleKeypad(value),
+            ),
+            title: '다크 모드',
+            onTap: () => debugPrint("다크모드 클릭!"),
           ),
           // ListItem(
           //   config: ListItemConfig(

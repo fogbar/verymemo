@@ -314,7 +314,7 @@ class HomeRoute extends Route {
   @override
   bool checkAuth(BuildContext context) => true;
 
-  const HomeRoute() : super(const MemoHomeView());
+  HomeRoute() : super(const MemoHomeView());
 }
 
 // ✅ 수정 라우터

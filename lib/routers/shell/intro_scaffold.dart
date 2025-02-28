@@ -14,7 +14,7 @@ class IntroScaffold extends StatefulWidget {
 }
 
 class _IntroScaffoldState extends State<IntroScaffold> {
-  void _goBranch(int index) {
+  void goBranch(int index) {
     widget.navigationShell.goBranch(
       index,
       initialLocation: index == widget.navigationShell.currentIndex,
@@ -28,7 +28,7 @@ class _IntroScaffoldState extends State<IntroScaffold> {
       body: Stack(
         children: <Widget>[
           Positioned.fill(
-            child: ImageUtil.showImage("assets/images/img_bg_screen.png"),
+            child: ImageUtil.showImage("assets/images/img_bg_screen.jpg"),
           ),
           Column(
             children: <Widget>[

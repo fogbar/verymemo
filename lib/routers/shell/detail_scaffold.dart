@@ -14,7 +14,7 @@ class DetailScaffold extends StatefulWidget {
 }
 
 class _DetailScaffoldState extends State<DetailScaffold> {
-  void _goBranch(int index) {
+  void goBranch(int index) {
     widget.navigationShell.goBranch(
       index,
       initialLocation: index == widget.navigationShell.currentIndex,

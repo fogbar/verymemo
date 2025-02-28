@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:verymemo/common/extensions/context_extension.dart';
 import 'package:verymemo/common/ui/common/config/config_box_style.dart';
 import 'package:verymemo/common/ui/components/button/button_state.dart';
+import 'package:verymemo/common/ui/components/button/icon_btn.dart';
 
 /// ✅ 버튼 스타일 컨피그 (색상, 폰트 스타일 등)
 class RoundBtnConfig {
@@ -38,6 +39,8 @@ class RoundBtn extends StatelessWidget {
   final ButtonState state;
   final bool autoDisable;
   final bool isExpanded;
+  final dynamic leadingIcon;
+  final double iconSpacing;
 
   const RoundBtn({
     super.key,
@@ -47,6 +50,8 @@ class RoundBtn extends StatelessWidget {
     this.state = ButtonState.primary,
     this.autoDisable = false,
     this.isExpanded = false,
+    this.leadingIcon,
+    this.iconSpacing = 8.0,
   });
 
   @override
@@ -61,7 +66,8 @@ class RoundBtn extends StatelessWidget {
       hasOnPressed: onPressed != null,
     );
 
-    final (backgroundColor, textColor) = ButtonStateConfig.getButtonColors(
+    final (backgroundColor, foregroundColor) =
+        ButtonStateConfig.getButtonColors(
       colorScheme,
       effectiveState,
     );
@@ -69,7 +75,7 @@ class RoundBtn extends StatelessWidget {
     final TextStyle textStyle = RoundBtnConfig.getTextStyle(
       textTheme,
       size,
-      textColor,
+      foregroundColor,
     );
 
     Widget buttonContent = BoxConfig.createContainer(
@@ -77,7 +83,21 @@ class RoundBtn extends StatelessWidget {
       context: context,
       backgroundColor: backgroundColor,
       child: Center(
-        child: Text(text ?? "", style: textStyle, textAlign: TextAlign.center),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (leadingIcon != null) ...[
+              IconBtn(
+                iconKey: leadingIcon,
+                size: IconSize.medium,
+                color: foregroundColor,
+              ),
+              SizedBox(width: iconSpacing),
+            ],
+            Text(text ?? "", style: textStyle, textAlign: TextAlign.center),
+          ],
+        ),
       ),
     );
 

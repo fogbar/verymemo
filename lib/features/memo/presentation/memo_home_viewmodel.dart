@@ -3,6 +3,8 @@ import 'package:verymemo/features/memo/domain/models/memo_list_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:verymemo/common/ui/components/modal/modal_select.dart';
+import 'package:verymemo/features/memo/presentation/image_detail_view.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class MemoListViewModel extends ChangeNotifier {
 // 데이터와 로직 관리
@@ -65,15 +67,16 @@ class MemoListViewModel extends ChangeNotifier {
   ];
 
   List<LinkData> extractLinks() {
-    // 이 메모 리스트를 기존에 파일에서
-    //생성한 리스트를 가져오기에 이렇게 파라미터로 받아와서 사용했습니다.
-    List<LinkData> allLinks = [];
-    for (var memo in memoList) {
-      if (memo.links != null) {
-        allLinks.addAll(memo.links!);
-      }
-    }
-    return allLinks;
+    return memoList
+        .where((memo) => memo.links != null && memo.links!.isNotEmpty)
+        .expand((memo) => memo.links!) //메모안에 복수의 링크가 있으면 모두 새로운 리스트로
+        .toList();
+  }
+
+  List<MemoListModel> extractImages() {
+    return memoList
+        .where((memo) => memo.imageUrls != null && memo.imageUrls!.isNotEmpty)
+        .toList();
   }
 
   // 이미지 관련 로직 추가
@@ -130,4 +133,72 @@ class MemoListViewModel extends ChangeNotifier {
   void _shareMemo(MemoListModel memo) {
     // 공유 로직 구현
   }
+
+//이미지 상세 뷰 띄우기
+  void showImageDetail(BuildContext context, MemoListModel memo, int index) {
+    showDialog(
+      context: context,
+      barrierColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+      builder: (context) => ImageDetailView(
+        imageUrl: memo.imageUrls![index],
+        imageUrls: memo.imageUrls!,
+        currentIndex: index,
+        onClose: () => Navigator.pop(context),
+      ),
+    );
+  }
+
+  // 이미지 그리드 관련 함수들
+  Widget buildImageGrid(
+      BuildContext context, MemoListModel memo, List<String> imageUrls) {
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: isUseFixedSize(imageUrls) ? 2 : 3,
+        crossAxisSpacing: 4,
+        mainAxisSpacing: 4,
+      ),
+      itemCount: getDisplayCount(imageUrls),
+      itemBuilder: (context, index) {
+        if (shouldShowRemainingCount(imageUrls, index)) {
+          return _buildRemainingCountOverlay(imageUrls);
+        }
+        return GestureDetector(
+          onTap: () => showImageDetail(context, memo, index),
+          child: Image.network(
+            imageUrls[index],
+            fit: BoxFit.cover,
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildRemainingCountOverlay(List<String> imageUrls) {
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        Image.network(
+          imageUrls[4],
+          fit: BoxFit.cover,
+        ),
+        Container(
+          color: Colors.black.withOpacity(0.4),
+          child: Center(
+            child: Text(
+              '+${getRemainingCount(imageUrls)}',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }
+
+final memoListProvider = ChangeNotifierProvider((ref) => MemoListViewModel());

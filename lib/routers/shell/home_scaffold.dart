@@ -70,10 +70,17 @@ class _HomeScaffoldState extends State<HomeScaffold> {
                 ],
                 const SliverToBoxAdapter(child: Divider(height: 1)),
                 SliverFillRemaining(
-                  child: _currentTabIndex == 3 &&
-                          widget.navigationShell.currentIndex == 0
-                      ? const LinkList()
-                      : widget.navigationShell,
+                  child: switch (_currentTabIndex) {
+                    0 => widget.navigationShell,
+                    1 => widget.navigationShell,
+                    2 => GalleryView(
+                        onImageTap: (String imageUrl) {
+                          debugPrint('Image tapped: $imageUrl');
+                        },
+                      ),
+                    3 => const LinkList(),
+                    _ => widget.navigationShell,
+                  },
                 ),
               ],
             ),

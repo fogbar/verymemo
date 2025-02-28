@@ -13,6 +13,7 @@ class HeaderConfig {
   final bool showMore;
   final bool showDelete;
   final bool showDownload;
+  final bool showClose;
 
   const HeaderConfig({
     this.showBackArrow = false,
@@ -21,6 +22,7 @@ class HeaderConfig {
     this.showMore = false,
     this.showDelete = false,
     this.showDownload = false,
+    this.showClose = false,
   });
 
   static const Map<HeaderType, HeaderConfig> styles = {
@@ -33,9 +35,9 @@ class HeaderConfig {
     HeaderType.content: HeaderConfig(showBackArrow: true),
     HeaderType.searchBar: HeaderConfig(showBackArrow: true, showSearch: true),
     HeaderType.imageviewer: HeaderConfig(
-      showBackArrow: true,
-      showSearch: true,
-      showMore: true,
+      showDownload: true,
+      showDelete: true,
+      showClose: true,
     ),
   };
 }
@@ -68,6 +70,9 @@ class VariableHeader extends StatelessWidget {
     final backgroundColor = type == HeaderType.imageviewer
         ? colorScheme.surfaceContainerHighest
         : colorScheme.surface;
+    final iconColor = type == HeaderType.imageviewer
+        ? colorScheme.onPrimary
+        : colorScheme.onSurface;
 
     return SafeArea(
       bottom: false,
@@ -76,27 +81,29 @@ class VariableHeader extends StatelessWidget {
         height: 56,
         color: backgroundColor,
         alignment: Alignment.center,
-        child: _buildHeaderContent(config, context),
+        child: _buildHeaderContent(config, context, iconColor),
       ),
     );
   }
 
-  Widget _buildHeaderContent(HeaderConfig config, BuildContext context) {
+  Widget _buildHeaderContent(
+      HeaderConfig config, BuildContext context, Color iconColor) {
     switch (type) {
       case HeaderType.date:
-        return _dateHeader(config, context);
+        return _dateHeader(config, context, iconColor);
       case HeaderType.logo:
-        return _logoHeader(config, context);
+        return _logoHeader(config, context, iconColor);
       case HeaderType.content:
-        return _contentHeader(config, context);
+        return _contentHeader(config, context, iconColor);
       case HeaderType.searchBar:
-        return _searchBarHeader(config, context);
+        return _searchBarHeader(config, context, iconColor);
       case HeaderType.imageviewer:
-        return _imageViewerHeader(config, context);
+        return _imageViewerHeader(config, context, iconColor);
     }
   }
 
-  Widget _dateHeader(HeaderConfig config, BuildContext context) {
+  Widget _dateHeader(
+      HeaderConfig config, BuildContext context, Color iconColor) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -106,16 +113,20 @@ class VariableHeader extends StatelessWidget {
         ),
         Row(
           children: [
-            if (config.showSort) IconBtn(iconKey: "sort", onTap: onSort),
-            if (config.showSearch) IconBtn(iconKey: "search", onTap: onSearch),
-            if (config.showMore) IconBtn(iconKey: "more", onTap: onMore),
+            if (config.showSort)
+              IconBtn(iconKey: "sort", onTap: onSort, color: iconColor),
+            if (config.showSearch)
+              IconBtn(iconKey: "search", onTap: onSearch, color: iconColor),
+            if (config.showMore)
+              IconBtn(iconKey: "more", onTap: onMore, color: iconColor),
           ],
         ),
       ],
     );
   }
 
-  Widget _logoHeader(HeaderConfig config, BuildContext context) {
+  Widget _logoHeader(
+      HeaderConfig config, BuildContext context, Color iconColor) {
     return Row(
       children: [
         Expanded(
@@ -132,26 +143,30 @@ class VariableHeader extends StatelessWidget {
             ],
           ),
         ),
-        if (config.showMore) IconBtn(iconKey: "more", onTap: onMore),
+        if (config.showMore)
+          IconBtn(iconKey: "more", onTap: onMore, color: iconColor),
       ],
     );
   }
 
-  Widget _contentHeader(HeaderConfig config, BuildContext context) {
+  Widget _contentHeader(
+      HeaderConfig config, BuildContext context, Color iconColor) {
     return Row(
       children: [
-        if (config.showBackArrow) IconBtn(iconKey: "back", onTap: onBack),
+        if (config.showBackArrow)
+          IconBtn(iconKey: "back", onTap: onBack, color: iconColor),
       ],
     );
   }
 
-  Widget _searchBarHeader(HeaderConfig config, BuildContext context) {
+  Widget _searchBarHeader(
+      HeaderConfig config, BuildContext context, Color iconColor) {
     return Row(
       children: [
         if (config.showBackArrow)
           SizedBox(
             width: 48, // 아이콘 버튼의 고정 너비
-            child: IconBtn(iconKey: "back", onTap: onBack),
+            child: IconBtn(iconKey: "back", onTap: onBack, color: iconColor),
           ),
         Expanded(
           child: Padding(
@@ -172,18 +187,21 @@ class VariableHeader extends StatelessWidget {
     );
   }
 
-  Widget _imageViewerHeader(HeaderConfig config, BuildContext context) {
+  Widget _imageViewerHeader(
+      HeaderConfig config, BuildContext context, Color iconColor) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Row(
           children: [
             if (config.showDownload)
-              IconBtn(iconKey: "download", onTap: onDownload),
-            if (config.showDelete) IconBtn(iconKey: "delete", onTap: onDelete),
+              IconBtn(iconKey: "download", onTap: onDownload, color: iconColor),
+            if (config.showDelete)
+              IconBtn(iconKey: "delete", onTap: onDelete, color: iconColor),
+            if (config.showClose)
+              IconBtn(iconKey: "close", onTap: onBack, color: iconColor),
           ],
         ),
-        IconBtn(iconKey: "close", onTap: () {}),
       ],
     );
   }

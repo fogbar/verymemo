@@ -52,13 +52,16 @@ class _CarouselView extends StatelessWidget {
                       ? horizontalPadding
                       : spacing,
                 ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Image.network(
-                    imageUrls[index],
-                    width: imageSize,
-                    height: imageSize,
-                    fit: BoxFit.cover,
+                child: GestureDetector(
+                  onTap: () => viewModel.showImageDetail(context, memo, index),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.network(
+                      imageUrls[index],
+                      width: imageSize,
+                      height: imageSize,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),
@@ -90,12 +93,15 @@ class _GridView extends StatelessWidget {
         final url = entry.value;
         final isLast = index == viewModel.getDisplayCount(imageUrls) - 1;
 
-        Widget imageContent = ClipRRect(
-          borderRadius: BorderRadius.circular(4),
-          child: viewModel.shouldShowRemainingCount(imageUrls, index)
-              ? _RemainingCountOverlay(
-                  memo: memo, url: url, viewModel: viewModel)
-              : Image.network(url, fit: BoxFit.cover),
+        Widget imageContent = GestureDetector(
+          onTap: () => viewModel.showImageDetail(context, memo, index),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: viewModel.shouldShowRemainingCount(imageUrls, index)
+                ? _RemainingCountOverlay(
+                    memo: memo, url: url, viewModel: viewModel)
+                : Image.network(url, fit: BoxFit.cover),
+          ),
         );
 
         Widget sizedContent = SizedBox(
