@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// ✅ 타이틀 크기 (소형, 중형, 대형)
-enum TitleSize { small, medium, large }
+enum TitleSize { small, medium, large, exlarge }
 
 /// ✅ 타이틀 정렬 (왼쪽, 중앙)
 enum TitleAlignment { left, center }
@@ -10,16 +10,23 @@ enum TitleAlignment { left, center }
 class TitleSubtitleConfig {
   final TitleSize titleSize;
   final TitleAlignment alignment;
+  final int? titleMaxLines;
+  final int? subtitleMaxLines;
+  final double? spacing;
 
   const TitleSubtitleConfig({
     this.titleSize = TitleSize.medium,
     this.alignment = TitleAlignment.left,
+    this.titleMaxLines,
+    this.subtitleMaxLines,
+    this.spacing,
   });
 
   /// 📌 타이틀 스타일 반환
   TextStyle getTitleStyle(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return switch (titleSize) {
+      TitleSize.exlarge => textTheme.headlineSmall!,
       TitleSize.large => textTheme.titleLarge!,
       TitleSize.medium => textTheme.titleMedium!,
       TitleSize.small => textTheme.titleSmall!,
@@ -59,7 +66,7 @@ class TitleSubtitleWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: double.infinity, // 항상 전체 너비 사용
+      width: double.infinity,
       child: Column(
         crossAxisAlignment: config.getCrossAxisAlignment(),
         mainAxisSize: MainAxisSize.min,
@@ -68,17 +75,23 @@ class TitleSubtitleWidget extends StatelessWidget {
             title,
             style: config.getTitleStyle(context),
             textAlign: textAlign,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
+            maxLines: config.titleMaxLines,
+            overflow: config.titleMaxLines != null
+                ? TextOverflow.ellipsis
+                : TextOverflow.visible,
           ),
-          if (subtitle != null)
+          if (subtitle != null) ...[
+            if (config.spacing != null) SizedBox(height: config.spacing),
             Text(
               subtitle!,
               style: config.getSubtitleStyle(context),
               textAlign: textAlign,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
+              maxLines: config.subtitleMaxLines,
+              overflow: config.subtitleMaxLines != null
+                  ? TextOverflow.ellipsis
+                  : TextOverflow.visible,
             ),
+          ],
         ],
       ),
     );
@@ -96,109 +109,14 @@ class TitleSubtitlePresets {
   /// 📌 리스트 아이템용
   static const TitleSubtitleConfig listItem = TitleSubtitleConfig(
     titleSize: TitleSize.small,
+    titleMaxLines: 1,
+    alignment: TitleAlignment.left,
+  );
+
+  /// 📌 멀티라인 타이틀용
+  static const multiLine = TitleSubtitleConfig(
+    titleSize: TitleSize.exlarge,
+    spacing: 8,
     alignment: TitleAlignment.left,
   );
 }
-
-// import 'package:flutter/material.dart';
-
-// enum TitleSize { small, medium, large }
-
-// enum TitleAlignment { left, center }
-
-// class TitleSubtitleConfig {
-//   final TitleSize titleSize;
-//   final TitleAlignment alignment;
-//   final bool isExpanded;
-
-//   const TitleSubtitleConfig({
-//     this.titleSize = TitleSize.medium,
-//     this.alignment = TitleAlignment.left,
-//     this.isExpanded = false,
-//   });
-
-//   TextStyle getTitleStyle(BuildContext context) {
-//     final TextTheme textTheme = Theme.of(context).textTheme;
-
-//     switch (titleSize) {
-//       case TitleSize.large:
-//         return textTheme.titleLarge!;
-//       case TitleSize.medium:
-//         return textTheme.titleMedium!;
-//       case TitleSize.small:
-//         return textTheme.titleSmall!;
-//     }
-//   }
-
-//   TextStyle getSubtitleStyle(BuildContext context) {
-//     return Theme.of(context).textTheme.bodyMedium!;
-//   }
-
-//   Widget getTitleSubtitle(
-//     BuildContext context, {
-//     required String title,
-//     required String subtitle,
-//     TextAlign? textAlign,
-//   }) {
-//     return Column(
-//       crossAxisAlignment: alignment == TitleAlignment.left
-//           ? CrossAxisAlignment.start
-//           : CrossAxisAlignment.center,
-//       children: [
-//         Text(
-//           title,
-//           style: getTitleStyle(context),
-//           textAlign: textAlign,
-//         ),
-//         Text(
-//           subtitle,
-//           style: getSubtitleStyle(context),
-//           textAlign: textAlign,
-//         ),
-//       ],
-//     );
-//   }
-// }
-
-// //타이틀 서브타이틀 위젯
-// class TitleSubtitleWidget extends StatelessWidget {
-//   final String title;
-//   final String subtitle;
-//   final TitleSubtitleConfig config;
-//   final TextAlign? textAlign;
-
-//   const TitleSubtitleWidget({
-//     super.key,
-//     required this.title,
-//     required this.subtitle,
-//     this.config = const TitleSubtitleConfig(),
-//     this.textAlign,
-//   });
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return config.getTitleSubtitle(
-//       context,
-//       title: title,
-//       subtitle: subtitle,
-//       textAlign: textAlign,
-//     );
-//   }
-// }
-
-// //타이틀 서브타이틀 프리셋
-// extension TitleSubtitlePresets on TitleSubtitleConfig {
-//   // 모달 팝업용 프리셋
-//   static const modalPopup = TitleSubtitleConfig(
-//     titleSize: TitleSize.large,
-//     alignment: TitleAlignment.center,
-//     isExpanded: true,
-//   );
-
-//   // 리스트 아이템용 프리셋
-//   static const listItem = TitleSubtitleConfig(
-//     titleSize: TitleSize.medium,
-//     alignment: TitleAlignment.left,
-//     isExpanded: true,
-//   );
-// }

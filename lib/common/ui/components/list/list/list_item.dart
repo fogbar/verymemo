@@ -2,20 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:verymemo/common/ui/components/button/icon_btn.dart';
 import 'package:verymemo/common/ui/common/title_subtitle.dart';
 import 'package:verymemo/common/ui/components/list/list/config_list_item.dart';
+import 'package:verymemo/common/utils/image_util.dart';
 
 class ListItem extends StatelessWidget {
   final ListItemConfig config;
   final String title;
   final String? subtitle;
   final String? leadingImageUrl;
+  final String? leadingIconKey;
   final VoidCallback? onTap;
+  final CrossAxisAlignment? alignment;
 
   const ListItem({
     super.key,
     required this.config,
     required this.title,
     this.subtitle,
+    this.alignment,
     this.leadingImageUrl,
+    this.leadingIconKey,
     this.onTap,
   });
 
@@ -24,37 +29,46 @@ class ListItem extends StatelessWidget {
     return Padding(
       padding: config.padding,
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (config.leadingType != ListItemType.none) _buildLeading(context),
-          if (config.leadingType != ListItemType.none)
+          if (config.leadingType != ListItemType.none) ...[
+            _buildLeading(context),
             SizedBox(width: config.itemSpacing),
-          Expanded(child: _buildTitleSubtitle(context)),
+          ],
+          Expanded(
+            child: _buildTitleSubtitle(context),
+          ),
           if (config.trailingType != ListItemType.none) _buildTrailing(context),
         ],
       ),
     );
   }
 
-  /// ✅ 리딩 아이템 빌드 (아이콘 버튼, 이미지, 체크박스 등)
   Widget _buildLeading(BuildContext context) {
     switch (config.leadingType) {
       case ListItemType.image:
         return GestureDetector(
-          onTap: () => debugPrint("이미지 클릭!"),
+          onTap: () {},
           child: _buildImage(),
         );
       case ListItemType.icon:
-        return config.leadingIconKey != null
-            ? IconBtn(
-                iconKey: config.leadingIconKey!,
-                onTap: onTap,
-                size: config.leadingIconSize,
-                color: config.leadingIconColor,
-              )
-            : const SizedBox();
+        final double iconSize = IconConfig.getIconSize(config.leadingIconSize);
+        final String assetPath = IconConfig.getIconPath(
+            leadingIconKey ?? config.leadingIconKey ?? '');
+
+        return SizedBox(
+          width: iconSize,
+          height: iconSize,
+          child: ImageUtil.showImage(
+            assetPath,
+            size: Size(iconSize, iconSize),
+            colorFilter: config.leadingIconColor != null
+                ? ColorFilter.mode(config.leadingIconColor!, BlendMode.srcIn)
+                : null,
+          ),
+        );
       case ListItemType.checkbox:
-        return _buildCheckbox();
+        return _buildCheckbox(context);
       case ListItemType.toggle:
         return _buildToggle();
       default:
@@ -70,28 +84,33 @@ class ListItem extends StatelessWidget {
       child: TitleSubtitleWidget(
         title: title,
         subtitle: subtitle,
-        config: TitleSubtitlePresets.listItem,
+        config: config.textConfig,
       ),
     );
   }
 
   /// ✅ 트레일링 아이템 빌드 (아이콘 버튼, 토글 등)
   Widget _buildTrailing(BuildContext context) {
+    Widget trailingWidget;
     switch (config.trailingType) {
       case ListItemType.icon:
-        return config.trailingIconKey != null
+        trailingWidget = config.trailingIconKey != null
             ? IconBtn(
                 iconKey: config.trailingIconKey!,
-                onTap: () => debugPrint("메모 아이콘 클릭!"),
-                size: IconSize.small,
+                onTap: () {},
+                size: IconSize.medium,
                 color: config.trailingIconColor,
               )
             : const SizedBox();
+        break;
       case ListItemType.toggle:
-        return _buildToggle();
+        trailingWidget = _buildToggle();
+        break;
       default:
-        return const SizedBox();
+        trailingWidget = const SizedBox();
     }
+
+    return trailingWidget;
   }
 
   /// ✅ 리딩 이미지 빌드 (클립된 썸네일)
@@ -108,10 +127,28 @@ class ListItem extends StatelessWidget {
   }
 
   /// ✅ 체크박스 빌드
-  Widget _buildCheckbox() {
-    return Checkbox(
-      value: config.checkboxValue ?? false,
-      onChanged: config.onCheckboxChanged,
+  Widget _buildCheckbox(BuildContext context) {
+    return Transform.translate(
+      offset: const Offset(-8, -8),
+      child: Transform.scale(
+        scale: 1.3,
+        child: Checkbox(
+          value: config.checkboxValue ?? false,
+          onChanged: (bool? newValue) {
+            if (config.onCheckboxChanged != null) {
+              config.onCheckboxChanged!(newValue);
+            }
+          },
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4),
+          ),
+          side: BorderSide(
+            color: Theme.of(context).colorScheme.onSurface,
+            width: 1.5,
+          ),
+        ),
+      ),
     );
   }
 

@@ -38,7 +38,7 @@ class LinkList extends StatelessWidget {
           leadingImageUrl: link.thumbnail,
           title: link.metaTitle ?? link.url,
           subtitle: link.metaDescription ?? '',
-          config: const ListItemConfig(
+          config: ListItemConfig(
             leadingType: ListItemType.image,
             imageSize: 56,
             imageRadius: 8,
