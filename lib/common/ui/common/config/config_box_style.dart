@@ -42,11 +42,11 @@ class BoxConfig {
       case BoxSize.extraSmall:
         return 8;
       case BoxSize.small:
-        return 12;
+        return 8;
       case BoxSize.large:
-        return 16;
+        return 12;
       default:
-        return 14;
+        return 12;
     }
   }
 }
