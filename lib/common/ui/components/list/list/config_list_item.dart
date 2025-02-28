@@ -36,9 +36,11 @@ class ListItemConfig {
   final Color? leadingIconColor;
   final Color? trailingIconColor;
 
+  final CrossAxisAlignment alignment;
+
   const ListItemConfig({
     // 레이아웃 관련
-    this.padding = const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+    this.padding = EdgeInsets.zero,
     this.itemSpacing = 4.0,
 
     // leading 관련
@@ -63,11 +65,31 @@ class ListItemConfig {
     this.onToggleChanged,
 
     // 아이콘 커스터마이징 옵션 수정
-    this.leadingIconSize = IconSize.small,
+    this.leadingIconSize = IconSize.medium,
     this.leadingIconColor,
     this.trailingIconColor,
     this.trailingIconSize = IconSize.small,
+    this.alignment = CrossAxisAlignment.start,
   });
 
   static const defaultConfig = ListItemConfig();
+}
+
+class ListItemPresets {
+  /// 아이콘 리스트 스타일
+  static const ListItemConfig iconListStyle = ListItemConfig(
+    itemSpacing: 12,
+    leadingType: ListItemType.icon,
+    textConfig: TitleSubtitlePresets.listItem,
+    leadingIconSize: IconSize.medium,
+    padding: EdgeInsets.zero,
+  );
+
+  /// 체크박스 리스트 스타일
+  static const ListItemConfig checkboxListStyle = ListItemConfig(
+    itemSpacing: 12,
+    leadingType: ListItemType.checkbox,
+    textConfig: TitleSubtitlePresets.listItem,
+    padding: EdgeInsets.zero,
+  );
 }

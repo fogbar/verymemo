@@ -26,14 +26,13 @@ class IntroView extends ConsumerWidget {
                 controller: viewModel.pageController,
                 onPageChanged: viewModel.onPageChanged,
                 itemCount: viewModel.contents.length,
+                physics: const BouncingScrollPhysics(),
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 38),
-                    child: Center(
-                      child: Image.asset(
-                        'assets/images/test_image.png',
-                        fit: BoxFit.contain,
-                      ),
+                    child: Image.asset(
+                      viewModel.contents[index].imagePath,
+                      fit: BoxFit.contain,
                     ),
                   );
                 },
@@ -63,7 +62,10 @@ class IntroView extends ConsumerWidget {
                   ),
                 ],
               ),
-              padding: const EdgeInsets.all(40),
+              padding: EdgeInsets.symmetric(
+                horizontal: (MediaQuery.of(context).size.width * 0.1),
+                vertical: 40, // 상하 40픽셀 고정
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
@@ -104,15 +106,9 @@ class IntroView extends ConsumerWidget {
                       key: ValueKey(viewModel.currentPage),
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        _buildText(
                           viewModel.contents[viewModel.currentPage].title,
-                          style: Theme.of(context).textTheme.headlineSmall,
-                          textAlign: TextAlign.start,
-                        ),
-                        Text(
-                          viewModel.contents[viewModel.currentPage].subtitle,
-                          style: Theme.of(context).textTheme.headlineSmall,
-                          textAlign: TextAlign.start,
+                          context,
                         ),
                       ],
                     ),
@@ -121,23 +117,26 @@ class IntroView extends ConsumerWidget {
                   // 시작하기 버튼
                   RoundBtn(
                     text: "기록을 가치 있게",
-                    onPressed: () {
-                      // 다음 화면으로 이동
-                    },
+                    onPressed: viewModel.onStartButtonPressed,
                     size: BoxSize.large,
                     state: ButtonState.secondary,
                     isExpanded: true,
                   ),
-                  // 하단 여백
-                  SizedBox(
-                    height: MediaQuery.of(context).padding.bottom + 8,
-                  ),
+                  const SizedBox(height: 16),
                 ],
               ),
             ),
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildText(String text, BuildContext context) {
+    return Text(
+      text,
+      style: Theme.of(context).textTheme.headlineSmall,
+      textAlign: TextAlign.start,
     );
   }
 }
