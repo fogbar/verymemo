@@ -29,11 +29,6 @@ class PermissionViewModel extends StateNotifier<PermissionState> {
     state = state.copyWith(isAgreed: newValue);
   }
 
-  void openProfileLink() {
-    // 프로필 링크를 여는 로직 구현
-    // 예: url_launcher 패키지를 사용하여 웹 링크 열기
-  }
-
   void onStartButtonPressed() {
     // 시작 버튼 로직 구현
   }

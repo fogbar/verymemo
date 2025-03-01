@@ -1,9 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:verymemo/common/barrel/view_common.dart';
+import 'package:verymemo/common/barrel/button.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:verymemo/common/ui/components/button/round_btn.dart';
-import 'package:verymemo/common/ui/components/button/button_state.dart';
-import 'package:verymemo/common/ui/common/config/config_box_style.dart';
 import 'package:verymemo/features/settings/presentation/intro/intro_viewmodel.dart';
 
 class IntroView extends ConsumerWidget {

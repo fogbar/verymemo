@@ -1,6 +1,5 @@
+import 'package:verymemo/common/barrel/view_common.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:verymemo/common/ui/common/config/config_box_style.dart';
 
 class ModalSelect extends StatelessWidget {
   final List<String> options;

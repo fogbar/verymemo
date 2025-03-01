@@ -1,8 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:verymemo/features/memo/domain/models/memo_list_model.dart';
-import 'package:verymemo/features/memo/presentation/memo_home_viewmodel.dart';
-import 'package:verymemo/features/memo/presentation/image_detail_view.dart';
+import 'package:verymemo/common/barrel/memo_list.dart';
+import 'package:verymemo/common/barrel/view_common.dart';
 
 class GalleryView extends ConsumerWidget {
   final Function(String imageUrl)? onImageTap;

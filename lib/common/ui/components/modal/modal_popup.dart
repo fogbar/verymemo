@@ -1,8 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:verymemo/common/ui/components/button/button_state.dart';
-import 'package:verymemo/common/ui/components/button/round_btn.dart';
-import 'package:verymemo/common/ui/common/title_subtitle.dart';
-import 'package:verymemo/common/ui/components/button/icon_btn.dart';
+import 'package:verymemo/common/barrel/view_common.dart';
+import 'package:verymemo/common/barrel/button.dart';
 
 class ModalPopup extends StatelessWidget {
   final String title;
