@@ -48,7 +48,7 @@ class AppRouter {
       // }
       return null;
     },
-    initialLocation: AppRoute.home,
+    initialLocation: AppRoute.splash,
   );
 
   static Route? _findRouteByPath(String path) {

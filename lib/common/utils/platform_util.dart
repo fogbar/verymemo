@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 
 class PlatformUtil {
-  static Future<String?> getPlatformInfo() async {
+  static Future<String> getPlatformInfo() async {
     final deviceInfo = DeviceInfoPlugin();
     String deviceId;
     if (Platform.isAndroid) {

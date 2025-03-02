@@ -1,7 +1,14 @@
 import 'package:verymemo/common/barrel/model_common.dart';
+import 'package:verymemo/common/configs/storage_key.dart';
+import 'package:verymemo/common/utils/platform_util.dart';
+import 'package:verymemo/externals/storage/storage_service.dart';
+import 'package:verymemo/routers/navigation_service.dart';
+import 'package:verymemo/routers/router.dart';
 
 class IntroViewModel extends ChangeNotifier {
   final PageController pageController = PageController();
+  final NavigationService _navigationService;
+  final StorageService _storageService;
   int currentPage = 0;
 
   final List<IntroContent> contents = [
@@ -23,7 +30,7 @@ class IntroViewModel extends ChangeNotifier {
     ),
   ];
 
-  IntroViewModel() {
+  IntroViewModel(this._navigationService, this._storageService) {
     // 초기화 시 페이지 컨트롤러 리스너 추가
     pageController.addListener(() {
       if (pageController.page?.round() != currentPage) {
@@ -37,8 +44,12 @@ class IntroViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void onStartButtonPressed() {
-    // 다음 화면으로 이동하는 로직 구현
+  void onStartButtonPressed() async {
+    final deviceId = await PlatformUtil.getPlatformInfo();
+    // 여기서 넘어갈 때, 최초 접속자가 아니라는 의미로 deviceId를 DB에 저장
+    _storageService.set(key: deviceIdKey, data: deviceId);
+    // 로그인 화면으로 라우팅
+    _navigationService.push(AppRoute.signup);
   }
 
   @override
@@ -62,5 +73,7 @@ class IntroContent {
 }
 
 final introProvider = ChangeNotifierProvider<IntroViewModel>((ref) {
-  return IntroViewModel();
+  final navigationService = ref.watch(navigationServiceProvider);
+  final storageService = ref.watch(storageProvider);
+  return IntroViewModel(navigationService, storageService);
 });
