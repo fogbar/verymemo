@@ -1,9 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/foundation.dart';
+import 'package:verymemo/features/settings/providers/theme_providers.dart';
 
 final settingsViewModelProvider =
     StateNotifierProvider<SettingsViewModel, SettingsState>((ref) {
-  return SettingsViewModel();
+  return SettingsViewModel(ref);
 });
 
 class SettingsState {
@@ -28,7 +29,9 @@ class SettingsState {
 }
 
 class SettingsViewModel extends StateNotifier<SettingsState> {
-  SettingsViewModel() : super(SettingsState());
+  final Ref ref;
+
+  SettingsViewModel(this.ref) : super(SettingsState());
 
   void toggleKeypad(bool value) {
     state = state.copyWith(isKeypadEnabled: value);
@@ -37,7 +40,7 @@ class SettingsViewModel extends StateNotifier<SettingsState> {
 
   void toggleDarkMode(bool value) {
     state = state.copyWith(isDarkMode: value);
-    // TODO: 테마 변경 로직 구현
+    ref.read(isDarkModeProvider.notifier).state = value;
   }
 
   void onSyncTap() {
@@ -50,18 +53,23 @@ class SettingsViewModel extends StateNotifier<SettingsState> {
     debugPrint("삭제된 메모 페이지로 이동");
   }
 
-  void onAppReviewTap() {
-    // TODO: 앱 스토어 리뷰 페이지 열기
-    debugPrint("앱 리뷰 페이지 열기");
-  }
+  // void onAppReviewTap() {
+  //   // TODO: 앱 스토어 리뷰 페이지 열기
+  //   debugPrint("앱 리뷰 페이지 열기");
+  // }
 
-  void onOpenChatTap() {
-    // TODO: 오픈 카톡 링크 열기
-    debugPrint("오픈 카톡 링크 열기");
-  }
+  // void onOpenChatTap() {
+  //   // TODO: 오픈 카톡 링크 열기
+  //   debugPrint("오픈 카톡 링크 열기");
+  // }
 
   void onVersionInfoTap() {
     // TODO: 버전 정보 다이얼로그 표시
     debugPrint("버전 정보 표시");
+  }
+
+  void onWithdrawalTap() {
+    // TODO: 회원 탈퇴 다이얼로그 표시
+    debugPrint("회원 탈퇴 표시");
   }
 }

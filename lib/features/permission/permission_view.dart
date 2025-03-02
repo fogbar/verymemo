@@ -1,12 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:verymemo/common/ui/common/title_subtitle.dart';
-import 'package:verymemo/common/ui/components/button/round_btn.dart';
-import 'package:verymemo/common/ui/components/list/list/list_item.dart';
-import 'package:verymemo/common/ui/components/list/list/config_list_item.dart';
-import 'package:verymemo/common/ui/common/config/config_box_style.dart';
+import 'package:verymemo/common/barrel/view_common.dart';
+import 'package:verymemo/common/barrel/list.dart';
+import 'package:verymemo/common/barrel/button.dart';
 import 'package:verymemo/features/permission/permission_viewmodel.dart';
-import 'package:verymemo/common/ui/components/button/button_state.dart';
 import 'package:verymemo/features/permission/providers/permission_provider.dart';
 import 'package:verymemo/features/permission/providers/state/permission_state.dart';
 

@@ -1,7 +1,7 @@
 import 'package:verymemo/common/barrel/view_common.dart';
 import 'package:verymemo/common/barrel/list.dart';
 import 'package:verymemo/common/barrel/button.dart';
-import 'package:verymemo/features/settings/presentation/settings/settings_viewmodel.dart';
+import 'package:verymemo/features/settings/presentation/settings_viewmodel.dart';
 
 class SettingsView extends ConsumerWidget {
   const SettingsView({super.key});
@@ -104,36 +104,36 @@ class SettingsView extends ConsumerWidget {
                 onTap: () => settingsVM.onDeletedMemosTap(),
               ),
             ),
-            SizedBox(
-              height: 56,
-              child: ListItem(
-                config: ListItemConfig(
-                  leadingType: ListItemType.icon,
-                  leadingIconKey: 'star',
-                  leadingIconSize: IconSize.medium,
-                  itemSpacing: 12,
-                  alignment: CrossAxisAlignment.center,
-                  leadingIconColor: Theme.of(context).colorScheme.primary,
-                ),
-                title: '앱 리뷰 남기기',
-                onTap: () => settingsVM.onAppReviewTap(),
-              ),
-            ),
-            SizedBox(
-              height: 56,
-              child: ListItem(
-                config: ListItemConfig(
-                  leadingType: ListItemType.icon,
-                  leadingIconKey: 'mic',
-                  leadingIconSize: IconSize.medium,
-                  itemSpacing: 12,
-                  alignment: CrossAxisAlignment.center,
-                  leadingIconColor: Theme.of(context).colorScheme.primary,
-                ),
-                title: '오픈 카톡 커뮤니티',
-                onTap: () => settingsVM.onOpenChatTap(),
-              ),
-            ),
+            // SizedBox(
+            //   height: 56,
+            //   child: ListItem(
+            //     config: ListItemConfig(
+            //       leadingType: ListItemType.icon,
+            //       leadingIconKey: 'star',
+            //       leadingIconSize: IconSize.medium,
+            //       itemSpacing: 12,
+            //       alignment: CrossAxisAlignment.center,
+            //       leadingIconColor: Theme.of(context).colorScheme.primary,
+            //     ),
+            //     title: '앱 리뷰 남기기',
+            //     onTap: () => settingsVM.onAppReviewTap(),
+            //   ),
+            // ),
+            // SizedBox(
+            //   height: 56,
+            //   child: ListItem(
+            //     config: ListItemConfig(
+            //       leadingType: ListItemType.icon,
+            //       leadingIconKey: 'mic',
+            //       leadingIconSize: IconSize.medium,
+            //       itemSpacing: 12,
+            //       alignment: CrossAxisAlignment.center,
+            //       leadingIconColor: Theme.of(context).colorScheme.primary,
+            //     ),
+            //     title: '오픈 카톡 커뮤니티',
+            //     onTap: () => settingsVM.onOpenChatTap(),
+            //   ),
+            // ),
             SizedBox(
               height: 56,
               child: ListItem(
@@ -147,6 +147,21 @@ class SettingsView extends ConsumerWidget {
                 ),
                 title: '버전 정보',
                 onTap: () => settingsVM.onVersionInfoTap(),
+              ),
+            ),
+            SizedBox(
+              height: 56,
+              child: ListItem(
+                config: ListItemConfig(
+                  leadingType: ListItemType.icon,
+                  leadingIconKey: 'user',
+                  leadingIconSize: IconSize.medium,
+                  itemSpacing: 12,
+                  alignment: CrossAxisAlignment.center,
+                  leadingIconColor: Theme.of(context).colorScheme.primary,
+                ),
+                title: '회원 탈퇴',
+                onTap: () => settingsVM.onWithdrawalTap(),
               ),
             ),
           ],

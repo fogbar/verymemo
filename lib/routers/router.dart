@@ -23,7 +23,7 @@ import 'package:verymemo/features/saerch/presentation/search_view.dart';
 import 'package:verymemo/features/intro/intro_view.dart';
 import 'package:verymemo/features/permission/permission_view.dart';
 import 'package:verymemo/features/permission/providers/permission_provider.dart';
-import 'package:verymemo/features/settings/presentation/settings/settings_view.dart';
+import 'package:verymemo/features/settings/presentation/settings_view.dart';
 import 'package:verymemo/features/auth/presentation/profile/profile_setting_view.dart';
 import 'package:verymemo/features/splash/splash_view.dart';
 

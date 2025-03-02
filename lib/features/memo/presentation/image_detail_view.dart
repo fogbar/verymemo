@@ -3,7 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:verymemo/common/ui/components/layout/variable_header.dart';
 import 'package:verymemo/features/memo/presentation/image_detail_viewmodel.dart';
 
-final currentPageProvider = StateProvider.autoDispose<int>((ref) => 0);
+final currentPageProvider = StateProvider.autoDispose
+    .family<int, int>((ref, initialIndex) => initialIndex);
 
 class ImageDetailView extends ConsumerWidget {
   final String imageUrl;
@@ -26,14 +27,8 @@ class ImageDetailView extends ConsumerWidget {
       imageUrls: imageUrls,
     )));
 
-    // 초기화 로직 제거
-    final currentPage = ref.watch(currentPageProvider);
+    final currentPage = ref.watch(currentPageProvider(currentIndex));
     final colorScheme = Theme.of(context).colorScheme;
-
-    // 첫 프레임이 렌더링된 후 초기값 설정
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(currentPageProvider.notifier).state = currentIndex;
-    });
 
     return Scaffold(
       extendBody: true,
@@ -43,9 +38,10 @@ class ImageDetailView extends ConsumerWidget {
         children: [
           PageView.builder(
             itemCount: imageUrls.length,
-            controller: viewModel.pageController,
+            controller: PageController(initialPage: currentIndex),
             onPageChanged: (index) {
-              ref.read(currentPageProvider.notifier).state = index;
+              ref.read(currentPageProvider(currentIndex).notifier).state =
+                  index;
             },
             itemBuilder: (context, index) => GestureDetector(
               onDoubleTapDown: viewModel.handleDoubleTap,
