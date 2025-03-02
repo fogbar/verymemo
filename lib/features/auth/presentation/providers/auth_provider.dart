@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:verymemo/common/configs/storage_key.dart';
 // import 'package:supabase_flutter/supabase_flutter.dart';
@@ -49,11 +51,8 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
 
       if (user != null) {
         state = AuthState.authenticated(user);
-        await _storageService.set(
-          key: isUserKey,
-          data: 1,
-        );
-        _navigationService.go(AppRoute.home);
+        await _storageService.set(key: userKey, data: user.toJson());
+        _navigationService.go(AppRoute.permissionCheck);
       } else {
         state = const AuthState.unauthenticated();
       }

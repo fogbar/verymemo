@@ -144,7 +144,5 @@ class PermissionNotifier extends StateNotifier<PermissionState> {
       allGranted: storedPermissions.values.every((granted) => granted),
     );
     log("불러온 권한 상태: $storedPermissions");
-    final dd = await PlatformUtil.getPlatformInfo();
-    log("---> dd: ${dd}");
   }
 }

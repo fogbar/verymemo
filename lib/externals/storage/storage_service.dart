@@ -16,6 +16,8 @@ abstract class StorageService {
   Future<bool> remove({required String key});
 
   Future<void> clear();
+
+  Future<Set<String>> getKeys();
 }
 
 final storageProvider = Provider<StorageService>((ref) {
@@ -67,5 +69,12 @@ class StorageServiceImpl implements StorageService {
     sharedPreferences = await initCompleter.future;
     log("[Clear]", name: "clear");
     await sharedPreferences.clear();
+  }
+
+  @override
+  Future<Set<String>> getKeys() async {
+    sharedPreferences = await initCompleter.future;
+    log("[Get Keys]", name: "getKeys");
+    return sharedPreferences.getKeys();
   }
 }
