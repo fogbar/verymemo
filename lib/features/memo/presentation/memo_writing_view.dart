@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:verymemo/common/ui/components/input/writing_menu_bar/writing_menu_bar.dart';
+import 'package:verymemo/features/memo/presentation/writing_menu_bar/writing_menu_bar.dart';
 import 'package:verymemo/features/memo/presentation/memo_writing_viewmodel.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:verymemo/features/memo/presentation/providers/writing_provider.dart';
@@ -82,7 +82,9 @@ class _WritingViewState extends ConsumerState<WritingView> {
                 ),
               ),
             ),
-            const WritingMenuBar(),
+            WritingMenuBar(
+              onGalleryTap: viewModel.pickImages,
+            ),
             const SizedBox(height: 40),
           ],
         ),
