@@ -11,7 +11,6 @@ class AppRouter {
 
   AppRouter(this.ref);
   late final config = GoRouter(
-    initialLocation: AppRoute.profileSetting,
     navigatorKey: NavigatorKey.routerKey,
     debugLogDiagnostics: true,
     routes: $appRoutes,
@@ -49,7 +48,7 @@ class AppRouter {
       // }
       return null;
     },
-    initialLocation: AppRoute.splash,
+    initialLocation: AppRoute.signup,
   );
 
   static Route? _findRouteByPath(String path) {
