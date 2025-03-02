@@ -110,14 +110,20 @@ class MemoListViewModel extends ChangeNotifier {
 
   void _handleModalSelection(String value, MemoListModel memo) {
     switch (value) {
-      case '수정하기':
+      case '수정':
         _editMemo(memo);
         break;
-      case '삭제하기':
-        _deleteMemo(memo);
+      case '북마크':
+        _bookmarkMemo(memo);
         break;
-      case '공유하기':
+      case '공유':
         _shareMemo(memo);
+        break;
+      case '공개':
+        _togglePublicMemo(memo);
+        break;
+      case '삭제':
+        _deleteMemo(memo);
         break;
     }
   }
@@ -126,12 +132,20 @@ class MemoListViewModel extends ChangeNotifier {
     // 수정 로직 구현
   }
 
+  void _bookmarkMemo(MemoListModel memo) {
+    // 북마크 로직 구현
+  }
+
   void _deleteMemo(MemoListModel memo) {
     // 삭제 로직 구현
   }
 
   void _shareMemo(MemoListModel memo) {
     // 공유 로직 구현
+  }
+
+  void _togglePublicMemo(MemoListModel memo) {
+    // 공개/비공개 전환 로직 구현
   }
 
 //이미지 상세 뷰 띄우기

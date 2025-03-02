@@ -16,16 +16,19 @@ class SettingsView extends ConsumerWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(
           children: [
-            ListItem(
-              config: ListItemConfig(
-                  leadingType: ListItemType.icon,
-                  leadingIconKey: 'sync',
-                  alignment: CrossAxisAlignment.center,
-                  leadingIconSize: IconSize.medium,
-                  leadingIconColor: Theme.of(context).colorScheme.primary,
-                  itemSpacing: 8),
-              title: '동기화',
-              onTap: () => settingsVM.onSyncTap(),
+            SizedBox(
+              height: 56,
+              child: ListItem(
+                config: ListItemConfig(
+                    leadingType: ListItemType.icon,
+                    leadingIconKey: 'sync',
+                    alignment: CrossAxisAlignment.center,
+                    leadingIconSize: IconSize.medium,
+                    leadingIconColor: Theme.of(context).colorScheme.primary,
+                    itemSpacing: 12),
+                title: '동기화',
+                onTap: () => settingsVM.onSyncTap(),
+              ),
             ),
             // ListItem(
             //   config: ListItemConfig(
@@ -37,36 +40,43 @@ class SettingsView extends ConsumerWidget {
             //   title: '태그 관리',
             //   onTap: () => debugPrint("태그 관리 클릭!"),
             // ),
-            ListItem(
-              config: ListItemConfig(
-                leadingType: ListItemType.icon,
-                leadingIconKey: 'edit',
-                leadingIconSize: IconSize.medium,
-                leadingIconColor: Theme.of(context).colorScheme.primary,
-                trailingType: ListItemType.toggle,
-                itemSpacing: 8,
-                alignment: CrossAxisAlignment.center,
-                toggleValue: settingsState.isKeypadEnabled,
-                onToggleChanged: (value) => settingsVM.toggleKeypad(value),
+            SizedBox(
+              height: 56,
+              child: ListItem(
+                config: ListItemConfig(
+                  leadingType: ListItemType.icon,
+                  leadingIconKey: 'edit',
+                  leadingIconSize: IconSize.medium,
+                  leadingIconColor: Theme.of(context).colorScheme.primary,
+                  trailingType: ListItemType.toggle,
+                  itemSpacing: 12,
+                  alignment: CrossAxisAlignment.center,
+                  toggleValue: settingsState.isKeypadEnabled,
+                  onToggleChanged: (value) => settingsVM.toggleKeypad(value),
+                ),
+                title: '진입시 키패드 모드',
+                onTap: () =>
+                    settingsVM.toggleKeypad(!settingsState.isKeypadEnabled),
               ),
-              title: '진입시 키패드 모드',
-              onTap: () =>
-                  settingsVM.toggleKeypad(!settingsState.isKeypadEnabled),
             ),
-            ListItem(
-              config: ListItemConfig(
-                leadingType: ListItemType.icon,
-                leadingIconKey: 'edit',
-                leadingIconSize: IconSize.medium,
-                leadingIconColor: Theme.of(context).colorScheme.primary,
-                trailingType: ListItemType.toggle,
-                itemSpacing: 8,
-                alignment: CrossAxisAlignment.center,
-                toggleValue: settingsState.isDarkMode,
-                onToggleChanged: (value) => settingsVM.toggleDarkMode(value),
+            SizedBox(
+              height: 56,
+              child: ListItem(
+                config: ListItemConfig(
+                  leadingType: ListItemType.icon,
+                  leadingIconKey: 'edit',
+                  leadingIconSize: IconSize.medium,
+                  leadingIconColor: Theme.of(context).colorScheme.primary,
+                  trailingType: ListItemType.toggle,
+                  itemSpacing: 12,
+                  alignment: CrossAxisAlignment.center,
+                  toggleValue: settingsState.isDarkMode,
+                  onToggleChanged: (value) => settingsVM.toggleDarkMode(value),
+                ),
+                title: '다크 모드',
+                onTap: () =>
+                    settingsVM.toggleDarkMode(!settingsState.isDarkMode),
               ),
-              title: '다크 모드',
-              onTap: () => settingsVM.toggleDarkMode(!settingsState.isDarkMode),
             ),
             // ListItem(
             //   config: ListItemConfig(
@@ -79,53 +89,65 @@ class SettingsView extends ConsumerWidget {
             //   title: '키패드 제스쳐',
             //   onTap: () => debugPrint("키패드 제스쳐 클릭!"),
             // ),
-            ListItem(
-              config: ListItemConfig(
-                leadingType: ListItemType.icon,
-                leadingIconKey: 'delete',
-                leadingIconSize: IconSize.medium,
-                itemSpacing: 8,
-                alignment: CrossAxisAlignment.center,
-                leadingIconColor: Theme.of(context).colorScheme.primary,
+            SizedBox(
+              height: 56,
+              child: ListItem(
+                config: ListItemConfig(
+                  leadingType: ListItemType.icon,
+                  leadingIconKey: 'delete',
+                  leadingIconSize: IconSize.medium,
+                  itemSpacing: 12,
+                  alignment: CrossAxisAlignment.center,
+                  leadingIconColor: Theme.of(context).colorScheme.primary,
+                ),
+                title: '최근 삭제한 메모',
+                onTap: () => settingsVM.onDeletedMemosTap(),
               ),
-              title: '최근 삭제한 메모',
-              onTap: () => settingsVM.onDeletedMemosTap(),
             ),
-            ListItem(
-              config: ListItemConfig(
-                leadingType: ListItemType.icon,
-                leadingIconKey: 'star',
-                leadingIconSize: IconSize.medium,
-                itemSpacing: 8,
-                alignment: CrossAxisAlignment.center,
-                leadingIconColor: Theme.of(context).colorScheme.primary,
+            SizedBox(
+              height: 56,
+              child: ListItem(
+                config: ListItemConfig(
+                  leadingType: ListItemType.icon,
+                  leadingIconKey: 'star',
+                  leadingIconSize: IconSize.medium,
+                  itemSpacing: 12,
+                  alignment: CrossAxisAlignment.center,
+                  leadingIconColor: Theme.of(context).colorScheme.primary,
+                ),
+                title: '앱 리뷰 남기기',
+                onTap: () => settingsVM.onAppReviewTap(),
               ),
-              title: '앱 리뷰 남기기',
-              onTap: () => settingsVM.onAppReviewTap(),
             ),
-            ListItem(
-              config: ListItemConfig(
-                leadingType: ListItemType.icon,
-                leadingIconKey: 'mic',
-                leadingIconSize: IconSize.medium,
-                itemSpacing: 8,
-                alignment: CrossAxisAlignment.center,
-                leadingIconColor: Theme.of(context).colorScheme.primary,
+            SizedBox(
+              height: 56,
+              child: ListItem(
+                config: ListItemConfig(
+                  leadingType: ListItemType.icon,
+                  leadingIconKey: 'mic',
+                  leadingIconSize: IconSize.medium,
+                  itemSpacing: 12,
+                  alignment: CrossAxisAlignment.center,
+                  leadingIconColor: Theme.of(context).colorScheme.primary,
+                ),
+                title: '오픈 카톡 커뮤니티',
+                onTap: () => settingsVM.onOpenChatTap(),
               ),
-              title: '오픈 카톡 커뮤니티',
-              onTap: () => settingsVM.onOpenChatTap(),
             ),
-            ListItem(
-              config: ListItemConfig(
-                leadingType: ListItemType.icon,
-                leadingIconKey: 'phone',
-                leadingIconSize: IconSize.medium,
-                itemSpacing: 8,
-                alignment: CrossAxisAlignment.center,
-                leadingIconColor: Theme.of(context).colorScheme.primary,
+            SizedBox(
+              height: 56,
+              child: ListItem(
+                config: ListItemConfig(
+                  leadingType: ListItemType.icon,
+                  leadingIconKey: 'phone',
+                  leadingIconSize: IconSize.medium,
+                  itemSpacing: 12,
+                  alignment: CrossAxisAlignment.center,
+                  leadingIconColor: Theme.of(context).colorScheme.primary,
+                ),
+                title: '버전 정보',
+                onTap: () => settingsVM.onVersionInfoTap(),
               ),
-              title: '버전 정보',
-              onTap: () => settingsVM.onVersionInfoTap(),
             ),
           ],
         ),

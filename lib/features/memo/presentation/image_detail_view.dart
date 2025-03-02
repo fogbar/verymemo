@@ -25,8 +25,15 @@ class ImageDetailView extends ConsumerWidget {
       initialIndex: currentIndex,
       imageUrls: imageUrls,
     )));
+
+    // 초기화 로직 제거
     final currentPage = ref.watch(currentPageProvider);
     final colorScheme = Theme.of(context).colorScheme;
+
+    // 첫 프레임이 렌더링된 후 초기값 설정
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(currentPageProvider.notifier).state = currentIndex;
+    });
 
     return Scaffold(
       extendBody: true,

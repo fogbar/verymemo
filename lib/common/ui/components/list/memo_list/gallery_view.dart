@@ -28,10 +28,12 @@ class GalleryView extends ConsumerWidget {
           onTap: () {
             showDialog(
               context: context,
+              barrierColor:
+                  Theme.of(context).colorScheme.surfaceContainerHighest,
               builder: (context) => ImageDetailView(
-                imageUrl: memo.imageUrls!.first,
+                imageUrl: memo.imageUrls![index],
                 imageUrls: memo.imageUrls!,
-                currentIndex: 0,
+                currentIndex: index,
                 onClose: () => Navigator.pop(context),
               ),
             );
