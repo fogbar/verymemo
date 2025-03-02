@@ -1,25 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:verymemo/common/ui/components/input/writing_menu_bar/writing_menu_bar.dart';
 import 'package:verymemo/features/memo/presentation/memo_writing_viewmodel.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:verymemo/features/memo/presentation/providers/writing_provider.dart';
 
-class WritingView extends StatefulWidget {
+class WritingView extends ConsumerStatefulWidget {
   const WritingView({super.key});
 
   @override
-  State<WritingView> createState() => _WritingViewState();
+  ConsumerState<WritingView> createState() => _WritingViewState();
 }
 
-class _WritingViewState extends State<WritingView> {
+class _WritingViewState extends ConsumerState<WritingView> {
   late final WritingViewModel viewModel;
+  final FocusNode _focusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
     viewModel = WritingViewModel();
+    viewModel.textController.addListener(_onTextChanged);
+
+    // 빌드 완료 후 포커스 요청
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNode.requestFocus();
+    });
+  }
+
+  void _onTextChanged() {
+    ref
+        .read(writingMenuStateProvider.notifier)
+        .setUploadButtonState(viewModel.textController.text);
   }
 
   @override
   void dispose() {
+    viewModel.textController.removeListener(_onTextChanged);
+    _focusNode.dispose();
     viewModel.dispose();
     super.dispose();
   }
@@ -50,6 +67,8 @@ class _WritingViewState extends State<WritingView> {
                 padding: const EdgeInsets.all(16.0),
                 child: TextField(
                   controller: viewModel.textController,
+                  focusNode: _focusNode,
+                  autofocus: true,
                   expands: true,
                   keyboardType: TextInputType.multiline,
                   textAlignVertical: TextAlignVertical.top,

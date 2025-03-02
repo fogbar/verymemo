@@ -1,10 +1,14 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:verymemo/common/ui/components/button/button_state.dart';
+
 part 'writing_provider.g.dart';
 
 @riverpod
-class WritingState extends _$WritingState {
+class WritingMenuState extends _$WritingMenuState {
   @override
-  bool build() => false;
+  ButtonState build() => ButtonState.disabled;
 
-  void toggle() => state = !state;
+  void setUploadButtonState(String text) {
+    state = text.trim().isNotEmpty ? ButtonState.primary : ButtonState.disabled;
+  }
 }

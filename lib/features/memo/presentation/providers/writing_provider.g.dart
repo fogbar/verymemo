@@ -6,20 +6,21 @@ part of 'writing_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$writingStateHash() => r'0b604c7af0c3420096df6de4d435da4a29c2ffc8';
+String _$writingMenuStateHash() => r'673d0ab324f7c0bbef419a7086c232acf917ea2e';
 
-/// See also [WritingState].
-@ProviderFor(WritingState)
-final writingStateProvider =
-    AutoDisposeNotifierProvider<WritingState, bool>.internal(
-  WritingState.new,
-  name: r'writingStateProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$writingStateHash,
+/// See also [WritingMenuState].
+@ProviderFor(WritingMenuState)
+final writingMenuStateProvider =
+    AutoDisposeNotifierProvider<WritingMenuState, ButtonState>.internal(
+  WritingMenuState.new,
+  name: r'writingMenuStateProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$writingMenuStateHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$WritingState = AutoDisposeNotifier<bool>;
+typedef _$WritingMenuState = AutoDisposeNotifier<ButtonState>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
