@@ -1,7 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:verymemo/features/memo/presentation/memo_home_viewmodel.dart';
-import 'package:verymemo/common/ui/components/list/pofile_list/profile_list.dart';
-import 'molicure/index_memo_list_component.dart';
+import 'package:verymemo/common/barrel/memo_list.dart';
+import 'package:verymemo/common/barrel/view_common.dart';
 
 class MemoList extends StatelessWidget {
   final MemoListViewModel viewModel;

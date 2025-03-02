@@ -1,8 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:verymemo/common/ui/components/button/icon_btn.dart';
-import 'package:verymemo/common/ui/components/list/list/config_list_item.dart';
-import 'package:verymemo/common/ui/components/list/list/list_item.dart';
+import 'package:verymemo/common/barrel/view_common.dart';
+import 'package:verymemo/common/barrel/list.dart';
+import 'package:verymemo/common/barrel/button.dart';
 import 'package:verymemo/features/settings/presentation/settings/settings_viewmodel.dart';
 
 class SettingsView extends ConsumerWidget {

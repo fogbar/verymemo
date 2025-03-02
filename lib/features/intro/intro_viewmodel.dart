@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:verymemo/common/barrel/model_common.dart';
 
 class IntroViewModel extends ChangeNotifier {
   final PageController pageController = PageController();

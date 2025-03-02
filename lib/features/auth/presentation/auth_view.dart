@@ -1,7 +1,5 @@
 import 'dart:developer';
-
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:verymemo/common/barrel/view_common.dart';
 import 'package:go_router/go_router.dart';
 import 'package:verymemo/common/ui/common/config/login_channel_config.dart';
 import 'package:verymemo/common/ui/common/config/login_channel.dart';
@@ -10,9 +8,6 @@ import 'package:verymemo/common/utils/image_util.dart';
 import 'package:verymemo/features/auth/presentation/providers/auth_provider.dart';
 import 'package:verymemo/features/auth/presentation/providers/state/auth_state.dart';
 import 'package:verymemo/routers/router.dart';
-import 'package:verymemo/common/ui/components/button/round_btn.dart';
-import 'package:verymemo/common/ui/components/button/button_state.dart';
-import 'package:verymemo/common/ui/common/config/config_box_style.dart';
 
 class AuthView extends ConsumerStatefulWidget {
   const AuthView({super.key});
