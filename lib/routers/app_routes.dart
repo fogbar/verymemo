@@ -2,19 +2,17 @@ part of 'router.dart';
 
 // ✅ 라우터 이름
 abstract class AppRoute {
+  static const splash = "/splash";
   static const intro = "/intro";
+  static const signup = "/sign-up";
   static const permissionCheck = "/permissionCheck";
-  static const login = "/login";
-
+  static const profileSetting = "/profileSetting";
   static const home = "/home";
   static const edit = "/edit";
   static const feed = "/feed";
   static const delete = "/delete";
   static const search = "/search";
   static const settings = "/settings";
-
-  static const profileSetting = "/profileSetting";
-  static const String imageDetail = '/image-detail';
 }
 
 // ✅ Navigator Key
@@ -30,6 +28,9 @@ abstract class NavigatorKey {
 
   static final GlobalKey<NavigatorState> detailShellKey =
       GlobalKey<NavigatorState>(debugLabel: "detailShellKey");
+
+  static final GlobalKey<NavigatorState> splashBranchKey =
+      GlobalKey<NavigatorState>(debugLabel: "splashBranchKey");
 
   static final GlobalKey<NavigatorState> introBranchKey =
       GlobalKey<NavigatorState>(debugLabel: "introBranchKey");

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -19,15 +20,17 @@ import 'package:verymemo/features/memo/presentation/memo_edit_view.dart';
 import 'package:verymemo/features/memo/presentation/memo_home_view.dart';
 import 'package:verymemo/features/memo/presentation/memo_writing_view.dart';
 import 'package:verymemo/features/saerch/presentation/search_view.dart';
-import 'package:verymemo/features/settings/presentation/intro/intro_view.dart';
-import 'package:verymemo/features/settings/presentation/permission/permission_view.dart';
+import 'package:verymemo/features/intro/intro_view.dart';
+import 'package:verymemo/features/permission/permission_view.dart';
+import 'package:verymemo/features/permission/providers/permission_provider.dart';
 import 'package:verymemo/features/settings/presentation/settings/settings_view.dart';
-import 'package:verymemo/features/settings/presentation/profile/profile_setting_view.dart';
+import 'package:verymemo/features/auth/presentation/profile/profile_setting_view.dart';
+import 'package:verymemo/features/splash/splash_view.dart';
 
 part 'app_routes.dart';
 part 'app_router.dart';
 part 'app_router_provider.dart';
-part 'app_router_interceptor.dart';
+// part 'app_router_interceptor.dart';
 part 'shell/home_scaffold.dart';
 part 'shell/intro_scaffold.dart';
 part 'shell/detail_scaffold.dart';

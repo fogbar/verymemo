@@ -5,8 +5,9 @@ class ImageDetailViewModel extends ChangeNotifier {
   final int initialIndex;
   final List<String> imageUrls;
   late final PageController pageController;
-  final TransformationController transformationController = TransformationController();
-  
+  final TransformationController transformationController =
+      TransformationController();
+
   ImageDetailViewModel({
     required this.initialIndex,
     required this.imageUrls,
@@ -43,11 +44,13 @@ class ImageDetailViewModel extends ChangeNotifier {
   }
 }
 
-final imageDetailProvider = ChangeNotifierProvider.autoDispose.family<ImageDetailViewModel, ({int initialIndex, List<String> imageUrls})>((ref, params) {
+final imageDetailProvider = ChangeNotifierProvider.autoDispose
+    .family<ImageDetailViewModel, ({int initialIndex, List<String> imageUrls})>(
+        (ref, params) {
   return ImageDetailViewModel(
     initialIndex: params.initialIndex,
     imageUrls: params.imageUrls,
   );
 });
 
-final currentPageProvider = StateProvider.autoDispose<int>((ref) => 0); 
+final currentPageProvider = StateProvider.autoDispose<int>((ref) => 0);

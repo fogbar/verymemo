@@ -1,6 +1,6 @@
-import 'package:verymemo/features/settings/presentation/profile/profile_setting_viewmodel.dart';
 import 'package:verymemo/common/barrel/view_common.dart';
 import 'package:verymemo/common/barrel/button.dart';
+import 'package:verymemo/features/auth/presentation/profile/profile_setting_viewmodel.dart';
 
 class ProfileSettingView extends ConsumerWidget {
   const ProfileSettingView({super.key});

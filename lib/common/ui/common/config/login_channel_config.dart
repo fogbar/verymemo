@@ -1,5 +1,5 @@
 import 'dart:developer';
-import 'package:verymemo/common/types/login_channel.dart';
+import 'package:verymemo/common/ui/common/config/login_channel.dart';
 
 List<LoginChannel> loginChannelConfigs = [
   LoginChannel(
