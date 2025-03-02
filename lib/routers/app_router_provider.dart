@@ -23,11 +23,11 @@ class AppRouter {
       final allPermissionsGranted = permissionState.allGranted;
 
       // 🔥 모든 권한이 허용된 경우 → 로그인 페이지로 리다이렉트
-      if (allPermissionsGranted) {
-        if (!state.matchedLocation.contains(AppRoute.home)) {
-          return AppRoute.signup;
-        }
-      }
+      // if (allPermissionsGranted) {
+      //   if (!state.matchedLocation.contains(AppRoute.home)) {
+      //     return AppRoute.signup;
+      //   }
+      // }
       // if (context.mounted) {
       //   // 1. 처음은 아닌데 인증이 필요한 라우트인 경우: 로그인으로 리다이렉트
       //   if (!isNew &&
@@ -48,7 +48,7 @@ class AppRouter {
       // }
       return null;
     },
-    initialLocation: AppRoute.splash,
+    initialLocation: AppRoute.signup,
   );
 
   static Route? _findRouteByPath(String path) {

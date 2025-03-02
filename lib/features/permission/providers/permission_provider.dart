@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:verymemo/common/configs/storage_key.dart';
+import 'package:verymemo/common/utils/platform_util.dart';
 import 'package:verymemo/externals/storage/storage_service.dart';
 import 'package:verymemo/features/permission/providers/state/permission_state.dart';
 import 'package:verymemo/routers/navigation_service.dart';
@@ -143,5 +144,7 @@ class PermissionNotifier extends StateNotifier<PermissionState> {
       allGranted: storedPermissions.values.every((granted) => granted),
     );
     log("불러온 권한 상태: $storedPermissions");
+    final dd = await PlatformUtil.getPlatformInfo();
+    log("---> dd: ${dd}");
   }
 }
