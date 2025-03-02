@@ -44,8 +44,12 @@ class ImageUtil {
           fit: fit ?? BoxFit.cover,
           width: size?.width,
           height: size?.height,
-          colorFilter: preserveColor ? null : (colorFilter ??
-              (color != null ? ColorFilter.mode(color, BlendMode.srcIn) : null)),
+          colorFilter: preserveColor
+              ? null
+              : (colorFilter ??
+                  (color != null
+                      ? ColorFilter.mode(color, BlendMode.srcIn)
+                      : null)),
         );
       } else if (path.contains('.json')) {
         return ShowLotti(

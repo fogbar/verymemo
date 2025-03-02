@@ -18,6 +18,14 @@ RouteBase get $introShell => StatefulShellRouteData.$route(
         StatefulShellBranchData.$branch(
           routes: [
             GoRouteData.$route(
+              path: '/splash',
+              factory: $SplashRouteExtension._fromState,
+            ),
+          ],
+        ),
+        StatefulShellBranchData.$branch(
+          routes: [
+            GoRouteData.$route(
               path: '/intro',
               factory: $IntroRouteExtension._fromState,
             ),
@@ -34,7 +42,7 @@ RouteBase get $introShell => StatefulShellRouteData.$route(
         StatefulShellBranchData.$branch(
           routes: [
             GoRouteData.$route(
-              path: '/login',
+              path: '/sign-up',
               factory: $LoginRouteExtension._fromState,
             ),
           ],
@@ -52,6 +60,23 @@ RouteBase get $introShell => StatefulShellRouteData.$route(
 
 extension $IntroShellExtension on IntroShell {
   static IntroShell _fromState(GoRouterState state) => IntroShell();
+}
+
+extension $SplashRouteExtension on SplashRoute {
+  static SplashRoute _fromState(GoRouterState state) => const SplashRoute();
+
+  String get location => GoRouteData.$location(
+        '/splash',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
 }
 
 extension $IntroRouteExtension on IntroRoute {
@@ -93,7 +118,7 @@ extension $LoginRouteExtension on LoginRoute {
   static LoginRoute _fromState(GoRouterState state) => const LoginRoute();
 
   String get location => GoRouteData.$location(
-        '/login',
+        '/sign-up',
       );
 
   void go(BuildContext context) => context.go(location);

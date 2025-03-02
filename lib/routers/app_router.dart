@@ -3,6 +3,11 @@ part of 'router.dart';
 // ✅ 인트로 쉘
 @TypedStatefulShellRoute<IntroShell>(
   branches: [
+    TypedStatefulShellBranch<SplashBranch>(
+      routes: [
+        TypedGoRoute<SplashRoute>(path: AppRoute.splash),
+      ],
+    ),
     TypedStatefulShellBranch<IntroBranch>(
       routes: [
         TypedGoRoute<IntroRoute>(path: AppRoute.intro),
@@ -15,7 +20,7 @@ part of 'router.dart';
     ),
     TypedStatefulShellBranch<LoginBranch>(
       routes: [
-        TypedGoRoute<LoginRoute>(path: AppRoute.login),
+        TypedGoRoute<LoginRoute>(path: AppRoute.signup),
       ],
     ),
     TypedStatefulShellBranch<ProfileSettingBranch>(
@@ -113,6 +118,17 @@ class DetailShell extends Shell {
 }
 
 ////////////////////////////////////////////////////////////
+// ✅ Splash 브랜치
+class SplashBranch extends Branch {
+  @override
+  GlobalKey<NavigatorState> get branchKey => NavigatorKey.splashBranchKey;
+
+  SplashBranch()
+      : super(
+          initialLocation: AppRoute.splash,
+          label: "스플래시",
+        );
+}
 
 // ✅ Intro 브랜치
 class IntroBranch extends Branch {
@@ -146,7 +162,7 @@ class LoginBranch extends Branch {
 
   LoginBranch()
       : super(
-          initialLocation: AppRoute.login,
+          initialLocation: AppRoute.signup,
           label: "로그인",
         );
 }
@@ -273,6 +289,13 @@ class SettingsBranch extends Branch {
 }
 
 ////////////////////////////////////////////////////////////
+// ✅ 스플래시 라우터
+class SplashRoute extends Route {
+  @override
+  bool checkAuth(BuildContext context) => false;
+
+  const SplashRoute() : super(const SplashView());
+}
 
 // ✅ 인트로 라우터
 class IntroRoute extends Route {
