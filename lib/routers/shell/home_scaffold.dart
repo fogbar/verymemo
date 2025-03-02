@@ -1,6 +1,6 @@
 part of '../router.dart';
 
-class HomeScaffold extends StatefulWidget {
+class HomeScaffold extends ConsumerStatefulWidget {
   final StatefulNavigationShell navigationShell;
   final GoRouterState state;
   const HomeScaffold({
@@ -10,10 +10,10 @@ class HomeScaffold extends StatefulWidget {
   });
 
   @override
-  State<HomeScaffold> createState() => _HomeScaffoldState();
+  ConsumerState<HomeScaffold> createState() => _HomeScaffoldState();
 }
 
-class _HomeScaffoldState extends State<HomeScaffold> {
+class _HomeScaffoldState extends ConsumerState<HomeScaffold> {
   void _goBranch(int index) {
     widget.navigationShell.goBranch(
       index,
@@ -24,19 +24,15 @@ class _HomeScaffoldState extends State<HomeScaffold> {
   final NavigationBarType _currentNavBar = NavigationBarType.home;
   int _selectedIndex = 0;
   int _currentTabIndex = 0;
-  bool _isWritingVisible = false;
 
   void _showWritingModal(BuildContext context) {
-    debugPrint("Opening writing modal...");
-    debugPrint("Current _isWritingVisible: $_isWritingVisible");
-    setState(() {
-      _isWritingVisible = !_isWritingVisible;
-    });
-    debugPrint("New _isWritingVisible: $_isWritingVisible");
+    ref.read(writingStateProvider.notifier).toggle();
   }
 
   @override
   Widget build(BuildContext context) {
+    final isWritingVisible = ref.watch(writingStateProvider);
+
     return Stack(
       children: [
         Scaffold(
@@ -104,13 +100,14 @@ class _HomeScaffoldState extends State<HomeScaffold> {
             ),
           ),
         ),
-        if (_isWritingVisible)
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: const WritingView(),
-          ),
+        AnimatedPositioned(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOutQuart,
+          left: 0,
+          right: 0,
+          bottom: isWritingVisible ? 0 : -MediaQuery.of(context).size.height,
+          child: const WritingView(),
+        ),
       ],
     );
   }

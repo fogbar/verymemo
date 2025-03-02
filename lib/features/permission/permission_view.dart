@@ -38,6 +38,7 @@ class PermissionView extends ConsumerWidget {
               const SizedBox(height: 40),
               ListItem(
                 config: ListItemConfig(
+                  padding: EdgeInsets.zero,
                   leadingType: ListItemType.checkbox,
                   checkboxValue: state.allAgree,
                   onCheckboxChanged: (value) => notifier.toggleAllAgree(),
@@ -51,6 +52,7 @@ class PermissionView extends ConsumerWidget {
               const SizedBox(height: 16),
               ListItem(
                 config: ListItemConfig(
+                  padding: EdgeInsets.zero,
                   leadingType: ListItemType.icon,
                   leadingIconKey: 'camera',
                   itemSpacing: 22,
@@ -63,6 +65,7 @@ class PermissionView extends ConsumerWidget {
               const SizedBox(height: 24),
               ListItem(
                 config: ListItemConfig(
+                  padding: EdgeInsets.zero,
                   leadingType: ListItemType.icon,
                   leadingIconKey: 'gallery',
                   itemSpacing: 22,
@@ -75,6 +78,7 @@ class PermissionView extends ConsumerWidget {
               const SizedBox(height: 24),
               ListItem(
                 config: ListItemConfig(
+                  padding: EdgeInsets.zero,
                   leadingType: ListItemType.icon,
                   leadingIconKey: 'user',
                   itemSpacing: 22,
@@ -84,13 +88,14 @@ class PermissionView extends ConsumerWidget {
                 title: '서비스 이용 약관 동의   >',
                 subtitle: '앱 이용을 위해 필요합니다',
                 onTap: () {
-                  print('서비스 이용 약관 클릭됨');
+                  ('서비스 이용 약관 클릭됨');
                   viewModel.onTermsPressed('service');
                 },
               ),
               const SizedBox(height: 24),
               ListItem(
                 config: ListItemConfig(
+                  padding: EdgeInsets.zero,
                   leadingType: ListItemType.icon,
                   leadingIconKey: 'user',
                   itemSpacing: 22,
@@ -100,7 +105,7 @@ class PermissionView extends ConsumerWidget {
                 title: '개인정보 이용 약관 동의   >',
                 subtitle: '개인정보 보호를 위해 필요합니다',
                 onTap: () {
-                  print('개인정보 약관 클릭됨');
+                  ('개인정보 약관 클릭됨');
                   viewModel.onTermsPressed('privacy');
                 },
               ),
@@ -118,7 +123,7 @@ class PermissionView extends ConsumerWidget {
                 state.allGranted ? ButtonState.primary : ButtonState.disabled,
             onPressed: state.allGranted
                 ? () {
-                    print('시작하기 버튼 클릭됨 (isAgreed: ${state.allAgree})');
+                    ('시작하기 버튼 클릭됨 (isAgreed: ${state.allAgree})');
                     // viewModel.onStartButtonPressed();
                     notifier.requestAllPermissions();
                   }

@@ -26,6 +26,7 @@ import 'package:verymemo/features/permission/providers/permission_provider.dart'
 import 'package:verymemo/features/settings/presentation/settings_view.dart';
 import 'package:verymemo/features/auth/presentation/profile/profile_setting_view.dart';
 import 'package:verymemo/features/splash/splash_view.dart';
+import 'package:verymemo/features/memo/providers/writing_provider.dart';
 
 part 'app_routes.dart';
 part 'app_router.dart';

@@ -31,42 +31,40 @@ class _WritingViewState extends State<WritingView> {
       child: Container(
         height: MediaQuery.of(context).size.height * 0.5,
         decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          border: Border(
-            top: BorderSide(
-              color: Theme.of(context).colorScheme.outlineVariant,
-              width: 1.0,
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+          boxShadow: [
+            BoxShadow(
+              color:
+                  Theme.of(context).colorScheme.inverseSurface.withOpacity(0.1),
+              blurRadius: 40,
+              offset: const Offset(0, -6),
+              spreadRadius: 8,
             ),
-          ),
+          ],
         ),
         child: Column(
           children: [
-            Container(
-              width: 40,
-              height: 4,
-              margin: const EdgeInsets.symmetric(vertical: 8),
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: TextField(
                   controller: viewModel.textController,
-                  maxLines: null,
+                  expands: true,
                   keyboardType: TextInputType.multiline,
+                  textAlignVertical: TextAlignVertical.top,
+                  maxLines: null,
                   decoration: const InputDecoration(
                     hintText: "내용을 입력하세요...",
                     border: InputBorder.none,
+                    filled: false,
+                    fillColor: Colors.transparent,
                   ),
                 ),
               ),
             ),
-            SafeArea(
-              child: const WritingMenuBar(),
-            ),
+            const WritingMenuBar(),
+            const SizedBox(height: 40),
           ],
         ),
       ),

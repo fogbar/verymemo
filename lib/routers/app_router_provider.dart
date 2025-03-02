@@ -48,7 +48,7 @@ class AppRouter {
       // }
       return null;
     },
-    initialLocation: AppRoute.signup,
+    initialLocation: AppRoute.home,
   );
 
   static Route? _findRouteByPath(String path) {
