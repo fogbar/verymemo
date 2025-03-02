@@ -26,20 +26,24 @@ class ListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: config.padding,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (config.leadingType != ListItemType.none) ...[
-            _buildLeading(context),
-            SizedBox(width: config.itemSpacing),
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: config.padding,
+        child: Row(
+          crossAxisAlignment: config.alignment,
+          children: [
+            if (config.leadingType != ListItemType.none) ...[
+              _buildLeading(context),
+              SizedBox(width: config.itemSpacing),
+            ],
+            Expanded(
+              child: _buildTitleSubtitle(context),
+            ),
+            if (config.trailingType != ListItemType.none)
+              _buildTrailing(context),
           ],
-          Expanded(
-            child: _buildTitleSubtitle(context),
-          ),
-          if (config.trailingType != ListItemType.none) _buildTrailing(context),
-        ],
+        ),
       ),
     );
   }

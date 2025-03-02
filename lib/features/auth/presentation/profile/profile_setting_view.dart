@@ -34,9 +34,9 @@ class ProfileSettingView extends ConsumerWidget {
                     boxShadow: [
                       BoxShadow(
                         color: Color(0x33120063),
-                        blurRadius: 30.60,
+                        blurRadius: 24,
                         offset: const Offset(11, 14),
-                        spreadRadius: -10,
+                        spreadRadius: -24,
                       ),
                     ],
                   ),

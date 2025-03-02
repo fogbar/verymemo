@@ -40,7 +40,7 @@ class ListItemConfig {
 
   const ListItemConfig({
     // 레이아웃 관련
-    this.padding = EdgeInsets.zero,
+    EdgeInsets? padding,
     this.itemSpacing = 4.0,
 
     // leading 관련
@@ -70,7 +70,8 @@ class ListItemConfig {
     this.trailingIconColor,
     this.trailingIconSize = IconSize.small,
     this.alignment = CrossAxisAlignment.start,
-  });
+  }) : padding =
+            padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 8);
 
   static const defaultConfig = ListItemConfig();
 }
