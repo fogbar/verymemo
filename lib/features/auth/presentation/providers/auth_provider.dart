@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:verymemo/common/configs/storage_key.dart';
 // import 'package:supabase_flutter/supabase_flutter.dart';
