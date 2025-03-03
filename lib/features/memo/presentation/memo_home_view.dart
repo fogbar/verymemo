@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:verymemo/common/ui/components/list/memo_list/memo_list.dart';
 import 'package:verymemo/features/memo/presentation/memo_home_viewmodel.dart';
 import 'package:verymemo/features/memo/providers/writing_provider.dart';
+import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 
 class MemoHomeView extends ConsumerWidget {
   const MemoHomeView({super.key});
@@ -12,13 +13,40 @@ class MemoHomeView extends ConsumerWidget {
     final viewModel = ref.watch(memoListProvider);
     final isWritingVisible = ref.watch(writingStateProvider);
 
-    return Padding(
-      padding: EdgeInsets.only(
-        bottom: isWritingVisible
-            ? MediaQuery.of(context).size.height * 0.38
-            : 0, // 모달 높이와 동일하게 설정
+    return CustomRefreshIndicator(
+      onRefresh: () async {
+        ref.read(writingStateProvider.notifier).toggle();
+      },
+      builder: (context, child, controller) {
+        return AnimatedBuilder(
+          animation: controller,
+          builder: (context, _) {
+            return Stack(
+              children: [
+                child,
+                if (controller.isLoading)
+                  Center(
+                    child: RotationTransition(
+                      turns: AlwaysStoppedAnimation(controller.value),
+                      child: Icon(
+                        Icons.add_box,
+                        size: 24,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                  ),
+              ],
+            );
+          },
+        );
+      },
+      child: Padding(
+        padding: EdgeInsets.only(
+          bottom:
+              isWritingVisible ? MediaQuery.of(context).size.height * 0.38 : 0,
+        ),
+        child: MemoList(viewModel: viewModel),
       ),
-      child: MemoList(viewModel: viewModel),
     );
   }
 }

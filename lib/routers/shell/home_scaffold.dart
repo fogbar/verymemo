@@ -26,7 +26,16 @@ class _HomeScaffoldState extends ConsumerState<HomeScaffold> {
   int _currentTabIndex = 0;
 
   void _showWritingModal(BuildContext context) {
-    ref.read(writingStateProvider.notifier).toggle();
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      useSafeArea: true,
+      isDismissible: true,
+      enableDrag: true,
+      barrierColor: Colors.transparent,
+      builder: (context) => const WritingView(),
+    );
   }
 
   @override
@@ -90,23 +99,29 @@ class _HomeScaffoldState extends ConsumerState<HomeScaffold> {
                 setState(() {
                   _selectedIndex = index;
                   _goBranch(_selectedIndex);
-                  debugPrint("선택된 네비게이션 아이콘 인덱스: $_selectedIndex");
                 });
               },
               onFloatingButtonTap: () {
-                debugPrint("Floating button tapped!");
-                _showWritingModal(context);
+                ref.read(writingStateProvider.notifier).toggle();
               },
             ),
           ),
         ),
         AnimatedPositioned(
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOutQuart,
+          duration: const Duration(milliseconds: 800),
+          curve: Curves.easeOutExpo,
           left: 0,
           right: 0,
           bottom: isWritingVisible ? 0 : -MediaQuery.of(context).size.height,
-          child: const WritingView(),
+          child: GestureDetector(
+            onVerticalDragEnd: (details) {
+              if (details.primaryVelocity! > 100) {
+                ref.read(writingStateProvider.notifier).toggle();
+              }
+            },
+            behavior: HitTestBehavior.translucent,
+            child: const WritingView(),
+          ),
         ),
       ],
     );

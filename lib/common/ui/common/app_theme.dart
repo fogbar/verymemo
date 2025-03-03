@@ -79,7 +79,7 @@ ColorScheme darkThemeColors([BuildContext? context]) {
     onTertiaryContainer: AppColor.grey50,
     error: AppColor.red,
     onError: AppColor.white,
-    onErrorContainer: AppColor.redbrown,
+    onErrorContainer: AppColor.palepink,
     surfaceDim: Color(0xff222222),
     surface: AppColor.grey100,
     surfaceBright: AppColor.grey80,

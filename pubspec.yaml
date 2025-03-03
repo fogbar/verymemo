@@ -58,6 +58,9 @@ dependencies:
   fluttertoast: ^8.2.12
   intl: ^0.19.0
 
+  #ui
+  custom_refresh_indicator: ^2.2.1
+
   # 에디터
   flutter_quill: '>=9.3.12 <11.0.0-dev.15'
   flutter_quill_extensions: '>=9.3.12 <11.0.0-dev.15'

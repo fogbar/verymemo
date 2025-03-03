@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:verymemo/common/ui/components/layout/variable_header.dart';
 import 'package:verymemo/features/memo/presentation/image_detail_viewmodel.dart';
+import 'dart:io';
 
 final currentPageProvider = StateProvider.autoDispose
     .family<int, int>((ref, initialIndex) => initialIndex);
@@ -11,6 +12,7 @@ class ImageDetailView extends ConsumerWidget {
   final List<String> imageUrls;
   final int currentIndex;
   final VoidCallback? onClose;
+  final bool isLocalFile;
 
   const ImageDetailView({
     super.key,
@@ -18,6 +20,7 @@ class ImageDetailView extends ConsumerWidget {
     required this.imageUrls,
     required this.currentIndex,
     this.onClose,
+    this.isLocalFile = false,
   });
 
   @override
@@ -43,21 +46,13 @@ class ImageDetailView extends ConsumerWidget {
               ref.read(currentPageProvider(currentIndex).notifier).state =
                   index;
             },
-            itemBuilder: (context, index) => GestureDetector(
-              onDoubleTapDown: viewModel.handleDoubleTap,
-              child: InteractiveViewer(
-                transformationController: viewModel.transformationController,
-                minScale: 0.5,
-                maxScale: 4.0,
-                child: _buildImage(imageUrls[index]),
+            itemBuilder: (context, index) => InteractiveViewer(
+              child: Center(
+                child: isLocalFile
+                    ? Image.file(File(imageUrls[index]))
+                    : Image.network(imageUrls[index]),
               ),
             ),
-          ),
-          VariableHeader(
-            type: HeaderType.imageviewer,
-            onBack: onClose,
-            onDelete: viewModel.handleDelete,
-            onDownload: viewModel.handleDownload,
           ),
           if (imageUrls.length > 1)
             Positioned(
@@ -75,34 +70,20 @@ class ImageDetailView extends ConsumerWidget {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: index == currentPage
-                          ? colorScheme.primary // 현재 페이지
-                          : colorScheme.onPrimary.withOpacity(0.2), // 다른 페이지
+                          ? colorScheme.primary
+                          : colorScheme.onPrimary.withOpacity(0.2),
                     ),
                   ),
                 ),
               ),
             ),
+          VariableHeader(
+            type: HeaderType.imageviewer,
+            onBack: onClose,
+            onDelete: viewModel.handleDelete,
+            // onDownload: viewModel.handleDownload,
+          ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildImage(String imageUrl) {
-    return Center(
-      child: Image.network(
-        imageUrl,
-        fit: BoxFit.contain,
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) return child;
-          return Center(
-            child: CircularProgressIndicator(
-              value: loadingProgress.expectedTotalBytes != null
-                  ? loadingProgress.cumulativeBytesLoaded /
-                      loadingProgress.expectedTotalBytes!
-                  : null,
-            ),
-          );
-        },
       ),
     );
   }
