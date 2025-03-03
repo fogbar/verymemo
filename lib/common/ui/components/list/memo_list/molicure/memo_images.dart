@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:verymemo/features/memo/domain/models/memo_list_model.dart';
 import 'package:verymemo/features/memo/presentation/memo_home_viewmodel.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class MemoImages extends StatelessWidget {
+//이미지 캐싱 추가함
+class MemoImages extends ConsumerWidget {
   final MemoListModel memo;
-  final viewModel = MemoListViewModel();
 
-  MemoImages({
+  const MemoImages({
     super.key,
     required this.memo,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final viewModel = ref.watch(memoListProvider);
+
     return viewModel.isDesktopPlatform
         ? _GridView(memo: memo, viewModel: viewModel)
         : _CarouselView(memo: memo, viewModel: viewModel);
@@ -61,6 +64,17 @@ class _CarouselView extends StatelessWidget {
                       width: imageSize,
                       height: imageSize,
                       fit: BoxFit.cover,
+                      cacheWidth: 300,
+                      frameBuilder:
+                          (context, child, frame, wasSynchronouslyLoaded) {
+                        if (wasSynchronouslyLoaded) return child;
+                        return AnimatedOpacity(
+                          opacity: frame == null ? 0 : 1,
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeOut,
+                          child: child,
+                        );
+                      },
                     ),
                   ),
                 ),
@@ -100,7 +114,21 @@ class _GridView extends StatelessWidget {
             child: viewModel.shouldShowRemainingCount(imageUrls, index)
                 ? _RemainingCountOverlay(
                     memo: memo, url: url, viewModel: viewModel)
-                : Image.network(url, fit: BoxFit.cover),
+                : Image.network(
+                    url,
+                    fit: BoxFit.cover,
+                    cacheWidth: 300,
+                    frameBuilder:
+                        (context, child, frame, wasSynchronouslyLoaded) {
+                      if (wasSynchronouslyLoaded) return child;
+                      return AnimatedOpacity(
+                        opacity: frame == null ? 0 : 1,
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeOut,
+                        child: child,
+                      );
+                    },
+                  ),
           ),
         );
 
@@ -144,7 +172,20 @@ class _RemainingCountOverlay extends StatelessWidget {
     return Stack(
       fit: StackFit.expand,
       children: [
-        Image.network(url, fit: BoxFit.cover),
+        Image.network(
+          url,
+          fit: BoxFit.cover,
+          cacheWidth: 300,
+          frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+            if (wasSynchronouslyLoaded) return child;
+            return AnimatedOpacity(
+              opacity: frame == null ? 0 : 1,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeOut,
+              child: child,
+            );
+          },
+        ),
         Container(
           color: Theme.of(context).colorScheme.surfaceDim,
           child: Center(

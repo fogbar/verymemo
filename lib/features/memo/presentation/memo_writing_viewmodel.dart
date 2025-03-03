@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:verymemo/features/memo/presentation/memo_writing_view.dart';
 
 class WritingViewModel extends ChangeNotifier {
   final TextEditingController textController = TextEditingController();
@@ -18,13 +19,27 @@ class WritingViewModel extends ChangeNotifier {
     }
   }
 
-  void closeWriting(BuildContext context) {
-    Navigator.pop(context);
+  void expandWriting(BuildContext context) {
+    if (!context.mounted) return;
+
+    final MediaQueryData mediaQuery = MediaQuery.of(context);
+    final double screenHeight = mediaQuery.size.height;
+    final double keyboardHeight = mediaQuery.viewInsets.bottom;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => SizedBox(
+        height: screenHeight - keyboardHeight - mediaQuery.padding.top,
+        child: const WritingView(),
+      ),
+    );
   }
 
-  void expandWriting(BuildContext context) {
-    // TODO: 전체 화면으로 확장하는 로직 구현
-    debugPrint('확장 기능 구현 예정');
+  void closeWriting(BuildContext context) {
+    if (!context.mounted) return;
+    Navigator.pop(context);
   }
 
   @override
