@@ -5,6 +5,7 @@ import 'package:verymemo/common/ui/common/config/login_channel_config.dart';
 import 'package:verymemo/common/ui/common/config/login_channel.dart';
 import 'package:verymemo/common/ui/components/button/button_state.dart';
 import 'package:verymemo/common/ui/components/button/round_btn.dart';
+import 'package:verymemo/common/utils/platform_util.dart';
 import 'package:verymemo/features/auth/presentation/providers/auth_provider.dart';
 import 'package:verymemo/features/auth/presentation/providers/state/auth_state.dart';
 import 'package:verymemo/routers/router.dart';
@@ -97,7 +98,11 @@ class _AuthViewState extends ConsumerState<AuthView>
                 ),
               ),
               const Gap(32),
-              LoginButtonColumn(channels: loginChannelConfigs),
+              LoginButtonColumn(
+                channels: PlatformUtil.currentPlatform() == 'android'
+                    ? androidLoginChannelConfigs
+                    : loginChannelConfigs,
+              ),
               const Gap(56),
             ],
           ),

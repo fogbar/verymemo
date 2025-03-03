@@ -7,7 +7,6 @@ import 'package:verymemo/externals/storage/storage_service.dart';
 import 'package:verymemo/features/permission/providers/state/permission_state.dart';
 import 'package:verymemo/routers/navigation_service.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:verymemo/routers/router.dart';
 
 final permissionNotifierProvider =
     StateNotifierProvider<PermissionNotifier, PermissionState>((ref) {

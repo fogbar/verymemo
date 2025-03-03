@@ -20,3 +20,17 @@ List<LoginChannel> loginChannelConfigs = [
     isUser: false,
   ),
 ];
+
+List<LoginChannel> androidLoginChannelConfigs = [
+  LoginChannel(
+    title: "동기화를 위한 가입",
+    logo: "assets/images/img_logo_google.png",
+    onPressed: () => log("---> Google"),
+    isUser: true,
+  ),
+  LoginChannel(
+    title: "비회원으로 시작",
+    logo: "assets/icons/ic_user.svg",
+    isUser: false,
+  ),
+];

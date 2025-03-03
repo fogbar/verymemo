@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+// import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:verymemo/common/types/typedef.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb;
 part 'user_model.freezed.dart';
@@ -25,24 +25,34 @@ sealed class UserModel with _$UserModel {
 
   factory UserModel.fromJson(MAP json) => _$UserModelFromJson(json);
 
-  factory UserModel.fromSupabaseUser(User user) {
+  factory UserModel.empty() {
     AuthProvider provider = AuthProvider.unknown;
-    if (user.appMetadata['provider'] == 'google') {
-      provider = AuthProvider.google;
-    } else if (user.appMetadata['provider'] == 'apple') {
-      provider = AuthProvider.apple;
-    }
     return UserModel(
-      id: user.id,
-      email: user.email ?? "",
-      displayName: user.userMetadata?['name'],
-      photoUrl: user.userMetadata?['avatar_url'],
+      id: "",
+      email: "",
       provider: provider,
-      createdAt: DateTime.parse(user.createdAt),
-      lastSignInAt:
-          user.lastSignInAt != null ? DateTime.parse(user.lastSignInAt!) : null,
+      createdAt: DateTime.now(),
     );
   }
+
+  // factory UserModel.fromSupabaseUser(User user) {
+  //   AuthProvider provider = AuthProvider.unknown;
+  //   if (user.appMetadata['provider'] == 'google') {
+  //     provider = AuthProvider.google;
+  //   } else if (user.appMetadata['provider'] == 'apple') {
+  //     provider = AuthProvider.apple;
+  //   }
+  //   return UserModel(
+  //     id: user.id,
+  //     email: user.email ?? "",
+  //     displayName: user.userMetadata?['name'],
+  //     photoUrl: user.userMetadata?['avatar_url'],
+  //     provider: provider,
+  //     createdAt: DateTime.parse(user.createdAt),
+  //     lastSignInAt:
+  //         user.lastSignInAt != null ? DateTime.parse(user.lastSignInAt!) : null,
+  //   );
+  // }
 
   factory UserModel.fromFBUser(fb.User user) {
     AuthProvider provider = AuthProvider.unknown;

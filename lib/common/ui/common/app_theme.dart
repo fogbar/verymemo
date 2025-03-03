@@ -202,16 +202,16 @@ InputDecorationTheme inputDecorationTheme([BuildContext? context]) {
     contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12), // 내부 여백
 
     // ✅ 힌트 텍스트 스타일 (Placeholder)
-    hintStyle: textTheme(context)?.labelLarge?.copyWith(
+    hintStyle: textTheme(context).labelLarge?.copyWith(
           color: colorScheme.onTertiaryContainer,
         ),
     // ✅ 레이블 텍스트 스타일 (labelText)
-    labelStyle: textTheme(context)?.labelSmall?.copyWith(
+    labelStyle: textTheme(context).labelSmall?.copyWith(
           color: colorScheme.onSurface,
         ),
 
     // ✅ 에러 텍스트 스타일
-    errorStyle: textTheme(context)?.labelLarge?.copyWith(
+    errorStyle: textTheme(context).labelLarge?.copyWith(
           color: colorScheme.error,
         ),
   );

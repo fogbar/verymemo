@@ -7,4 +7,4 @@ class WritingState extends _$WritingState {
   bool build() => false;
 
   void toggle() => state = !state;
-} 
+}
