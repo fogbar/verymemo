@@ -12,7 +12,7 @@ enum PermissionType {
 @freezed
 class PermissionState with _$PermissionState {
   const factory PermissionState({
-    @Default(false) bool allAgree, // 필수 체크 토글 상태
+    @Default(true) bool allAgree, // 필수 체크 토글 상태
     @Default(false) bool allGranted, // 모든 권한 허용 여부
     @Default({}) Map<PermissionType, bool> permissions,
   }) = _PermissionState;

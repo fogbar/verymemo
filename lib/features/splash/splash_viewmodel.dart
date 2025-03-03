@@ -41,7 +41,7 @@ class SplashViewmodel extends StateNotifier<SplashState> {
     final deviceId = await PlatformUtil.getPlatformInfo();
 
     final user = await _storageService.get(key: userKey);
-    // await _storageService.remove(key: userKey);
+    await _storageService.remove(key: userKey);
 
     // 해당 deviceId가 로컬 DB에 저장되어 있는지 확인
     if (await containsValue(deviceId)) {

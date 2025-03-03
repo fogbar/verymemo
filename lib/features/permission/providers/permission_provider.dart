@@ -3,7 +3,6 @@ import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:verymemo/common/configs/storage_key.dart';
-import 'package:verymemo/common/utils/platform_util.dart';
 import 'package:verymemo/externals/storage/storage_service.dart';
 import 'package:verymemo/features/permission/providers/state/permission_state.dart';
 import 'package:verymemo/routers/navigation_service.dart';
@@ -98,7 +97,8 @@ class PermissionNotifier extends StateNotifier<PermissionState> {
     state = state.copyWith(allGranted: isAllGranted);
 
     // 로그인 페이지
-    _navigationService.go(AppRoute.signup);
+    // _navigationService.go(AppRoute.signup);
+    requestAllPermissions();
   }
 
   // Future<void> check

@@ -124,7 +124,7 @@ class __$$PermissionStateImplCopyWithImpl<$Res>
 
 class _$PermissionStateImpl implements _PermissionState {
   const _$PermissionStateImpl(
-      {this.allAgree = false,
+      {this.allAgree = true,
       this.allGranted = false,
       final Map<PermissionType, bool> permissions = const {}})
       : _permissions = permissions;
