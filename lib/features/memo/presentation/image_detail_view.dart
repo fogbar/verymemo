@@ -81,7 +81,7 @@ class ImageDetailView extends ConsumerWidget {
             type: HeaderType.imageviewer,
             onBack: onClose,
             onDelete: viewModel.handleDelete,
-            onDownload: viewModel.handleDownload,
+            // onDownload: viewModel.handleDownload,
           ),
         ],
       ),

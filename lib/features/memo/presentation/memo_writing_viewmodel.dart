@@ -18,6 +18,15 @@ class WritingViewModel extends ChangeNotifier {
     }
   }
 
+  void closeWriting(BuildContext context) {
+    Navigator.pop(context);
+  }
+
+  void expandWriting(BuildContext context) {
+    // TODO: 전체 화면으로 확장하는 로직 구현
+    debugPrint('확장 기능 구현 예정');
+  }
+
   @override
   void dispose() {
     textController.dispose();
