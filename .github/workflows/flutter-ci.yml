@@ -3,35 +3,42 @@ name: Flutter CI/CD
 on:
   push:
     branches:
-      - develop # develop 브랜치에 푸시될 때 실행
+      - develop
   pull_request:
     branches:
       - develop
 
 jobs:
   build-test-deploy:
-    runs-on: ubuntu-latest # GitHub Actions가 실행될 환경
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3 # Git 저장소의 코드를 가져옴
+        uses: actions/checkout@v3
 
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v3
-        with:
-          flutter-version: '3.29.0' # 사용할 Flutter 버전
+      - name: Install FVM
+        run: |
+          dart pub global activate fvm
+          export PATH="$PATH:$HOME/.pub-cache/bin"
+
+      - name: Install Flutter SDK via FVM
+        run: |
+          fvm install stable
+          fvm use stable
+          export PATH="$PATH:`pwd`/.fvm/versions/stable/bin"
+          fvm flutter doctor
 
       - name: Install dependencies
-        run: flutter pub get # 패키지 의존성 설치
+        run: fvm flutter pub get # FVM을 통해 패키지 설치
 
-      # - name: Run tests
-      #   run: flutter test # 테스트 자동 실행
+      - name: Run tests
+        run: fvm flutter test # FVM을 통해 테스트 실행
 
       - name: Build APK
-        run: flutter build apk --release # APK 빌드
+        run: fvm flutter build apk --release # FVM을 통해 APK 빌드
 
       - name: Upload APK
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@latest
         with:
           name: app-release.apk
           path: build/app/outputs/flutter-apk/app-release.apk

@@ -48,4 +48,4 @@ app.*.map.json
 .fvm/
 .dart_tool/
 .fvmrc
-.vscode/
+# .vscode/
