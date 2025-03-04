@@ -6,7 +6,7 @@ import 'package:verymemo/externals/db/db_service.dart';
 import 'package:verymemo/firebase_options.dart';
 import 'package:verymemo/main/app.dart';
 
-final dbService = DbService();
+final dbContainer = ProviderContainer();
 
 Future<void> mainCommon() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,8 +14,8 @@ Future<void> mainCommon() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
-  await dbService.initDB(dbSchemes);
+  final dbInit = dbContainer.read(dbServiceProvider).initDB(dbSchemes);
+  await dbInit;
 
   runApp(ProviderScope(child: App()));
 }

@@ -85,6 +85,7 @@ dev_dependencies:
   riverpod_generator: ^2.4.3
   json_serializable: ^6.9.0
   go_router_builder: ^2.7.5
+  sqflite_common_ffi: ^2.3.5
 
 flutter:
   # The following line ensures that the Material Icons font is

@@ -46,3 +46,12 @@ CREATE TABLE IF NOT EXISTS memo_tags (
 );
 ''',
 ];
+
+const tableName = <String>[
+  'memos',
+  'users',
+  'images',
+  'links',
+  'tags',
+  'memo_tags',
+];

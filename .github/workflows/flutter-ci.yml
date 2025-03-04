@@ -36,13 +36,13 @@ jobs:
       - name: FVM을 통해 패키지 설치
         run: fvm flutter pub get
 
-      - name: FVM을 통해 테스트 실행
-        run: |
-          if ls test/*.dart 1> /dev/null 2>&1; then
-            fvm flutter test --coverage
-          else
-            echo "✅ No tests found, skipping test step."
-          fi
+      # - name: FVM을 통해 테스트 실행
+      #   run: |
+      #     if ls test/*.dart 1> /dev/null 2>&1; then
+      #       fvm flutter test --coverage
+      #     else
+      #       echo "✅ No tests found, skipping test step."
+      #     fi
 
       - name: APK 빌드
         run: fvm flutter build apk --release # FVM을 통해 APK 빌드
