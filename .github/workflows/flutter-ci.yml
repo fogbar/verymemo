@@ -14,10 +14,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2 # Git 저장소의 코드를 가져옴
+        uses: actions/checkout@v3 # Git 저장소의 코드를 가져옴
 
       - name: Setup Flutter
-        uses: subosito/flutter-action@v2
+        uses: subosito/flutter-action@v3
         with:
           flutter-version: '3.29.0' # 사용할 Flutter 버전
 
@@ -31,7 +31,7 @@ jobs:
         run: flutter build apk --release # APK 빌드
 
       - name: Upload APK
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: app-release.apk
           path: build/app/outputs/flutter-apk/app-release.apk
