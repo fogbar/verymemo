@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: 코드 체크아웃
         uses: actions/checkout@v4
 
       - name: Dart SDK 설치 단계 추가
@@ -21,28 +21,33 @@ jobs:
         with:
           sdk: stable
 
-      - name: Install FVM
+      - name: FVM 설치
         run: |
           dart pub global activate fvm
           export PATH="$PATH:$HOME/.pub-cache/bin"
 
-      - name: Install Flutter SDK via FVM
+      - name: FVM을 이용해서 Flutter SDK 설치
         run: |
           fvm install stable
           fvm use stable
           export PATH="$PATH:`pwd`/.fvm/versions/stable/bin"
           fvm flutter doctor
 
-      - name: Install dependencies
-        run: fvm flutter pub get # FVM을 통해 패키지 설치
+      - name: FVM을 통해 패키지 설치
+        run: fvm flutter pub get
 
-      - name: Run tests
-        run: fvm flutter test # FVM을 통해 테스트 실행
+      - name: FVM을 통해 테스트 실행
+        run: |
+          if ls test/*.dart 1> /dev/null 2>&1; then
+            fvm flutter test --coverage
+          else
+            echo "✅ No tests found, skipping test step."
+          fi
 
-      - name: Build APK
+      - name: APK 빌드
         run: fvm flutter build apk --release # FVM을 통해 APK 빌드
 
-      - name: Upload APK
+      - name: APK 업로드
         uses: actions/upload-artifact@v4
         with:
           name: app-release.apk
