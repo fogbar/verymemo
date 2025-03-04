@@ -46,7 +46,7 @@ class BoxConfig {
       case BoxSize.large:
         return 12;
       default:
-        return 12;
+        return 8;
     }
   }
 }

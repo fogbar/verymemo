@@ -26,10 +26,18 @@ class TitleSubtitleConfig {
   TextStyle getTitleStyle(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return switch (titleSize) {
-      TitleSize.exlarge => textTheme.headlineSmall!,
-      TitleSize.large => textTheme.titleLarge!,
-      TitleSize.medium => textTheme.titleMedium!,
-      TitleSize.small => textTheme.titleSmall!,
+      TitleSize.exlarge => textTheme.headlineSmall!.copyWith(
+          color: Theme.of(context).colorScheme.onSurface,
+        ),
+      TitleSize.large => textTheme.titleLarge!.copyWith(
+          color: Theme.of(context).colorScheme.onSurface,
+        ),
+      TitleSize.medium => textTheme.titleMedium!.copyWith(
+          color: Theme.of(context).colorScheme.onSurface,
+        ),
+      TitleSize.small => textTheme.titleSmall!.copyWith(
+          color: Theme.of(context).colorScheme.onSurface,
+        ),
     };
   }
 
@@ -52,6 +60,7 @@ class TitleSubtitleConfig {
 class TitleSubtitleWidget extends StatelessWidget {
   final String title;
   final String? subtitle;
+  final double? spacing;
   final TitleSubtitleConfig config;
   final TextAlign? textAlign;
 
@@ -59,6 +68,7 @@ class TitleSubtitleWidget extends StatelessWidget {
     super.key,
     required this.title,
     this.subtitle,
+    this.spacing,
     this.config = const TitleSubtitleConfig(),
     this.textAlign,
   });
@@ -80,6 +90,7 @@ class TitleSubtitleWidget extends StatelessWidget {
                 ? TextOverflow.ellipsis
                 : TextOverflow.visible,
           ),
+          if (spacing != null) SizedBox(height: spacing),
           if (subtitle != null) ...[
             if (config.spacing != null) SizedBox(height: config.spacing),
             Text(
