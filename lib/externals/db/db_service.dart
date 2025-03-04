@@ -1,7 +1,10 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:verymemo/common/configs/storage_key.dart';
 import 'package:verymemo/externals/db/db_scheme.dart';
+
+final dbServiceProvider = Provider<DbService>((ref) => DbService());
 
 class DbService {
   static final DbService _instance = DbService._internal();
@@ -21,6 +24,14 @@ class DbService {
   Future<Database> initDB(List<String> tableSchemas) async {
     return await _openDB(
       '$appName.db',
+      version: 1,
+      tableSchemas: tableSchemas,
+    );
+  }
+
+  Future<Database> testInitDB(List<String> tableSchemas) async {
+    return await _openDB(
+      'test_$appName.db',
       version: 1,
       tableSchemas: tableSchemas,
     );
@@ -57,5 +68,11 @@ class DbService {
         }
       },
     );
+  }
+
+  Future<void> close() async {
+    if (_database != null && _database!.isOpen) {
+      await _database!.close();
+    }
   }
 }

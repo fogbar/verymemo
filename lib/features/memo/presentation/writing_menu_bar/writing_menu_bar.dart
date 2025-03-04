@@ -3,7 +3,7 @@ import 'package:verymemo/common/ui/components/button/button_state.dart';
 import 'package:verymemo/common/ui/components/button/icon_btn.dart';
 import 'package:verymemo/features/memo/presentation/writing_menu_bar/config_writing_menu_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:verymemo/features/memo/providers/writing_provider.dart';
+import 'package:verymemo/features/memo/presentation/providers/writing_provider.dart';
 
 class WritingMenuBar extends ConsumerWidget {
   final VoidCallback? onCameraTap;

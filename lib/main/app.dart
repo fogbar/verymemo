@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:verymemo/externals/db/db_service.dart';
 import 'package:verymemo/routers/router.dart';
 import 'package:verymemo/features/settings/providers/theme_providers.dart';
 
@@ -10,6 +11,7 @@ class App extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(appRouterProvider);
     final theme = ref.watch(themeProvider);
+    final dbService = ref.watch(dbServiceProvider);
     return MaterialApp.router(
       scaffoldMessengerKey: GlobalKey<ScaffoldMessengerState>(
         debugLabel: "scaffold_key",

@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:verymemo/features/auth/data/datasources/firebase/firebase_service.dart';
+import 'package:verymemo/features/auth/data/data-sources/firebase/firebase_service.dart';
 // import 'package:verymemo/features/auth/data/datasources/supabase/supabase_service.dart';
 import 'package:verymemo/features/auth/domain/models/user_model.dart';
 import 'package:verymemo/features/auth/domain/repositories/auth_repository.dart';
