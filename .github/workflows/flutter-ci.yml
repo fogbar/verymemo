@@ -14,7 +14,12 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: Dart SDK 설치 단계 추가
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
 
       - name: Install FVM
         run: |
