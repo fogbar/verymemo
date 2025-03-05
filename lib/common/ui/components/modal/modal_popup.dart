@@ -4,6 +4,9 @@ import 'package:verymemo/common/barrel/button.dart';
 class ModalPopup extends StatelessWidget {
   final String title;
   final String subtitle;
+  final String confirmText;
+  final String cancelText;
+  final String iconKey;
   final VoidCallback onConfirm;
   final VoidCallback onCancel;
 
@@ -11,6 +14,9 @@ class ModalPopup extends StatelessWidget {
     super.key,
     required this.title,
     required this.subtitle,
+    required this.confirmText,
+    required this.cancelText,
+    this.iconKey = 'check',
     required this.onConfirm,
     required this.onCancel,
   });
@@ -18,38 +24,41 @@ class ModalPopup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Container(
-        constraints: const BoxConstraints(maxWidth: 300),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // 아이콘 섹션
-            IconCircleBtn(
-              iconKey: 'check',
-              onTap: () {},
-              state: ButtonState.secondary,
-            ),
-            const SizedBox(height: 12),
+      child: BoxConfig.createContainer(
+        context: context,
+        size: BoxSize.large,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // 아이콘 섹션
+              IconCircleBtn(
+                iconKey: iconKey,
+                onTap: () {},
+                state: ButtonState.secondary,
+              ),
+              const SizedBox(height: 12),
 
-            // 텍스트 섹션
-            TitleSubtitleWidget(
-              title: title,
-              subtitle: subtitle,
-              config: TitleSubtitlePresets.modalPopup,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 24),
+              // 텍스트 섹션
+              TitleSubtitleWidget(
+                title: title,
+                subtitle: subtitle,
+                spacing: 8,
+                config: TitleSubtitlePresets.modalPopup,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
 
-            // 버튼 섹션
-            RoundBtnCombination.vertical(
-              primaryText: "확인",
-              onPrimaryPressed: onConfirm,
-              secondaryText: "취소",
-              onSecondaryPressed: onCancel,
-            ),
-          ],
+              // 버튼 섹션
+              RoundBtnCombination.vertical(
+                primaryText: confirmText,
+                onPrimaryPressed: onConfirm,
+                secondaryText: cancelText,
+                onSecondaryPressed: onCancel,
+              ),
+            ],
+          ),
         ),
       ),
     );

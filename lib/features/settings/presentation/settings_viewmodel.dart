@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter/foundation.dart';
 import 'package:verymemo/features/settings/providers/theme_providers.dart';
+import 'package:verymemo/features/settings/presentation/modals/withdrawal_modal.dart';
+import 'package:verymemo/features/settings/presentation/modals/sync_modal.dart';
+import 'package:flutter/material.dart';
 
 final settingsViewModelProvider =
     StateNotifierProvider<SettingsViewModel, SettingsState>((ref) {
@@ -43,9 +45,16 @@ class SettingsViewModel extends StateNotifier<SettingsState> {
     ref.read(isDarkModeProvider.notifier).state = value;
   }
 
-  void onSyncTap() {
-    // TODO: 동기화 로직 구현
-    debugPrint("동기화 실행");
+  void onSyncTap(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierColor: Theme.of(context).colorScheme.scrim,
+      useSafeArea: true,
+      builder: (context) => Theme(
+        data: Theme.of(context),
+        child: const SyncModal(),
+      ),
+    );
   }
 
   void onDeletedMemosTap() {
@@ -68,8 +77,15 @@ class SettingsViewModel extends StateNotifier<SettingsState> {
     debugPrint("버전 정보 표시");
   }
 
-  void onWithdrawalTap() {
-    // TODO: 회원 탈퇴 다이얼로그 표시
-    debugPrint("회원 탈퇴 표시");
+  void onWithdrawalTap(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierColor: Theme.of(context).colorScheme.scrim,
+      useSafeArea: true,
+      builder: (context) => Theme(
+        data: Theme.of(context),
+        child: const WithdrawalModal(),
+      ),
+    );
   }
 }

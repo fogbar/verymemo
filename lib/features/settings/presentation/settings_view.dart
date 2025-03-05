@@ -2,6 +2,8 @@ import 'package:verymemo/common/barrel/view_common.dart';
 import 'package:verymemo/common/barrel/list.dart';
 import 'package:verymemo/common/barrel/button.dart';
 import 'package:verymemo/features/settings/presentation/settings_viewmodel.dart';
+import 'package:go_router/go_router.dart';
+import 'package:verymemo/routers/router.dart';
 
 class SettingsView extends ConsumerWidget {
   const SettingsView({super.key});
@@ -27,7 +29,7 @@ class SettingsView extends ConsumerWidget {
                     leadingIconColor: Theme.of(context).colorScheme.primary,
                     itemSpacing: 12),
                 title: '동기화',
-                onTap: () => settingsVM.onSyncTap(),
+                onTap: () => settingsVM.onSyncTap(context),
               ),
             ),
             // ListItem(
@@ -40,25 +42,7 @@ class SettingsView extends ConsumerWidget {
             //   title: '태그 관리',
             //   onTap: () => debugPrint("태그 관리 클릭!"),
             // ),
-            SizedBox(
-              height: 56,
-              child: ListItem(
-                config: ListItemConfig(
-                  leadingType: ListItemType.icon,
-                  leadingIconKey: 'edit',
-                  leadingIconSize: IconSize.medium,
-                  leadingIconColor: Theme.of(context).colorScheme.primary,
-                  trailingType: ListItemType.toggle,
-                  itemSpacing: 12,
-                  alignment: CrossAxisAlignment.center,
-                  toggleValue: settingsState.isKeypadEnabled,
-                  onToggleChanged: (value) => settingsVM.toggleKeypad(value),
-                ),
-                title: '진입시 키패드 모드',
-                onTap: () =>
-                    settingsVM.toggleKeypad(!settingsState.isKeypadEnabled),
-              ),
-            ),
+
             SizedBox(
               height: 56,
               child: ListItem(
@@ -160,8 +144,23 @@ class SettingsView extends ConsumerWidget {
                   alignment: CrossAxisAlignment.center,
                   leadingIconColor: Theme.of(context).colorScheme.primary,
                 ),
-                title: '회원 탈퇴',
-                onTap: () => settingsVM.onWithdrawalTap(),
+                title: '회원 가입 / 가입 안된 유저는 가입 노출',
+                onTap: () => context.go(AppRoute.signup),
+              ),
+            ),
+            SizedBox(
+              height: 56,
+              child: ListItem(
+                config: ListItemConfig(
+                  leadingType: ListItemType.icon,
+                  leadingIconKey: 'user',
+                  leadingIconSize: IconSize.medium,
+                  itemSpacing: 12,
+                  alignment: CrossAxisAlignment.center,
+                  leadingIconColor: Theme.of(context).colorScheme.primary,
+                ),
+                title: '회원 탈퇴 / 가입한 유저는 탈퇴 노출',
+                onTap: () => settingsVM.onWithdrawalTap(context),
               ),
             ),
           ],
