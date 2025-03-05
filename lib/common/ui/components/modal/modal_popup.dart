@@ -51,7 +51,7 @@ class ModalPopup extends StatelessWidget {
               const SizedBox(height: 24),
 
               // 버튼 섹션
-              RoundBtnCombination.vertical(
+              RoundBtnCombinationModal.vertical(
                 primaryText: confirmText,
                 onPrimaryPressed: onConfirm,
                 secondaryText: cancelText,

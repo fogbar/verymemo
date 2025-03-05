@@ -3,6 +3,8 @@ import 'package:verymemo/features/settings/providers/theme_providers.dart';
 import 'package:verymemo/features/settings/presentation/modals/withdrawal_modal.dart';
 import 'package:verymemo/features/settings/presentation/modals/sync_modal.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:verymemo/routers/router.dart';
 
 final settingsViewModelProvider =
     StateNotifierProvider<SettingsViewModel, SettingsState>((ref) {
@@ -57,9 +59,8 @@ class SettingsViewModel extends StateNotifier<SettingsState> {
     );
   }
 
-  void onDeletedMemosTap() {
-    // TODO: 삭제된 메모 페이지로 이동
-    debugPrint("삭제된 메모 페이지로 이동");
+  void onDeletedMemosTap(BuildContext context) {
+    context.go(AppRoute.delete);
   }
 
   // void onAppReviewTap() {

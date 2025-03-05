@@ -85,7 +85,7 @@ class SettingsView extends ConsumerWidget {
                   leadingIconColor: Theme.of(context).colorScheme.primary,
                 ),
                 title: '최근 삭제한 메모',
-                onTap: () => settingsVM.onDeletedMemosTap(),
+                onTap: () => settingsVM.onDeletedMemosTap(context),
               ),
             ),
             // SizedBox(

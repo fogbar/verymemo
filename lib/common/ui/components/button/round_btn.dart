@@ -111,7 +111,7 @@ class RoundBtn extends StatelessWidget {
 }
 
 /// ✅ RoundBtn 조합 익스텐션 - 모달 팝업에 사용됨
-extension RoundBtnCombination on RoundBtn {
+extension RoundBtnCombinationModal on RoundBtn {
   /// 수직으로 배치된 주요/보조 버튼 조합
   static Column vertical({
     required String primaryText,
@@ -135,6 +135,38 @@ extension RoundBtnCombination on RoundBtn {
           onPressed: onSecondaryPressed,
           size: BoxSize.small,
           state: ButtonState.transparent,
+          isExpanded: true,
+        ),
+      ],
+    );
+  }
+}
+
+/// ✅ RoundBtn 조합 익스텐션 - 바텀 버튼에 사용
+extension RoundBtnCombinationBottom on RoundBtn {
+  /// 수직으로 배치된 주요/보조 버튼 조합
+  static Row horizontal({
+    required String primaryText,
+    required VoidCallback? onPrimaryPressed,
+    required String secondaryText,
+    required VoidCallback? onSecondaryPressed,
+    double spacing = 8,
+  }) {
+    return Row(
+      children: [
+        RoundBtn(
+          text: secondaryText,
+          onPressed: onSecondaryPressed,
+          size: BoxSize.large,
+          state: ButtonState.secondary,
+          isExpanded: true,
+        ),
+        SizedBox(width: spacing),
+        RoundBtn(
+          text: primaryText,
+          onPressed: onPrimaryPressed,
+          size: BoxSize.large,
+          state: ButtonState.primary,
           isExpanded: true,
         ),
       ],

@@ -93,31 +93,62 @@ class _WritingViewState extends ConsumerState<WritingView> {
                       itemCount: viewModel.selectedImages.length,
                       separatorBuilder: (_, __) => const SizedBox(width: 8),
                       itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            showDialog(
-                              context: context,
-                              barrierColor: Theme.of(context)
-                                  .colorScheme
-                                  .surfaceContainerHighest,
-                              builder: (context) => ImageDetailView(
-                                imageUrl: viewModel.selectedImages[index],
-                                imageUrls: viewModel.selectedImages,
-                                currentIndex: index,
-                                onClose: () => Navigator.pop(context),
-                                isLocalFile: true,
+                        return Stack(
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  barrierColor: Theme.of(context)
+                                      .colorScheme
+                                      .surfaceContainerHighest,
+                                  builder: (context) => ImageDetailView(
+                                    imageUrl: viewModel.selectedImages[index],
+                                    imageUrls: viewModel.selectedImages,
+                                    currentIndex: index,
+                                    onClose: () => Navigator.pop(context),
+                                    isLocalFile: true,
+                                    showDelete: false,
+                                    showDownload: false,
+                                  ),
+                                );
+                              },
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: Image.file(
+                                  File(viewModel.selectedImages[index]),
+                                  width: 64,
+                                  height: 64,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
-                            );
-                          },
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Image.file(
-                              File(viewModel.selectedImages[index]),
-                              width: 64,
-                              height: 64,
-                              fit: BoxFit.cover,
                             ),
-                          ),
+                            Positioned(
+                              top: 4,
+                              right: 4,
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    viewModel.selectedImages.removeAt(index);
+                                  });
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                    color:
+                                        Theme.of(context).colorScheme.surface,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.close,
+                                    size: 12,
+                                    color:
+                                        Theme.of(context).colorScheme.onSurface,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         );
                       },
                     ),

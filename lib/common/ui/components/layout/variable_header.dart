@@ -14,6 +14,8 @@ class HeaderConfig {
   final bool showDelete;
   final bool showDownload;
   final bool showClose;
+  final bool showDeleteAllButton;
+  final VoidCallback? onDeleteAllPressed;
 
   const HeaderConfig({
     this.showBackArrow = false,
@@ -23,6 +25,8 @@ class HeaderConfig {
     this.showDelete = false,
     this.showDownload = false,
     this.showClose = false,
+    this.showDeleteAllButton = false,
+    this.onDeleteAllPressed,
   });
 
   static const Map<HeaderType, HeaderConfig> styles = {
@@ -35,8 +39,8 @@ class HeaderConfig {
     HeaderType.content: HeaderConfig(showBackArrow: true),
     HeaderType.searchBar: HeaderConfig(showBackArrow: true, showSearch: true),
     HeaderType.imageviewer: HeaderConfig(
-      showDownload: true,
-      showDelete: true,
+      showDownload: false,
+      showDelete: false,
       showClose: true,
     ),
   };
@@ -51,6 +55,8 @@ class VariableHeader extends StatelessWidget {
   final VoidCallback? onMore;
   final VoidCallback? onDelete;
   final VoidCallback? onDownload;
+  final bool showDelete;
+  final bool showDownload;
 
   const VariableHeader({
     super.key,
@@ -61,6 +67,8 @@ class VariableHeader extends StatelessWidget {
     this.onMore,
     this.onDelete,
     this.onDownload,
+    this.showDelete = true,
+    this.showDownload = true,
   });
 
   @override
@@ -155,6 +163,22 @@ class VariableHeader extends StatelessWidget {
       children: [
         if (config.showBackArrow)
           IconBtn(iconKey: "back", onTap: onBack, color: iconColor),
+        const Spacer(),
+        if (config.showDeleteAllButton)
+          TextButton(
+            onPressed: () {
+              // 전체 삭제 기능 실행
+              if (config.onDeleteAllPressed != null) {
+                config.onDeleteAllPressed!();
+              }
+            },
+            child: Text(
+              "전체 선택",
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: Theme.of(context).colorScheme.surfaceContainerLow,
+                  ),
+            ),
+          ),
       ],
     );
   }
@@ -194,9 +218,9 @@ class VariableHeader extends StatelessWidget {
       children: [
         Row(
           children: [
-            if (config.showDownload)
+            if (showDownload)
               IconBtn(iconKey: "download", onTap: onDownload, color: iconColor),
-            if (config.showDelete)
+            if (showDelete)
               IconBtn(iconKey: "delete", onTap: onDelete, color: iconColor),
             if (config.showClose)
               IconBtn(iconKey: "close", onTap: onBack, color: iconColor),
