@@ -1,6 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:verymemo/common/types/typedef.dart';
 import 'package:verymemo/features/memo/data/data-sources/memo_local_data_source.dart';
+import 'package:verymemo/features/memo/domain/models/memo_model.dart';
 import 'package:verymemo/features/memo/domain/repositories/memo_repository.dart';
 
 final memoRepositoryProvider = Provider<MemoRepository>((ref) {
@@ -19,13 +20,19 @@ class MemoRepositoryImpl implements MemoRepository {
   }
 
   @override
-  Future<MAP?> getMemo(int memoId) async {
-    return await localDataSource.getMemo(memoId);
+  Future<MemoModel?> getMemo(int memoId) async {
+    final map = await localDataSource.getMemo(memoId);
+    if (map != null) {
+      // 🔄 `MemoModel.fromJson`으로 변환해 반환
+      return MemoModel.fromJson(map);
+    }
+    return null;
   }
 
   @override
-  Future<List<MAP?>> getAllMemos() async {
-    return await localDataSource.getAllMemos();
+  Future<List<MemoModel?>> getAllMemos() async {
+    final maps = await localDataSource.getAllMemos();
+    return maps.map((map) => MemoModel.fromJson(map)).toList(); // 🔄 리스트 변환
   }
 
   @override

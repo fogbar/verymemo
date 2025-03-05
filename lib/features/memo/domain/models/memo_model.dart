@@ -23,6 +23,18 @@ class MemoModel with _$MemoModel {
 
   factory MemoModel.fromJson(MAP json) => _$MemoModelFromJson(json);
 
+  @override
+  MAP toJson() => {
+        'user': user?.toJson(),
+        'content': content,
+        'imageUrls': imageUrls.map((e) => e.toJson()).toList(),
+        'links': links.map((e) => e.toJson()).toList(),
+        'tags': tags.map((e) => e.toJson()).toList(),
+        'createdAt': createdAt.toIso8601String(),
+        'updatedAt': updatedAt?.toIso8601String(),
+        'isLocalMemo': isLocalMemo,
+      };
+
   factory MemoModel.defaults() => MemoModel(
         createdAt: DateTime.now(),
       );
