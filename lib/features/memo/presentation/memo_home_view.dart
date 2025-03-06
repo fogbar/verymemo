@@ -11,7 +11,6 @@ class MemoHomeView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final viewModel = ref.watch(memoListProvider);
-    final isWritingVisible = ref.watch(writingStateProvider);
 
     return CustomRefreshIndicator(
       onRefresh: () async {
@@ -42,8 +41,7 @@ class MemoHomeView extends ConsumerWidget {
       },
       child: Padding(
         padding: EdgeInsets.only(
-          bottom:
-              isWritingVisible ? MediaQuery.of(context).size.height * 0.38 : 0,
+          bottom: 0,
         ),
         child: MemoList(viewModel: viewModel),
       ),

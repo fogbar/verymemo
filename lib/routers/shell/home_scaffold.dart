@@ -25,19 +25,6 @@ class _HomeScaffoldState extends ConsumerState<HomeScaffold> {
   int _selectedIndex = 0;
   int _currentTabIndex = 0;
 
-  void _showWritingModal(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      useSafeArea: true,
-      isDismissible: true,
-      enableDrag: true,
-      barrierColor: Colors.transparent,
-      builder: (context) => const WritingView(),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final isWritingVisible = ref.watch(writingStateProvider);
@@ -45,6 +32,7 @@ class _HomeScaffoldState extends ConsumerState<HomeScaffold> {
     return Stack(
       children: [
         Scaffold(
+          resizeToAvoidBottomInset: true,
           body: SafeArea(
             child: CustomScrollView(
               slivers: [
@@ -108,21 +96,25 @@ class _HomeScaffoldState extends ConsumerState<HomeScaffold> {
           ),
         ),
         AnimatedPositioned(
-          duration: const Duration(milliseconds: 800),
+          duration: const Duration(milliseconds: 400),
           curve: Curves.easeOutExpo,
           left: 0,
           right: 0,
-          bottom: isWritingVisible ? 0 : -MediaQuery.of(context).size.height,
-          child: GestureDetector(
-            onVerticalDragEnd: (details) {
-              if (details.primaryVelocity! > 100) {
-                ref.read(writingStateProvider.notifier).toggle();
-              }
-            },
-            behavior: HitTestBehavior.translucent,
-            child: const WritingView(),
-          ),
-        ),
+          bottom: isWritingVisible
+              ? MediaQuery.of(context).viewInsets.bottom
+              : -MediaQuery.of(context).size.height,
+          child: isWritingVisible
+              ? GestureDetector(
+                  onVerticalDragEnd: (details) {
+                    if (details.primaryVelocity! > 100) {
+                      ref.read(writingStateProvider.notifier).toggle();
+                    }
+                  },
+                  behavior: HitTestBehavior.translucent,
+                  child: const WritingView(),
+                )
+              : const SizedBox(),
+        )
       ],
     );
   }

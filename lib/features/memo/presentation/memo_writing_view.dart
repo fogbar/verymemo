@@ -77,7 +77,7 @@ class _WritingViewState extends ConsumerState<WritingView> {
                 ),
               ],
             ),
-            height: MediaQuery.of(context).size.height * 0.5,
+            height: MediaQuery.of(context).size.height * 0.2,
             child: Column(
               children: [
                 if (viewModel.selectedImages.isNotEmpty)
@@ -184,7 +184,6 @@ class _WritingViewState extends ConsumerState<WritingView> {
                 WritingMenuBar(
                   onGalleryTap: viewModel.pickImages,
                 ),
-                const SizedBox(height: 40),
               ],
             ),
           ),
