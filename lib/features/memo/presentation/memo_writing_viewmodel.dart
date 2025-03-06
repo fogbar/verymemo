@@ -1,17 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:verymemo/features/memo/presentation/memo_writing_view.dart';
 
 class WritingViewModel extends ChangeNotifier {
   final TextEditingController textController = TextEditingController();
-  final ImagePicker _picker = ImagePicker();
   List<String> selectedImages = [];
 
-  Future<void> pickImages() async {
+  Future<void> pickImages(BuildContext context) async {
     try {
-      final List<XFile> images = await _picker.pickMultiImage();
-      if (images.isNotEmpty) {
-        selectedImages.addAll(images.map((image) => image.path));
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.image,
+        allowMultiple: true,
+        allowCompression: true,
+      );
+
+      if (result != null && result.files.isNotEmpty) {
+        final paths = result.files
+            .where((file) => file.path != null)
+            .map((file) => file.path!)
+            .toList();
+
+        selectedImages.addAll(paths);
         notifyListeners();
       }
     } catch (e) {

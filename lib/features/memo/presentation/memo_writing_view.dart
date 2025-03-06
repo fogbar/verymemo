@@ -77,7 +77,7 @@ class _WritingViewState extends ConsumerState<WritingView> {
                 ),
               ],
             ),
-            height: MediaQuery.of(context).size.height * 0.2,
+            height: MediaQuery.of(context).size.height * 0.25,
             child: Column(
               children: [
                 if (viewModel.selectedImages.isNotEmpty)
@@ -108,7 +108,7 @@ class _WritingViewState extends ConsumerState<WritingView> {
                                     currentIndex: index,
                                     onClose: () => Navigator.pop(context),
                                     isLocalFile: true,
-                                    showDelete: false,
+                                    showDelete: true,
                                     showDownload: false,
                                   ),
                                 );
@@ -133,7 +133,7 @@ class _WritingViewState extends ConsumerState<WritingView> {
                                   });
                                 },
                                 child: Container(
-                                  padding: const EdgeInsets.all(4),
+                                  padding: const EdgeInsets.all(6),
                                   decoration: BoxDecoration(
                                     color:
                                         Theme.of(context).colorScheme.surface,
@@ -141,7 +141,7 @@ class _WritingViewState extends ConsumerState<WritingView> {
                                   ),
                                   child: Icon(
                                     Icons.close,
-                                    size: 12,
+                                    size: 16,
                                     color:
                                         Theme.of(context).colorScheme.onSurface,
                                   ),
@@ -182,7 +182,7 @@ class _WritingViewState extends ConsumerState<WritingView> {
                   ),
                 ),
                 WritingMenuBar(
-                  onGalleryTap: viewModel.pickImages,
+                  onGalleryTap: () => viewModel.pickImages(context),
                 ),
               ],
             ),

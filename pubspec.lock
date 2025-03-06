@@ -393,6 +393,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.0.1"
+  file_picker:
+    dependency: "direct main"
+    description:
+      name: file_picker
+      sha256: "7423298f08f6fc8cce05792bae329f9a93653fc9c08712831b1a55540127995d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.0.2"
   file_selector_linux:
     dependency: transitive
     description:
@@ -526,6 +534,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
+  flutter_file_dialog:
+    dependency: "direct main"
+    description:
+      name: flutter_file_dialog
+      sha256: "9344b8f07be6a1b6f9854b723fb0cf84a8094ba94761af1d213589d3cb087488"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.2"
   flutter_keyboard_visibility_linux:
     dependency: transitive
     description:
@@ -814,7 +830,7 @@ packages:
     source: hosted
     version: "4.5.3"
   image_picker:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: image_picker
       sha256: "021834d9c0c3de46bf0fe40341fa07168407f694d9b2bb18d532dc1261867f7a"
