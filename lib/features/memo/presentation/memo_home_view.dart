@@ -42,8 +42,7 @@ class MemoHomeView extends ConsumerWidget {
       },
       child: Padding(
         padding: EdgeInsets.only(
-          bottom:
-              isWritingVisible ? MediaQuery.of(context).size.height * 0.38 : 0,
+          bottom: 0,
         ),
         child: MemoList(),
       ),

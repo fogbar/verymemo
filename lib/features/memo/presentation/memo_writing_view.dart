@@ -70,7 +70,7 @@ class MemoWritingView extends ConsumerWidget {
                                     currentIndex: index,
                                     onClose: () => Navigator.pop(context),
                                     isLocalFile: true,
-                                    showDelete: false,
+                                    showDelete: true,
                                     showDownload: false,
                                   ),
                                 );
@@ -93,7 +93,7 @@ class MemoWritingView extends ConsumerWidget {
                               child: GestureDetector(
                                 onTap: () => viewModel.removeImage(index),
                                 child: Container(
-                                  padding: const EdgeInsets.all(4),
+                                  padding: const EdgeInsets.all(6),
                                   decoration: BoxDecoration(
                                     color:
                                         Theme.of(context).colorScheme.surface,
@@ -101,7 +101,7 @@ class MemoWritingView extends ConsumerWidget {
                                   ),
                                   child: Icon(
                                     Icons.close,
-                                    size: 12,
+                                    size: 16,
                                     color:
                                         Theme.of(context).colorScheme.onSurface,
                                   ),
@@ -149,7 +149,6 @@ class MemoWritingView extends ConsumerWidget {
                     _height = 0;
                   },
                 ),
-                const SizedBox(height: 40),
               ],
             ),
           ),
