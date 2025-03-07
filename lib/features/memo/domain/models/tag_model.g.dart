@@ -8,7 +8,7 @@ part of 'tag_model.dart';
 
 _$TagModelImpl _$$TagModelImplFromJson(Map<String, dynamic> json) =>
     _$TagModelImpl(
-      tagName: json['tagName'] as String,
+      tagName: json['tagName'] as String?,
     );
 
 Map<String, dynamic> _$$TagModelImplToJson(_$TagModelImpl instance) =>

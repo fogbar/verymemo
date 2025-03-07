@@ -88,7 +88,6 @@ class VariableNavigationBar extends StatelessWidget {
   Widget _navItem(String iconKey, int index, BuildContext context) {
     final bool isHomeNav = type == NavigationBarType.home;
     final bool isSelected = isHomeNav && selectedIndex == index;
-    log("isSelected : $isSelected");
 
     return Expanded(
       child: IconBtn(

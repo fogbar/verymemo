@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:verymemo/features/memo/domain/models/memo_list_model.dart';
-import 'package:verymemo/features/memo/presentation/memo_home_viewmodel.dart';
+import 'package:verymemo/features/memo/domain/models/image_model.dart';
+import 'package:verymemo/features/memo/domain/models/memo_model.dart';
+import 'package:verymemo/features/memo/presentation/viewmodels/memo_home_viewmodel.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 //이미지 캐싱 추가함
 class MemoImages extends ConsumerWidget {
-  final MemoListModel memo;
+  // final MemoModel memo;
+  final MemoModel memo;
 
   const MemoImages({
     super.key,
     required this.memo,
+    List<ImageModel?>? imageUrls,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final viewModel = ref.watch(memoListProvider);
+    final viewModel = ref.watch(memoHomeProvider);
 
     return viewModel.isDesktopPlatform
         ? _GridView(memo: memo, viewModel: viewModel)
@@ -23,8 +26,8 @@ class MemoImages extends ConsumerWidget {
 }
 
 class _CarouselView extends StatelessWidget {
-  final MemoListModel memo;
-  final MemoListViewModel viewModel;
+  final MemoModel memo;
+  final MemoHomeViewModel viewModel;
 
   const _CarouselView({
     required this.memo,
@@ -60,7 +63,7 @@ class _CarouselView extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child: Image.network(
-                      imageUrls[index],
+                      imageUrls[index]?.imageUrl,
                       width: imageSize,
                       height: imageSize,
                       fit: BoxFit.cover,
@@ -88,8 +91,8 @@ class _CarouselView extends StatelessWidget {
 }
 
 class _GridView extends StatelessWidget {
-  final MemoListModel memo;
-  final MemoListViewModel viewModel;
+  final MemoModel memo;
+  final MemoHomeViewModel viewModel;
 
   const _GridView({
     required this.memo,
@@ -98,24 +101,24 @@ class _GridView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final imageUrls = memo.imageUrls ?? [];
-    final displayImages = viewModel.getDisplayImages(imageUrls);
+    final imageModels = memo.imageUrls;
+    final displayImages = viewModel.getDisplayImages(imageModels);
 
     return Row(
       children: displayImages.asMap().entries.map((entry) {
         final index = entry.key;
         final url = entry.value;
-        final isLast = index == viewModel.getDisplayCount(imageUrls) - 1;
+        final isLast = index == viewModel.getDisplayCount(imageModels) - 1;
 
         Widget imageContent = GestureDetector(
           onTap: () => viewModel.showImageDetail(context, memo, index),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(4),
-            child: viewModel.shouldShowRemainingCount(imageUrls, index)
+            child: viewModel.shouldShowRemainingCount(imageModels, index)
                 ? _RemainingCountOverlay(
-                    memo: memo, url: url, viewModel: viewModel)
+                    memo: memo, url: url!, viewModel: viewModel)
                 : Image.network(
-                    url,
+                    url?.imageUrl,
                     fit: BoxFit.cover,
                     cacheWidth: 300,
                     frameBuilder:
@@ -140,7 +143,7 @@ class _GridView extends StatelessWidget {
 
         Widget paddedContent = Padding(
           padding: EdgeInsets.only(right: isLast ? 0 : 8.0),
-          child: viewModel.isUseFixedSize(imageUrls)
+          child: viewModel.isUseFixedSize(url?.imageUrl)
               ? sizedContent
               : AspectRatio(
                   aspectRatio: 1,
@@ -148,7 +151,7 @@ class _GridView extends StatelessWidget {
                 ),
         );
 
-        return viewModel.isUseFixedSize(imageUrls)
+        return viewModel.isUseFixedSize(url?.imageUrl)
             ? paddedContent
             : Expanded(child: paddedContent);
       }).toList(),
@@ -157,9 +160,9 @@ class _GridView extends StatelessWidget {
 }
 
 class _RemainingCountOverlay extends StatelessWidget {
-  final MemoListModel memo;
-  final String url;
-  final MemoListViewModel viewModel;
+  final MemoModel memo;
+  final ImageModel url;
+  final MemoHomeViewModel viewModel;
 
   const _RemainingCountOverlay({
     required this.memo,
@@ -173,7 +176,7 @@ class _RemainingCountOverlay extends StatelessWidget {
       fit: StackFit.expand,
       children: [
         Image.network(
-          url,
+          url.imageUrl,
           fit: BoxFit.cover,
           cacheWidth: 300,
           frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {

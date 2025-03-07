@@ -50,7 +50,7 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
       if (user != null) {
         state = AuthState.authenticated(user);
         await _storageService.set(key: userKey, data: user.toJson());
-        _navigationService.go(AppRoute.permissionCheck);
+        _navigationService.go(AppRoute.home);
       } else {
         state = const AuthState.unauthenticated();
       }

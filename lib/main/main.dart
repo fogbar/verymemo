@@ -19,4 +19,3 @@ Future<void> mainCommon() async {
 
   runApp(ProviderScope(child: App()));
 }
-

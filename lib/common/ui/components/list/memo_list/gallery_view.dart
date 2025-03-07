@@ -1,5 +1,6 @@
 import 'package:verymemo/common/barrel/memo_list.dart';
 import 'package:verymemo/common/barrel/view_common.dart';
+import 'package:verymemo/features/memo/domain/models/memo_model.dart';
 
 class GalleryView extends ConsumerWidget {
   final Function(String imageUrl)? onImageTap;
@@ -11,7 +12,7 @@ class GalleryView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    var viewModel = MemoListViewModel();
+    final viewModel = ref.watch(memoHomeProvider);
     final memos = viewModel.extractImages();
 
     return GridView.builder(
@@ -23,29 +24,30 @@ class GalleryView extends ConsumerWidget {
       itemCount: memos.length,
       itemBuilder: (context, index) {
         final memo = memos[index];
-        return GalleryItem(
-          memo: memo,
-          onTap: () {
-            showDialog(
-              context: context,
-              barrierColor:
-                  Theme.of(context).colorScheme.surfaceContainerHighest,
-              builder: (context) => ImageDetailView(
-                imageUrl: memo.imageUrls![index],
-                imageUrls: memo.imageUrls!,
-                currentIndex: index,
-                onClose: () => Navigator.pop(context),
-              ),
-            );
-          },
-        );
+        // return GalleryItem(
+        //   memo: memo,
+        //   onTap: () {
+        //     showDialog(
+        //       context: context,
+        //       barrierColor:
+        //           Theme.of(context).colorScheme.surfaceContainerHighest,
+        //       builder: (context) => ImageDetailView(
+        //         imageUrl: memo.imageUrls![index],
+        //         imageUrls: memo.imageUrls!,
+        //         currentIndex: index,
+        //         onClose: () => Navigator.pop(context),
+        //       ),
+        //     );
+        //   },
+        // );
+        return Container();
       },
     );
   }
 }
 
 class GalleryItem extends StatelessWidget {
-  final MemoListModel memo;
+  final MemoModel memo;
   final VoidCallback? onTap;
 
   const GalleryItem({
@@ -61,7 +63,7 @@ class GalleryItem extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: NetworkImage(memo.imageUrls!.first),
+            image: NetworkImage(memo.imageUrls?.first.imageUrl),
             fit: BoxFit.cover,
           ),
         ),

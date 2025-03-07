@@ -3,15 +3,16 @@ import 'package:verymemo/common/barrel/view_common.dart';
 import 'package:verymemo/common/barrel/list.dart';
 import 'package:verymemo/common/barrel/button.dart';
 
-class LinkList extends StatelessWidget {
+class LinkList extends ConsumerWidget {
   // final List<MemoListModel> memos;
-  final Function(String url)? onLinkTap;
+  final Function(String? url)? onLinkTap;
 
   const LinkList({super.key, this.onLinkTap});
 
   @override
-  Widget build(BuildContext context) {
-    var viewModel = MemoListViewModel();
+  Widget build(BuildContext context, WidgetRef ref) {
+    // var viewModel = MemoListViewModel();
+    final viewModel = ref.watch(memoHomeProvider);
     final links = viewModel.extractLinks();
 
     return ListView.builder(
@@ -23,9 +24,9 @@ class LinkList extends StatelessWidget {
         }
         final link = links[index - 1];
         return ListItem(
-          leadingImageUrl: link.thumbnail,
-          title: link.metaTitle ?? link.url,
-          subtitle: link.metaDescription ?? '',
+          leadingImageUrl: link?.thumbnail,
+          title: link?.metaTitle ?? link?.linkUrl ?? "",
+          subtitle: link?.metaDescription ?? '',
           config: ListItemConfig(
             leadingType: ListItemType.image,
             imageSize: 56,
@@ -36,7 +37,7 @@ class LinkList extends StatelessWidget {
             textConfig: TitleSubtitlePresets.listItem,
             itemSpacing: 12,
           ),
-          onTap: () => onLinkTap?.call(link.url),
+          onTap: () => onLinkTap?.call(link?.linkUrl),
         );
       },
     );

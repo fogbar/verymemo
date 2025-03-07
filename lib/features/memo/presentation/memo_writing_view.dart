@@ -1,62 +1,23 @@
 import 'package:verymemo/common/barrel/model_common.dart';
 import 'package:verymemo/common/barrel/memo_writing.dart';
+import 'package:verymemo/features/memo/presentation/image_detail_view.dart'
+    show ImageDetailView;
 import 'dart:io';
-import 'package:verymemo/features/memo/presentation/image_detail_view.dart';
+// import 'package:verymemo/features/memo/presentation/image_detail_view.dart';
 
-class WritingView extends ConsumerStatefulWidget {
-  const WritingView({super.key});
-
+class MemoWritingView extends ConsumerWidget {
+  const MemoWritingView({super.key});
   @override
-  ConsumerState<WritingView> createState() => _WritingViewState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    double _height = MediaQuery.of(context).size.height * 0.5;
+    final viewModel = ref.watch(writingViewModelProvider);
 
-class _WritingViewState extends ConsumerState<WritingView> {
-  late final viewModel = WritingViewModel();
-  final FocusNode _focusNode = FocusNode();
-  bool _visible = false;
-
-  @override
-  void initState() {
-    super.initState();
-    viewModel.addListener(() {
-      if (mounted) setState(() {});
-    });
-    viewModel.textController.addListener(_onTextChanged);
-
-    // 빌드 완료 후 포커스 요청 및 페이드 인
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() => _visible = true);
-      _focusNode.requestFocus();
-    });
-  }
-
-  void _onTextChanged() {
-    ref
-        .read(writingMenuStateProvider.notifier)
-        .setUploadButtonState(viewModel.textController.text);
-  }
-
-  Future<bool> _onWillPop() async {
-    setState(() => _visible = false);
-    await Future.delayed(const Duration(milliseconds: 200));
-    return true;
-  }
-
-  @override
-  void dispose() {
-    viewModel.removeListener(() {}); // 리스너 제거
-    viewModel.textController.removeListener(_onTextChanged);
-    _focusNode.dispose();
-    viewModel.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+    viewModel.focusNode.requestFocus();
+    viewModel.visible = true;
     return WillPopScope(
-      onWillPop: _onWillPop,
+      onWillPop: viewModel.onWillPop,
       child: AnimatedOpacity(
-        opacity: _visible ? 1.0 : 0.0,
+        opacity: viewModel.visible ? 1.0 : 0.0,
         duration: const Duration(milliseconds: 200),
         child: Material(
           color: Colors.transparent,
@@ -77,7 +38,7 @@ class _WritingViewState extends ConsumerState<WritingView> {
                 ),
               ],
             ),
-            height: MediaQuery.of(context).size.height * 0.5,
+            height: _height,
             child: Column(
               children: [
                 if (viewModel.selectedImages.isNotEmpty)
@@ -103,7 +64,8 @@ class _WritingViewState extends ConsumerState<WritingView> {
                                       .colorScheme
                                       .surfaceContainerHighest,
                                   builder: (context) => ImageDetailView(
-                                    imageUrl: viewModel.selectedImages[index],
+                                    imageUrl: viewModel
+                                        .selectedImages[index].imageUrl,
                                     imageUrls: viewModel.selectedImages,
                                     currentIndex: index,
                                     onClose: () => Navigator.pop(context),
@@ -116,7 +78,9 @@ class _WritingViewState extends ConsumerState<WritingView> {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(8),
                                 child: Image.file(
-                                  File(viewModel.selectedImages[index]),
+                                  File(
+                                    viewModel.selectedImages[index].imageUrl,
+                                  ),
                                   width: 64,
                                   height: 64,
                                   fit: BoxFit.cover,
@@ -127,11 +91,7 @@ class _WritingViewState extends ConsumerState<WritingView> {
                               top: 4,
                               right: 4,
                               child: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    viewModel.selectedImages.removeAt(index);
-                                  });
-                                },
+                                onTap: () => viewModel.removeImage(index),
                                 child: Container(
                                   padding: const EdgeInsets.all(4),
                                   decoration: BoxDecoration(
@@ -162,7 +122,7 @@ class _WritingViewState extends ConsumerState<WritingView> {
                         Expanded(
                           child: TextField(
                             controller: viewModel.textController,
-                            focusNode: _focusNode,
+                            focusNode: viewModel.focusNode,
                             autofocus: true,
                             expands: true,
                             keyboardType: TextInputType.multiline,
@@ -183,6 +143,11 @@ class _WritingViewState extends ConsumerState<WritingView> {
                 ),
                 WritingMenuBar(
                   onGalleryTap: viewModel.pickImages,
+                  onUploadTap: () async {
+                    await viewModel.onUploadTab();
+                    viewModel.visible = false;
+                    _height = 0;
+                  },
                 ),
                 const SizedBox(height: 40),
               ],

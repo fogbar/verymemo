@@ -14,14 +14,10 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
-ImageModel _$ImageModelFromJson(Map<String, dynamic> json) {
-  return _ImageModel.fromJson(json);
-}
-
 /// @nodoc
 mixin _$ImageModel {
-  int? get index => throw _privateConstructorUsedError; // 해당 image의 인덱스
-  String get imageUrl => throw _privateConstructorUsedError;
+  int? get imageId => throw _privateConstructorUsedError; // 해당 image의 인덱스
+  dynamic get imageUrl => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
 
   /// Serializes this ImageModel to a JSON map.
@@ -40,7 +36,7 @@ abstract class $ImageModelCopyWith<$Res> {
           ImageModel value, $Res Function(ImageModel) then) =
       _$ImageModelCopyWithImpl<$Res, ImageModel>;
   @useResult
-  $Res call({int? index, String imageUrl, String description});
+  $Res call({int? imageId, dynamic imageUrl, String description});
 }
 
 /// @nodoc
@@ -58,19 +54,19 @@ class _$ImageModelCopyWithImpl<$Res, $Val extends ImageModel>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? index = freezed,
-    Object? imageUrl = null,
+    Object? imageId = freezed,
+    Object? imageUrl = freezed,
     Object? description = null,
   }) {
     return _then(_value.copyWith(
-      index: freezed == index
-          ? _value.index
-          : index // ignore: cast_nullable_to_non_nullable
+      imageId: freezed == imageId
+          ? _value.imageId
+          : imageId // ignore: cast_nullable_to_non_nullable
               as int?,
-      imageUrl: null == imageUrl
+      imageUrl: freezed == imageUrl
           ? _value.imageUrl
           : imageUrl // ignore: cast_nullable_to_non_nullable
-              as String,
+              as dynamic,
       description: null == description
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
@@ -87,7 +83,7 @@ abstract class _$$ImageModelImplCopyWith<$Res>
       __$$ImageModelImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({int? index, String imageUrl, String description});
+  $Res call({int? imageId, dynamic imageUrl, String description});
 }
 
 /// @nodoc
@@ -103,19 +99,19 @@ class __$$ImageModelImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? index = freezed,
-    Object? imageUrl = null,
+    Object? imageId = freezed,
+    Object? imageUrl = freezed,
     Object? description = null,
   }) {
     return _then(_$ImageModelImpl(
-      index: freezed == index
-          ? _value.index
-          : index // ignore: cast_nullable_to_non_nullable
+      imageId: freezed == imageId
+          ? _value.imageId
+          : imageId // ignore: cast_nullable_to_non_nullable
               as int?,
-      imageUrl: null == imageUrl
+      imageUrl: freezed == imageUrl
           ? _value.imageUrl
           : imageUrl // ignore: cast_nullable_to_non_nullable
-              as String,
+              as dynamic,
       description: null == description
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
@@ -125,27 +121,24 @@ class __$$ImageModelImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+@JsonSerializable(createFactory: false)
 class _$ImageModelImpl implements _ImageModel {
   const _$ImageModelImpl(
-      {this.index, this.imageUrl = "", this.description = ""});
-
-  factory _$ImageModelImpl.fromJson(Map<String, dynamic> json) =>
-      _$$ImageModelImplFromJson(json);
+      {this.imageId, this.imageUrl = "", this.description = ""});
 
   @override
-  final int? index;
+  final int? imageId;
 // 해당 image의 인덱스
   @override
   @JsonKey()
-  final String imageUrl;
+  final dynamic imageUrl;
   @override
   @JsonKey()
   final String description;
 
   @override
   String toString() {
-    return 'ImageModel(index: $index, imageUrl: $imageUrl, description: $description)';
+    return 'ImageModel(imageId: $imageId, imageUrl: $imageUrl, description: $description)';
   }
 
   @override
@@ -153,16 +146,16 @@ class _$ImageModelImpl implements _ImageModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ImageModelImpl &&
-            (identical(other.index, index) || other.index == index) &&
-            (identical(other.imageUrl, imageUrl) ||
-                other.imageUrl == imageUrl) &&
+            (identical(other.imageId, imageId) || other.imageId == imageId) &&
+            const DeepCollectionEquality().equals(other.imageUrl, imageUrl) &&
             (identical(other.description, description) ||
                 other.description == description));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, index, imageUrl, description);
+  int get hashCode => Object.hash(runtimeType, imageId,
+      const DeepCollectionEquality().hash(imageUrl), description);
 
   /// Create a copy of ImageModel
   /// with the given fields replaced by the non-null parameter values.
@@ -182,17 +175,14 @@ class _$ImageModelImpl implements _ImageModel {
 
 abstract class _ImageModel implements ImageModel {
   const factory _ImageModel(
-      {final int? index,
-      final String imageUrl,
+      {final int? imageId,
+      final dynamic imageUrl,
       final String description}) = _$ImageModelImpl;
 
-  factory _ImageModel.fromJson(Map<String, dynamic> json) =
-      _$ImageModelImpl.fromJson;
-
   @override
-  int? get index; // 해당 image의 인덱스
+  int? get imageId; // 해당 image의 인덱스
   @override
-  String get imageUrl;
+  dynamic get imageUrl;
   @override
   String get description;
 

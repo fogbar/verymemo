@@ -8,7 +8,7 @@ final currentPageProvider = StateProvider.autoDispose
 
 class ImageDetailView extends ConsumerWidget {
   final String imageUrl;
-  final List<String> imageUrls;
+  final List<dynamic> imageUrls;
   final int currentIndex;
   final VoidCallback onClose;
   final bool isLocalFile;

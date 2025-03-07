@@ -11,7 +11,8 @@ enum AuthProvider {
   unknown,
 }
 
-@freezed
+@Freezed(fromJson: false)
+@JsonSerializable()
 sealed class UserModel with _$UserModel {
   const factory UserModel({
     required String id,
@@ -24,6 +25,9 @@ sealed class UserModel with _$UserModel {
   }) = _UserModel;
 
   factory UserModel.fromJson(MAP json) => _$UserModelFromJson(json);
+
+  @override
+  MAP toJson() => _$UserModelToJson(this);
 
   factory UserModel.empty() {
     AuthProvider provider = AuthProvider.unknown;

@@ -34,96 +34,110 @@ class _HomeScaffoldState extends ConsumerState<HomeScaffold> {
       isDismissible: true,
       enableDrag: true,
       barrierColor: Colors.transparent,
-      builder: (context) => const WritingView(),
+      builder: (context) => const MemoWritingView(),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    DateTime? _lastPressedTime;
     final isWritingVisible = ref.watch(writingStateProvider);
 
-    return Stack(
-      children: [
-        Scaffold(
-          body: SafeArea(
-            child: CustomScrollView(
-              slivers: [
-                SliverToBoxAdapter(
-                  child: VariableHeader(
-                    type: widget.navigationShell.currentIndex == 0
-                        ? HeaderType.date
-                        : HeaderType.logo,
-                    onSort: () => debugPrint("정렬 클릭"),
-                    onSearch: () => context.go(AppRoute.search),
-                    onMore: () => context.go(AppRoute.settings),
-                    onBack: () => debugPrint("뒤로 가기 클릭"),
-                  ),
-                ),
-                if (widget.navigationShell.currentIndex == 0) ...[
-                  SliverPersistentHeader(
-                    pinned: true,
-                    delegate: _TabMenuDelegate(
-                      onTabChanged: (index) {
-                        setState(() {
-                          _currentTabIndex = index;
-                          log("---> _currentTabIndex: $_currentTabIndex");
-                          log("---> _selectedIntex: $_selectedIndex");
-                        });
-                      },
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (canPop) async {
+        final now = DateTime.now();
+        // 🔄 2초 이내에 두 번 눌렀을 때 종료
+        if (_lastPressedTime == null ||
+            now.difference(_lastPressedTime!) > const Duration(seconds: 2)) {
+          _lastPressedTime = now;
+          context.showToast(message: "한 번 더 누르면 종료합니다.");
+          return; // 🔄 첫 번째 누름: 종료 안 함
+        }
+        // Navigator.of(context).pop(true); // 🔄 2초 이내에 두 번 누름: 종료
+        context.pop();
+      },
+      child: Stack(
+        children: [
+          Scaffold(
+            body: SafeArea(
+              child: CustomScrollView(
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: VariableHeader(
+                      type: widget.navigationShell.currentIndex == 0
+                          ? HeaderType.date
+                          : HeaderType.logo,
+                      onSort: () => debugPrint("정렬 클릭"),
+                      onSearch: () => context.go(AppRoute.search),
+                      onMore: () => context.go(AppRoute.settings),
+                      onBack: () => debugPrint("뒤로 가기 클릭"),
                     ),
                   ),
-                ],
-                const SliverToBoxAdapter(child: Divider(height: 1)),
-                SliverFillRemaining(
-                  child: switch (_currentTabIndex) {
-                    0 => widget.navigationShell,
-                    1 => widget.navigationShell,
-                    2 => GalleryView(
-                        onImageTap: (String imageUrl) {
-                          debugPrint('Image tapped: $imageUrl');
+                  if (widget.navigationShell.currentIndex == 0) ...[
+                    SliverPersistentHeader(
+                      pinned: true,
+                      delegate: _TabMenuDelegate(
+                        onTabChanged: (index) {
+                          setState(() {
+                            _currentTabIndex = index;
+                          });
                         },
                       ),
-                    3 => const LinkList(),
-                    _ => widget.navigationShell,
-                  },
-                ),
-              ],
+                    ),
+                  ],
+                  const SliverToBoxAdapter(child: Divider(height: 1)),
+                  SliverFillRemaining(
+                    child: switch (_currentTabIndex) {
+                      0 => widget.navigationShell,
+                      1 => widget.navigationShell,
+                      2 => GalleryView(
+                          onImageTap: (String imageUrl) {
+                            debugPrint('Image tapped: $imageUrl');
+                          },
+                        ),
+                      3 => const LinkList(),
+                      _ => widget.navigationShell,
+                    },
+                  ),
+                ],
+              ),
+            ),
+            bottomNavigationBar: SafeArea(
+              top: false,
+              child: VariableNavigationBar(
+                type: _currentNavBar,
+                selectedIndex: widget.navigationShell.currentIndex,
+                onItemSelected: (index) {
+                  setState(() {
+                    _selectedIndex = index;
+                    _goBranch(_selectedIndex);
+                  });
+                },
+                onFloatingButtonTap: () {
+                  ref.read(writingStateProvider.notifier).toggle();
+                },
+              ),
             ),
           ),
-          bottomNavigationBar: SafeArea(
-            top: false,
-            child: VariableNavigationBar(
-              type: _currentNavBar,
-              selectedIndex: widget.navigationShell.currentIndex,
-              onItemSelected: (index) {
-                setState(() {
-                  _selectedIndex = index;
-                  _goBranch(_selectedIndex);
-                });
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 800),
+            curve: Curves.easeOutExpo,
+            left: 0,
+            right: 0,
+            bottom: isWritingVisible ? 0 : -MediaQuery.of(context).size.height,
+            child: GestureDetector(
+              onVerticalDragEnd: (details) {
+                if (details.primaryVelocity! > 100) {
+                  ref.read(writingStateProvider.notifier).toggle();
+                }
               },
-              onFloatingButtonTap: () {
-                ref.read(writingStateProvider.notifier).toggle();
-              },
+              behavior: HitTestBehavior.translucent,
+              child: const MemoWritingView(),
             ),
           ),
-        ),
-        AnimatedPositioned(
-          duration: const Duration(milliseconds: 800),
-          curve: Curves.easeOutExpo,
-          left: 0,
-          right: 0,
-          bottom: isWritingVisible ? 0 : -MediaQuery.of(context).size.height,
-          child: GestureDetector(
-            onVerticalDragEnd: (details) {
-              if (details.primaryVelocity! > 100) {
-                ref.read(writingStateProvider.notifier).toggle();
-              }
-            },
-            behavior: HitTestBehavior.translucent,
-            child: const WritingView(),
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

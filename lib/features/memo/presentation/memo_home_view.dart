@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:verymemo/common/ui/components/list/memo_list/memo_list.dart';
-import 'package:verymemo/features/memo/presentation/memo_home_viewmodel.dart';
+import 'package:verymemo/features/memo/presentation/providers/memo_provider.dart';
 import 'package:verymemo/features/memo/presentation/providers/writing_provider.dart';
 import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 
@@ -10,7 +10,7 @@ class MemoHomeView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final viewModel = ref.watch(memoListProvider);
+    final state = ref.watch(memoProvider.notifier);
     final isWritingVisible = ref.watch(writingStateProvider);
 
     return CustomRefreshIndicator(
@@ -45,7 +45,7 @@ class MemoHomeView extends ConsumerWidget {
           bottom:
               isWritingVisible ? MediaQuery.of(context).size.height * 0.38 : 0,
         ),
-        child: MemoList(viewModel: viewModel),
+        child: MemoList(),
       ),
     );
   }

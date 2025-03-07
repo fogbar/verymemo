@@ -125,7 +125,7 @@ class PermissionView extends ConsumerWidget {
                 ? () {
                     ('시작하기 버튼 클릭됨 (isAgreed: ${state.allAgree})');
                     // viewModel.onStartButtonPressed();
-                    notifier.requestAllPermissions();
+                    // notifier.requestAllPermissions();
                   }
                 : null,
             size: BoxSize.large,

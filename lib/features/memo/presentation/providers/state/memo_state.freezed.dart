@@ -20,33 +20,24 @@ mixin _$MemoState {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(List<Map<String, dynamic>> memos) loaded,
+    required TResult Function(List<MemoModel> memos) successed,
     required TResult Function(String message) error,
-    required TResult Function() added,
-    required TResult Function() updated,
-    required TResult Function() deleted,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(List<Map<String, dynamic>> memos)? loaded,
+    TResult? Function(List<MemoModel> memos)? successed,
     TResult? Function(String message)? error,
-    TResult? Function()? added,
-    TResult? Function()? updated,
-    TResult? Function()? deleted,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(List<Map<String, dynamic>> memos)? loaded,
+    TResult Function(List<MemoModel> memos)? successed,
     TResult Function(String message)? error,
-    TResult Function()? added,
-    TResult Function()? updated,
-    TResult Function()? deleted,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -54,33 +45,24 @@ mixin _$MemoState {
   TResult map<TResult extends Object?>({
     required TResult Function(MemoInitial value) initial,
     required TResult Function(MemoLoading value) loading,
-    required TResult Function(MemoLoaded value) loaded,
+    required TResult Function(MemoLoaded value) successed,
     required TResult Function(MemoError value) error,
-    required TResult Function(MemoAdded value) added,
-    required TResult Function(MemoUpdated value) updated,
-    required TResult Function(MemoDeleted value) deleted,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(MemoInitial value)? initial,
     TResult? Function(MemoLoading value)? loading,
-    TResult? Function(MemoLoaded value)? loaded,
+    TResult? Function(MemoLoaded value)? successed,
     TResult? Function(MemoError value)? error,
-    TResult? Function(MemoAdded value)? added,
-    TResult? Function(MemoUpdated value)? updated,
-    TResult? Function(MemoDeleted value)? deleted,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(MemoInitial value)? initial,
     TResult Function(MemoLoading value)? loading,
-    TResult Function(MemoLoaded value)? loaded,
+    TResult Function(MemoLoaded value)? successed,
     TResult Function(MemoError value)? error,
-    TResult Function(MemoAdded value)? added,
-    TResult Function(MemoUpdated value)? updated,
-    TResult Function(MemoDeleted value)? deleted,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -149,11 +131,8 @@ class _$MemoInitialImpl implements MemoInitial {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(List<Map<String, dynamic>> memos) loaded,
+    required TResult Function(List<MemoModel> memos) successed,
     required TResult Function(String message) error,
-    required TResult Function() added,
-    required TResult Function() updated,
-    required TResult Function() deleted,
   }) {
     return initial();
   }
@@ -163,11 +142,8 @@ class _$MemoInitialImpl implements MemoInitial {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(List<Map<String, dynamic>> memos)? loaded,
+    TResult? Function(List<MemoModel> memos)? successed,
     TResult? Function(String message)? error,
-    TResult? Function()? added,
-    TResult? Function()? updated,
-    TResult? Function()? deleted,
   }) {
     return initial?.call();
   }
@@ -177,11 +153,8 @@ class _$MemoInitialImpl implements MemoInitial {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(List<Map<String, dynamic>> memos)? loaded,
+    TResult Function(List<MemoModel> memos)? successed,
     TResult Function(String message)? error,
-    TResult Function()? added,
-    TResult Function()? updated,
-    TResult Function()? deleted,
     required TResult orElse(),
   }) {
     if (initial != null) {
@@ -195,11 +168,8 @@ class _$MemoInitialImpl implements MemoInitial {
   TResult map<TResult extends Object?>({
     required TResult Function(MemoInitial value) initial,
     required TResult Function(MemoLoading value) loading,
-    required TResult Function(MemoLoaded value) loaded,
+    required TResult Function(MemoLoaded value) successed,
     required TResult Function(MemoError value) error,
-    required TResult Function(MemoAdded value) added,
-    required TResult Function(MemoUpdated value) updated,
-    required TResult Function(MemoDeleted value) deleted,
   }) {
     return initial(this);
   }
@@ -209,11 +179,8 @@ class _$MemoInitialImpl implements MemoInitial {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(MemoInitial value)? initial,
     TResult? Function(MemoLoading value)? loading,
-    TResult? Function(MemoLoaded value)? loaded,
+    TResult? Function(MemoLoaded value)? successed,
     TResult? Function(MemoError value)? error,
-    TResult? Function(MemoAdded value)? added,
-    TResult? Function(MemoUpdated value)? updated,
-    TResult? Function(MemoDeleted value)? deleted,
   }) {
     return initial?.call(this);
   }
@@ -223,11 +190,8 @@ class _$MemoInitialImpl implements MemoInitial {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(MemoInitial value)? initial,
     TResult Function(MemoLoading value)? loading,
-    TResult Function(MemoLoaded value)? loaded,
+    TResult Function(MemoLoaded value)? successed,
     TResult Function(MemoError value)? error,
-    TResult Function(MemoAdded value)? added,
-    TResult Function(MemoUpdated value)? updated,
-    TResult Function(MemoDeleted value)? deleted,
     required TResult orElse(),
   }) {
     if (initial != null) {
@@ -284,11 +248,8 @@ class _$MemoLoadingImpl implements MemoLoading {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(List<Map<String, dynamic>> memos) loaded,
+    required TResult Function(List<MemoModel> memos) successed,
     required TResult Function(String message) error,
-    required TResult Function() added,
-    required TResult Function() updated,
-    required TResult Function() deleted,
   }) {
     return loading();
   }
@@ -298,11 +259,8 @@ class _$MemoLoadingImpl implements MemoLoading {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(List<Map<String, dynamic>> memos)? loaded,
+    TResult? Function(List<MemoModel> memos)? successed,
     TResult? Function(String message)? error,
-    TResult? Function()? added,
-    TResult? Function()? updated,
-    TResult? Function()? deleted,
   }) {
     return loading?.call();
   }
@@ -312,11 +270,8 @@ class _$MemoLoadingImpl implements MemoLoading {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(List<Map<String, dynamic>> memos)? loaded,
+    TResult Function(List<MemoModel> memos)? successed,
     TResult Function(String message)? error,
-    TResult Function()? added,
-    TResult Function()? updated,
-    TResult Function()? deleted,
     required TResult orElse(),
   }) {
     if (loading != null) {
@@ -330,11 +285,8 @@ class _$MemoLoadingImpl implements MemoLoading {
   TResult map<TResult extends Object?>({
     required TResult Function(MemoInitial value) initial,
     required TResult Function(MemoLoading value) loading,
-    required TResult Function(MemoLoaded value) loaded,
+    required TResult Function(MemoLoaded value) successed,
     required TResult Function(MemoError value) error,
-    required TResult Function(MemoAdded value) added,
-    required TResult Function(MemoUpdated value) updated,
-    required TResult Function(MemoDeleted value) deleted,
   }) {
     return loading(this);
   }
@@ -344,11 +296,8 @@ class _$MemoLoadingImpl implements MemoLoading {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(MemoInitial value)? initial,
     TResult? Function(MemoLoading value)? loading,
-    TResult? Function(MemoLoaded value)? loaded,
+    TResult? Function(MemoLoaded value)? successed,
     TResult? Function(MemoError value)? error,
-    TResult? Function(MemoAdded value)? added,
-    TResult? Function(MemoUpdated value)? updated,
-    TResult? Function(MemoDeleted value)? deleted,
   }) {
     return loading?.call(this);
   }
@@ -358,11 +307,8 @@ class _$MemoLoadingImpl implements MemoLoading {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(MemoInitial value)? initial,
     TResult Function(MemoLoading value)? loading,
-    TResult Function(MemoLoaded value)? loaded,
+    TResult Function(MemoLoaded value)? successed,
     TResult Function(MemoError value)? error,
-    TResult Function(MemoAdded value)? added,
-    TResult Function(MemoUpdated value)? updated,
-    TResult Function(MemoDeleted value)? deleted,
     required TResult orElse(),
   }) {
     if (loading != null) {
@@ -382,7 +328,7 @@ abstract class _$$MemoLoadedImplCopyWith<$Res> {
           _$MemoLoadedImpl value, $Res Function(_$MemoLoadedImpl) then) =
       __$$MemoLoadedImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({List<Map<String, dynamic>> memos});
+  $Res call({List<MemoModel> memos});
 }
 
 /// @nodoc
@@ -404,7 +350,7 @@ class __$$MemoLoadedImplCopyWithImpl<$Res>
       null == memos
           ? _value._memos
           : memos // ignore: cast_nullable_to_non_nullable
-              as List<Map<String, dynamic>>,
+              as List<MemoModel>,
     ));
   }
 }
@@ -412,12 +358,11 @@ class __$$MemoLoadedImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$MemoLoadedImpl implements MemoLoaded {
-  const _$MemoLoadedImpl(final List<Map<String, dynamic>> memos)
-      : _memos = memos;
+  const _$MemoLoadedImpl(final List<MemoModel> memos) : _memos = memos;
 
-  final List<Map<String, dynamic>> _memos;
+  final List<MemoModel> _memos;
   @override
-  List<Map<String, dynamic>> get memos {
+  List<MemoModel> get memos {
     if (_memos is EqualUnmodifiableListView) return _memos;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_memos);
@@ -425,7 +370,7 @@ class _$MemoLoadedImpl implements MemoLoaded {
 
   @override
   String toString() {
-    return 'MemoState.loaded(memos: $memos)';
+    return 'MemoState.successed(memos: $memos)';
   }
 
   @override
@@ -453,13 +398,10 @@ class _$MemoLoadedImpl implements MemoLoaded {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(List<Map<String, dynamic>> memos) loaded,
+    required TResult Function(List<MemoModel> memos) successed,
     required TResult Function(String message) error,
-    required TResult Function() added,
-    required TResult Function() updated,
-    required TResult Function() deleted,
   }) {
-    return loaded(memos);
+    return successed(memos);
   }
 
   @override
@@ -467,13 +409,10 @@ class _$MemoLoadedImpl implements MemoLoaded {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(List<Map<String, dynamic>> memos)? loaded,
+    TResult? Function(List<MemoModel> memos)? successed,
     TResult? Function(String message)? error,
-    TResult? Function()? added,
-    TResult? Function()? updated,
-    TResult? Function()? deleted,
   }) {
-    return loaded?.call(memos);
+    return successed?.call(memos);
   }
 
   @override
@@ -481,15 +420,12 @@ class _$MemoLoadedImpl implements MemoLoaded {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(List<Map<String, dynamic>> memos)? loaded,
+    TResult Function(List<MemoModel> memos)? successed,
     TResult Function(String message)? error,
-    TResult Function()? added,
-    TResult Function()? updated,
-    TResult Function()? deleted,
     required TResult orElse(),
   }) {
-    if (loaded != null) {
-      return loaded(memos);
+    if (successed != null) {
+      return successed(memos);
     }
     return orElse();
   }
@@ -499,13 +435,10 @@ class _$MemoLoadedImpl implements MemoLoaded {
   TResult map<TResult extends Object?>({
     required TResult Function(MemoInitial value) initial,
     required TResult Function(MemoLoading value) loading,
-    required TResult Function(MemoLoaded value) loaded,
+    required TResult Function(MemoLoaded value) successed,
     required TResult Function(MemoError value) error,
-    required TResult Function(MemoAdded value) added,
-    required TResult Function(MemoUpdated value) updated,
-    required TResult Function(MemoDeleted value) deleted,
   }) {
-    return loaded(this);
+    return successed(this);
   }
 
   @override
@@ -513,13 +446,10 @@ class _$MemoLoadedImpl implements MemoLoaded {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(MemoInitial value)? initial,
     TResult? Function(MemoLoading value)? loading,
-    TResult? Function(MemoLoaded value)? loaded,
+    TResult? Function(MemoLoaded value)? successed,
     TResult? Function(MemoError value)? error,
-    TResult? Function(MemoAdded value)? added,
-    TResult? Function(MemoUpdated value)? updated,
-    TResult? Function(MemoDeleted value)? deleted,
   }) {
-    return loaded?.call(this);
+    return successed?.call(this);
   }
 
   @override
@@ -527,25 +457,21 @@ class _$MemoLoadedImpl implements MemoLoaded {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(MemoInitial value)? initial,
     TResult Function(MemoLoading value)? loading,
-    TResult Function(MemoLoaded value)? loaded,
+    TResult Function(MemoLoaded value)? successed,
     TResult Function(MemoError value)? error,
-    TResult Function(MemoAdded value)? added,
-    TResult Function(MemoUpdated value)? updated,
-    TResult Function(MemoDeleted value)? deleted,
     required TResult orElse(),
   }) {
-    if (loaded != null) {
-      return loaded(this);
+    if (successed != null) {
+      return successed(this);
     }
     return orElse();
   }
 }
 
 abstract class MemoLoaded implements MemoState {
-  const factory MemoLoaded(final List<Map<String, dynamic>> memos) =
-      _$MemoLoadedImpl;
+  const factory MemoLoaded(final List<MemoModel> memos) = _$MemoLoadedImpl;
 
-  List<Map<String, dynamic>> get memos;
+  List<MemoModel> get memos;
 
   /// Create a copy of MemoState
   /// with the given fields replaced by the non-null parameter values.
@@ -624,11 +550,8 @@ class _$MemoErrorImpl implements MemoError {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(List<Map<String, dynamic>> memos) loaded,
+    required TResult Function(List<MemoModel> memos) successed,
     required TResult Function(String message) error,
-    required TResult Function() added,
-    required TResult Function() updated,
-    required TResult Function() deleted,
   }) {
     return error(message);
   }
@@ -638,11 +561,8 @@ class _$MemoErrorImpl implements MemoError {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(List<Map<String, dynamic>> memos)? loaded,
+    TResult? Function(List<MemoModel> memos)? successed,
     TResult? Function(String message)? error,
-    TResult? Function()? added,
-    TResult? Function()? updated,
-    TResult? Function()? deleted,
   }) {
     return error?.call(message);
   }
@@ -652,11 +572,8 @@ class _$MemoErrorImpl implements MemoError {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(List<Map<String, dynamic>> memos)? loaded,
+    TResult Function(List<MemoModel> memos)? successed,
     TResult Function(String message)? error,
-    TResult Function()? added,
-    TResult Function()? updated,
-    TResult Function()? deleted,
     required TResult orElse(),
   }) {
     if (error != null) {
@@ -670,11 +587,8 @@ class _$MemoErrorImpl implements MemoError {
   TResult map<TResult extends Object?>({
     required TResult Function(MemoInitial value) initial,
     required TResult Function(MemoLoading value) loading,
-    required TResult Function(MemoLoaded value) loaded,
+    required TResult Function(MemoLoaded value) successed,
     required TResult Function(MemoError value) error,
-    required TResult Function(MemoAdded value) added,
-    required TResult Function(MemoUpdated value) updated,
-    required TResult Function(MemoDeleted value) deleted,
   }) {
     return error(this);
   }
@@ -684,11 +598,8 @@ class _$MemoErrorImpl implements MemoError {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(MemoInitial value)? initial,
     TResult? Function(MemoLoading value)? loading,
-    TResult? Function(MemoLoaded value)? loaded,
+    TResult? Function(MemoLoaded value)? successed,
     TResult? Function(MemoError value)? error,
-    TResult? Function(MemoAdded value)? added,
-    TResult? Function(MemoUpdated value)? updated,
-    TResult? Function(MemoDeleted value)? deleted,
   }) {
     return error?.call(this);
   }
@@ -698,11 +609,8 @@ class _$MemoErrorImpl implements MemoError {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(MemoInitial value)? initial,
     TResult Function(MemoLoading value)? loading,
-    TResult Function(MemoLoaded value)? loaded,
+    TResult Function(MemoLoaded value)? successed,
     TResult Function(MemoError value)? error,
-    TResult Function(MemoAdded value)? added,
-    TResult Function(MemoUpdated value)? updated,
-    TResult Function(MemoDeleted value)? deleted,
     required TResult orElse(),
   }) {
     if (error != null) {
@@ -722,409 +630,4 @@ abstract class MemoError implements MemoState {
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$MemoErrorImplCopyWith<_$MemoErrorImpl> get copyWith =>
       throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$MemoAddedImplCopyWith<$Res> {
-  factory _$$MemoAddedImplCopyWith(
-          _$MemoAddedImpl value, $Res Function(_$MemoAddedImpl) then) =
-      __$$MemoAddedImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$MemoAddedImplCopyWithImpl<$Res>
-    extends _$MemoStateCopyWithImpl<$Res, _$MemoAddedImpl>
-    implements _$$MemoAddedImplCopyWith<$Res> {
-  __$$MemoAddedImplCopyWithImpl(
-      _$MemoAddedImpl _value, $Res Function(_$MemoAddedImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of MemoState
-  /// with the given fields replaced by the non-null parameter values.
-}
-
-/// @nodoc
-
-class _$MemoAddedImpl implements MemoAdded {
-  const _$MemoAddedImpl();
-
-  @override
-  String toString() {
-    return 'MemoState.added()';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$MemoAddedImpl);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function() loading,
-    required TResult Function(List<Map<String, dynamic>> memos) loaded,
-    required TResult Function(String message) error,
-    required TResult Function() added,
-    required TResult Function() updated,
-    required TResult Function() deleted,
-  }) {
-    return added();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function()? loading,
-    TResult? Function(List<Map<String, dynamic>> memos)? loaded,
-    TResult? Function(String message)? error,
-    TResult? Function()? added,
-    TResult? Function()? updated,
-    TResult? Function()? deleted,
-  }) {
-    return added?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function()? loading,
-    TResult Function(List<Map<String, dynamic>> memos)? loaded,
-    TResult Function(String message)? error,
-    TResult Function()? added,
-    TResult Function()? updated,
-    TResult Function()? deleted,
-    required TResult orElse(),
-  }) {
-    if (added != null) {
-      return added();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(MemoInitial value) initial,
-    required TResult Function(MemoLoading value) loading,
-    required TResult Function(MemoLoaded value) loaded,
-    required TResult Function(MemoError value) error,
-    required TResult Function(MemoAdded value) added,
-    required TResult Function(MemoUpdated value) updated,
-    required TResult Function(MemoDeleted value) deleted,
-  }) {
-    return added(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(MemoInitial value)? initial,
-    TResult? Function(MemoLoading value)? loading,
-    TResult? Function(MemoLoaded value)? loaded,
-    TResult? Function(MemoError value)? error,
-    TResult? Function(MemoAdded value)? added,
-    TResult? Function(MemoUpdated value)? updated,
-    TResult? Function(MemoDeleted value)? deleted,
-  }) {
-    return added?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(MemoInitial value)? initial,
-    TResult Function(MemoLoading value)? loading,
-    TResult Function(MemoLoaded value)? loaded,
-    TResult Function(MemoError value)? error,
-    TResult Function(MemoAdded value)? added,
-    TResult Function(MemoUpdated value)? updated,
-    TResult Function(MemoDeleted value)? deleted,
-    required TResult orElse(),
-  }) {
-    if (added != null) {
-      return added(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class MemoAdded implements MemoState {
-  const factory MemoAdded() = _$MemoAddedImpl;
-}
-
-/// @nodoc
-abstract class _$$MemoUpdatedImplCopyWith<$Res> {
-  factory _$$MemoUpdatedImplCopyWith(
-          _$MemoUpdatedImpl value, $Res Function(_$MemoUpdatedImpl) then) =
-      __$$MemoUpdatedImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$MemoUpdatedImplCopyWithImpl<$Res>
-    extends _$MemoStateCopyWithImpl<$Res, _$MemoUpdatedImpl>
-    implements _$$MemoUpdatedImplCopyWith<$Res> {
-  __$$MemoUpdatedImplCopyWithImpl(
-      _$MemoUpdatedImpl _value, $Res Function(_$MemoUpdatedImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of MemoState
-  /// with the given fields replaced by the non-null parameter values.
-}
-
-/// @nodoc
-
-class _$MemoUpdatedImpl implements MemoUpdated {
-  const _$MemoUpdatedImpl();
-
-  @override
-  String toString() {
-    return 'MemoState.updated()';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$MemoUpdatedImpl);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function() loading,
-    required TResult Function(List<Map<String, dynamic>> memos) loaded,
-    required TResult Function(String message) error,
-    required TResult Function() added,
-    required TResult Function() updated,
-    required TResult Function() deleted,
-  }) {
-    return updated();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function()? loading,
-    TResult? Function(List<Map<String, dynamic>> memos)? loaded,
-    TResult? Function(String message)? error,
-    TResult? Function()? added,
-    TResult? Function()? updated,
-    TResult? Function()? deleted,
-  }) {
-    return updated?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function()? loading,
-    TResult Function(List<Map<String, dynamic>> memos)? loaded,
-    TResult Function(String message)? error,
-    TResult Function()? added,
-    TResult Function()? updated,
-    TResult Function()? deleted,
-    required TResult orElse(),
-  }) {
-    if (updated != null) {
-      return updated();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(MemoInitial value) initial,
-    required TResult Function(MemoLoading value) loading,
-    required TResult Function(MemoLoaded value) loaded,
-    required TResult Function(MemoError value) error,
-    required TResult Function(MemoAdded value) added,
-    required TResult Function(MemoUpdated value) updated,
-    required TResult Function(MemoDeleted value) deleted,
-  }) {
-    return updated(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(MemoInitial value)? initial,
-    TResult? Function(MemoLoading value)? loading,
-    TResult? Function(MemoLoaded value)? loaded,
-    TResult? Function(MemoError value)? error,
-    TResult? Function(MemoAdded value)? added,
-    TResult? Function(MemoUpdated value)? updated,
-    TResult? Function(MemoDeleted value)? deleted,
-  }) {
-    return updated?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(MemoInitial value)? initial,
-    TResult Function(MemoLoading value)? loading,
-    TResult Function(MemoLoaded value)? loaded,
-    TResult Function(MemoError value)? error,
-    TResult Function(MemoAdded value)? added,
-    TResult Function(MemoUpdated value)? updated,
-    TResult Function(MemoDeleted value)? deleted,
-    required TResult orElse(),
-  }) {
-    if (updated != null) {
-      return updated(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class MemoUpdated implements MemoState {
-  const factory MemoUpdated() = _$MemoUpdatedImpl;
-}
-
-/// @nodoc
-abstract class _$$MemoDeletedImplCopyWith<$Res> {
-  factory _$$MemoDeletedImplCopyWith(
-          _$MemoDeletedImpl value, $Res Function(_$MemoDeletedImpl) then) =
-      __$$MemoDeletedImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$MemoDeletedImplCopyWithImpl<$Res>
-    extends _$MemoStateCopyWithImpl<$Res, _$MemoDeletedImpl>
-    implements _$$MemoDeletedImplCopyWith<$Res> {
-  __$$MemoDeletedImplCopyWithImpl(
-      _$MemoDeletedImpl _value, $Res Function(_$MemoDeletedImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of MemoState
-  /// with the given fields replaced by the non-null parameter values.
-}
-
-/// @nodoc
-
-class _$MemoDeletedImpl implements MemoDeleted {
-  const _$MemoDeletedImpl();
-
-  @override
-  String toString() {
-    return 'MemoState.deleted()';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$MemoDeletedImpl);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function() loading,
-    required TResult Function(List<Map<String, dynamic>> memos) loaded,
-    required TResult Function(String message) error,
-    required TResult Function() added,
-    required TResult Function() updated,
-    required TResult Function() deleted,
-  }) {
-    return deleted();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function()? loading,
-    TResult? Function(List<Map<String, dynamic>> memos)? loaded,
-    TResult? Function(String message)? error,
-    TResult? Function()? added,
-    TResult? Function()? updated,
-    TResult? Function()? deleted,
-  }) {
-    return deleted?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function()? loading,
-    TResult Function(List<Map<String, dynamic>> memos)? loaded,
-    TResult Function(String message)? error,
-    TResult Function()? added,
-    TResult Function()? updated,
-    TResult Function()? deleted,
-    required TResult orElse(),
-  }) {
-    if (deleted != null) {
-      return deleted();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(MemoInitial value) initial,
-    required TResult Function(MemoLoading value) loading,
-    required TResult Function(MemoLoaded value) loaded,
-    required TResult Function(MemoError value) error,
-    required TResult Function(MemoAdded value) added,
-    required TResult Function(MemoUpdated value) updated,
-    required TResult Function(MemoDeleted value) deleted,
-  }) {
-    return deleted(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(MemoInitial value)? initial,
-    TResult? Function(MemoLoading value)? loading,
-    TResult? Function(MemoLoaded value)? loaded,
-    TResult? Function(MemoError value)? error,
-    TResult? Function(MemoAdded value)? added,
-    TResult? Function(MemoUpdated value)? updated,
-    TResult? Function(MemoDeleted value)? deleted,
-  }) {
-    return deleted?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(MemoInitial value)? initial,
-    TResult Function(MemoLoading value)? loading,
-    TResult Function(MemoLoaded value)? loaded,
-    TResult Function(MemoError value)? error,
-    TResult Function(MemoAdded value)? added,
-    TResult Function(MemoUpdated value)? updated,
-    TResult Function(MemoDeleted value)? deleted,
-    required TResult orElse(),
-  }) {
-    if (deleted != null) {
-      return deleted(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class MemoDeleted implements MemoState {
-  const factory MemoDeleted() = _$MemoDeletedImpl;
 }
