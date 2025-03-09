@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:verymemo/features/memo/domain/models/memo_list_model.dart';
+import 'package:verymemo/features/memo/domain/models/model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:verymemo/common/ui/components/modal/modal_select.dart';
@@ -9,15 +9,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class MemoListViewModel extends ChangeNotifier {
 // 데이터와 로직 관리
 
-  List<MemoListModel> memoList = [
-    MemoListModel(
+  List<MemoModel> memoList = [
+    MemoModel(
       userName: '하누리',
-      description: '우리집 귀요미',
-      memoContent:
+      content:
           'StatefulWidget으로 변경하여 접기/펼치기 상태를 관리합니다.StatefulWidget으로 변경하여 접기/펼치기 상태를 관리합니다.StatefulWidget으로 변경하여 접기/펼치기 상태를 관리합니다.StatefulWidget으로 변경하여 접기/펼치기 상태를 관리합니다. StatefulWidget으로 변경하여 접기/펼치기 상태를 관리합니다.',
       links: [
-        LinkData(
-          url: 'https://flutter.dev',
+        LinkModel(
+          linkUrl: 'https://flutter.dev',
           thumbnail:
               'https://blog.kakaocdn.net/dn/cGbz7k/btsD1mY2YBd/LkWiVVFa4fwyHiCkSW0Ru0/img.png',
           metaTitle:
@@ -25,20 +24,27 @@ class MemoListViewModel extends ChangeNotifier {
           metaDescription: '서브스크린션 영역입니다',
         ),
       ],
-      date: DateTime.now().subtract(const Duration(days: 1)),
-      imageUrls: [
-        'https://blog.kakaocdn.net/dn/cGbz7k/btsD1mY2YBd/LkWiVVFa4fwyHiCkSW0Ru0/img.png',
-        'https://blog.kakaocdn.net/dn/cGbz7k/btsD1mY2YBd/LkWiVVFa4fwyHiCkSW0Ru0/img.png',
+      createdAt: DateTime.now().subtract(const Duration(days: 1)),
+      images: [
+        ImageModel(
+          imageId: 0,
+          imageUrl:
+              'https://blog.kakaocdn.net/dn/cGbz7k/btsD1mY2YBd/LkWiVVFa4fwyHiCkSW0Ru0/img.png',
+        ),
+        ImageModel(
+          imageId: 1,
+          imageUrl:
+              'https://blog.kakaocdn.net/dn/cGbz7k/btsD1mY2YBd/LkWiVVFa4fwyHiCkSW0Ru0/img.png',
+        ),
       ],
       isLocalMemo: true,
     ),
-    MemoListModel(
+    MemoModel(
       userName: '장보기 메모',
-      description: null,
-      memoContent: '사과, 바나나, 우유, 계란, 치즈',
+      content: '사과, 바나나, 우유, 계란, 치즈',
       links: [
-        LinkData(
-          url: 'https://pub.dev',
+        LinkModel(
+          linkUrl: 'https://pub.dev',
           thumbnail:
               'https://blog.kakaocdn.net/dn/cGbz7k/btsD1mY2YBd/LkWiVVFa4fwyHiCkSW0Ru0/img.png',
           metaTitle: 'Pub.dev - Flutter packages',
@@ -46,36 +52,49 @@ class MemoListViewModel extends ChangeNotifier {
               'Pub is the package manager for the Dart programming language.',
         ),
       ],
-      date: DateTime.now().subtract(const Duration(days: 2)),
-      imageUrls: [],
+      createdAt: DateTime.now().subtract(const Duration(days: 2)),
+      images: [
+        ImageModel(
+          imageId: 2,
+          imageUrl:
+              'https://blog.kakaocdn.net/dn/cGbz7k/btsD1mY2YBd/LkWiVVFa4fwyHiCkSW0Ru0/img.png',
+        ),
+        ImageModel(
+          imageId: 3,
+          imageUrl:
+              'https://blog.kakaocdn.net/dn/cGbz7k/btsD1mY2YBd/LkWiVVFa4fwyHiCkSW0Ru0/img.png',
+        ),
+      ],
     ),
-    MemoListModel(
+    MemoModel(
       userName: '이미지 많아요',
-      description: '여기 영역 제한해야 돼요',
-      memoContent: null,
-      date: DateTime.now().subtract(const Duration(days: 2)),
-      imageUrls: [
-        'https://blog.kakaocdn.net/dn/cGbz7k/btsD1mY2YBd/LkWiVVFa4fwyHiCkSW0Ru0/img.png',
-        'https://blog.kakaocdn.net/dn/cGbz7k/btsD1mY2YBd/LkWiVVFa4fwyHiCkSW0Ru0/img.png',
-        'https://blog.kakaocdn.net/dn/cGbz7k/btsD1mY2YBd/LkWiVVFa4fwyHiCkSW0Ru0/img.png',
-        'https://blog.kakaocdn.net/dn/cGbz7k/btsD1mY2YBd/LkWiVVFa4fwyHiCkSW0Ru0/img.png',
-        'https://blog.kakaocdn.net/dn/cGbz7k/btsD1mY2YBd/LkWiVVFa4fwyHiCkSW0Ru0/img.png',
-        'https://blog.kakaocdn.net/dn/cGbz7k/btsD1mY2YBd/LkWiVVFa4fwyHiCkSW0Ru0/img.png',
-        'https://blog.kakaocdn.net/dn/cGbz7k/btsD1mY2YBd/LkWiVVFa4fwyHiCkSW0Ru0/img.png',
+      content: null,
+      createdAt: DateTime.now().subtract(const Duration(days: 2)),
+      images: [
+        ImageModel(
+          imageId: 4,
+          imageUrl:
+              'https://blog.kakaocdn.net/dn/cGbz7k/btsD1mY2YBd/LkWiVVFa4fwyHiCkSW0Ru0/img.png',
+        ),
+        ImageModel(
+          imageId: 5,
+          imageUrl:
+              'https://blog.kakaocdn.net/dn/cGbz7k/btsD1mY2YBd/LkWiVVFa4fwyHiCkSW0Ru0/img.png',
+        ),
       ],
     )
   ];
 
-  List<LinkData> extractLinks() {
+  List<LinkModel> extractLinks() {
     return memoList
         .where((memo) => memo.links != null && memo.links!.isNotEmpty)
         .expand((memo) => memo.links!) //메모안에 복수의 링크가 있으면 모두 새로운 리스트로
         .toList();
   }
 
-  List<MemoListModel> extractImages() {
+  List<MemoModel> extractImages() {
     return memoList
-        .where((memo) => memo.imageUrls != null && memo.imageUrls!.isNotEmpty)
+        .where((memo) => memo.images != null && memo.images!.isNotEmpty)
         .toList();
   }
 
@@ -99,7 +118,7 @@ class MemoListViewModel extends ChangeNotifier {
       index == 4 && getRemainingCount(imageUrls) > 0;
 
 //딥 클릭 모달
-  void handleMemoLongPress(BuildContext context, MemoListModel memo) {
+  void handleMemoLongPress(BuildContext context, MemoModel memo) {
     ModalSelect.show(
       context: context,
       options: ['수정', '북마크', '공유', '공개', '삭제'],
@@ -108,7 +127,7 @@ class MemoListViewModel extends ChangeNotifier {
     );
   }
 
-  void _handleModalSelection(String value, MemoListModel memo) {
+  void _handleModalSelection(String value, MemoModel memo) {
     switch (value) {
       case '수정':
         _editMemo(memo);
@@ -128,34 +147,34 @@ class MemoListViewModel extends ChangeNotifier {
     }
   }
 
-  void _editMemo(MemoListModel memo) {
+  void _editMemo(MemoModel memo) {
     // 수정 로직 구현
   }
 
-  void _bookmarkMemo(MemoListModel memo) {
+  void _bookmarkMemo(MemoModel memo) {
     // 북마크 로직 구현
   }
 
-  void _deleteMemo(MemoListModel memo) {
+  void _deleteMemo(MemoModel memo) {
     // 삭제 로직 구현
   }
 
-  void _shareMemo(MemoListModel memo) {
+  void _shareMemo(MemoModel memo) {
     // 공유 로직 구현
   }
 
-  void _togglePublicMemo(MemoListModel memo) {
+  void _togglePublicMemo(MemoModel memo) {
     // 공개/비공개 전환 로직 구현
   }
 
 //이미지 상세 뷰 띄우기
-  void showImageDetail(BuildContext context, MemoListModel memo, int index) {
+  void showImageDetail(BuildContext context, MemoModel memo, int index) {
     showDialog(
       context: context,
       barrierColor: Theme.of(context).colorScheme.surfaceContainerHighest,
       builder: (context) => ImageDetailView(
-        imageUrl: memo.imageUrls![index],
-        imageUrls: memo.imageUrls!,
+        imageUrl: memo.images![index].imageUrl!,
+        imageUrls: memo.images!.map((e) => e.imageUrl.toString()).toList(),
         currentIndex: index,
         onClose: () => Navigator.pop(context),
       ),
@@ -164,7 +183,7 @@ class MemoListViewModel extends ChangeNotifier {
 
   // 이미지 그리드 관련 함수들
   Widget buildImageGrid(
-      BuildContext context, MemoListModel memo, List<String> imageUrls) {
+      BuildContext context, MemoModel memo, List<String> imageUrls) {
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),

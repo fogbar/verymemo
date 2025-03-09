@@ -24,7 +24,7 @@ class LinkList extends StatelessWidget {
         final link = links[index - 1];
         return ListItem(
           leadingImageUrl: link.thumbnail,
-          title: link.metaTitle ?? link.url,
+          title: link.metaTitle ?? link.linkUrl ?? "",
           subtitle: link.metaDescription ?? '',
           config: ListItemConfig(
             leadingType: ListItemType.image,
@@ -36,7 +36,7 @@ class LinkList extends StatelessWidget {
             textConfig: TitleSubtitlePresets.listItem,
             itemSpacing: 12,
           ),
-          onTap: () => onLinkTap?.call(link.url),
+          onTap: () => onLinkTap?.call(link.linkUrl ?? ""),
         );
       },
     );

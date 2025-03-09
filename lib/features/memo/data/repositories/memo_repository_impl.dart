@@ -1,7 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:verymemo/common/types/typedef.dart';
 import 'package:verymemo/features/memo/data/data-sources/memo_local_data_source.dart';
-import 'package:verymemo/features/memo/domain/models/memo_model.dart';
+import 'package:verymemo/features/memo/domain/models/model.dart';
 import 'package:verymemo/features/memo/domain/repositories/memo_repository.dart';
 
 final memoRepositoryProvider = Provider<MemoRepository>((ref) {

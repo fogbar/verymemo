@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:verymemo/features/memo/presentation/memo_writing_view.dart';
 
-class WritingViewModel extends ChangeNotifier {
+class MemoWritingViewModel extends ChangeNotifier {
   final TextEditingController textController = TextEditingController();
   List<String> selectedImages = [];
 

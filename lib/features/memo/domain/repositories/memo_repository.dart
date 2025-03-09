@@ -1,5 +1,5 @@
 import 'package:verymemo/common/types/typedef.dart';
-import 'package:verymemo/features/memo/domain/models/memo_model.dart';
+import 'package:verymemo/features/memo/domain/models/model.dart';
 
 abstract class MemoRepository {
   /// [Create Memo]

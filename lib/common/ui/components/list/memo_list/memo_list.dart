@@ -30,22 +30,22 @@ class MemoList extends StatelessWidget {
                   child: ProfileList(
                     profileImageUrl: memo.profileImageUrl,
                     userName: memo.userName ?? '',
-                    description: memo.description ?? '',
+                    description: "",
                   ),
                 ),
               const SizedBox(height: 4),
-              if (memo.memoContent != null)
+              if (memo.content != null)
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: MemoContent(text: memo.memoContent!),
+                  child: MemoContent(text: memo.content!),
                 ),
               const SizedBox(height: 4),
-              if (memo.imageUrls != null && memo.imageUrls!.isNotEmpty)
+              if (memo.images != null && memo.images!.isNotEmpty)
                 MemoImages(memo: memo),
               const SizedBox(height: 4),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: MemoFooter(createdAt: memo.date),
+                child: MemoFooter(createdAt: memo.createdAt!),
               ),
               const SizedBox(height: 4),
               const Padding(

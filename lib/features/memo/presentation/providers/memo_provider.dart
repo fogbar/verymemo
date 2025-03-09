@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:verymemo/features/memo/domain/models/memo_model.dart';
+import 'package:verymemo/features/memo/domain/models/model.dart';
 import 'package:verymemo/features/memo/domain/repositories/memo_repository.dart';
 import 'package:verymemo/features/memo/presentation/providers/state/memo_state.dart';
 

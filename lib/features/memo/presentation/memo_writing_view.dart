@@ -11,7 +11,7 @@ class WritingView extends ConsumerStatefulWidget {
 }
 
 class _WritingViewState extends ConsumerState<WritingView> {
-  late final viewModel = WritingViewModel();
+  late final viewModel = MemoWritingViewModel();
   final FocusNode _focusNode = FocusNode();
   bool _visible = false;
 

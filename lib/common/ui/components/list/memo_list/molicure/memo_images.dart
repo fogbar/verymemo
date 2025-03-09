@@ -1,11 +1,13 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
-import 'package:verymemo/features/memo/domain/models/memo_list_model.dart';
-import 'package:verymemo/features/memo/presentation/memo_home_viewmodel.dart';
+import 'package:verymemo/features/memo/domain/models/model.dart';
+import 'package:verymemo/features/memo/presentation/viewmodels/memo_home_viewmodel.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 //이미지 캐싱 추가함
 class MemoImages extends ConsumerWidget {
-  final MemoListModel memo;
+  final MemoModel memo;
 
   const MemoImages({
     super.key,
@@ -23,7 +25,7 @@ class MemoImages extends ConsumerWidget {
 }
 
 class _CarouselView extends StatelessWidget {
-  final MemoListModel memo;
+  final MemoModel memo;
   final MemoListViewModel viewModel;
 
   const _CarouselView({
@@ -37,7 +39,7 @@ class _CarouselView extends StatelessWidget {
     const double spacing = 8.0;
     const double horizontalPadding = 16.0;
 
-    final imageUrls = memo.imageUrls ?? [];
+    final imageUrls = memo.images ?? [];
 
     return SizedBox(
       height: imageSize,
@@ -60,7 +62,7 @@ class _CarouselView extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child: Image.network(
-                      imageUrls[index],
+                      imageUrls[index].imageUrl!,
                       width: imageSize,
                       height: imageSize,
                       fit: BoxFit.cover,
@@ -88,7 +90,7 @@ class _CarouselView extends StatelessWidget {
 }
 
 class _GridView extends StatelessWidget {
-  final MemoListModel memo;
+  final MemoModel memo;
   final MemoListViewModel viewModel;
 
   const _GridView({
@@ -98,7 +100,7 @@ class _GridView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final imageUrls = memo.imageUrls ?? [];
+    final imageUrls = memo.images?.map((e) => e.imageUrl.toString()).toList();
     final displayImages = viewModel.getDisplayImages(imageUrls);
 
     return Row(
@@ -157,7 +159,7 @@ class _GridView extends StatelessWidget {
 }
 
 class _RemainingCountOverlay extends StatelessWidget {
-  final MemoListModel memo;
+  final MemoModel memo;
   final String url;
   final MemoListViewModel viewModel;
 
@@ -190,7 +192,7 @@ class _RemainingCountOverlay extends StatelessWidget {
           color: Theme.of(context).colorScheme.surfaceDim,
           child: Center(
             child: Text(
-              '+${viewModel.getRemainingCount(memo.imageUrls)}',
+              '+${viewModel.getRemainingCount(memo.images?.map((e) => e.imageUrl.toString()).toList())}',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,

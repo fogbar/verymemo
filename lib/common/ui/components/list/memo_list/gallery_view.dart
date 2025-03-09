@@ -31,8 +31,9 @@ class GalleryView extends ConsumerWidget {
               barrierColor:
                   Theme.of(context).colorScheme.surfaceContainerHighest,
               builder: (context) => ImageDetailView(
-                imageUrl: memo.imageUrls![index],
-                imageUrls: memo.imageUrls!,
+                imageUrl: memo.images![index].imageUrl!,
+                imageUrls:
+                    memo.images!.map((e) => e.imageUrl.toString()).toList(),
                 currentIndex: index,
                 onClose: () => Navigator.pop(context),
               ),
@@ -45,7 +46,7 @@ class GalleryView extends ConsumerWidget {
 }
 
 class GalleryItem extends StatelessWidget {
-  final MemoListModel memo;
+  final MemoModel memo;
   final VoidCallback? onTap;
 
   const GalleryItem({
@@ -61,11 +62,11 @@ class GalleryItem extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: NetworkImage(memo.imageUrls!.first),
+            image: NetworkImage(memo.images!.first.imageUrl!),
             fit: BoxFit.cover,
           ),
         ),
-        child: memo.imageUrls!.length > 1
+        child: memo.images!.length > 1
             ? Align(
                 alignment: Alignment.bottomRight,
                 child: Container(
@@ -82,7 +83,7 @@ class GalleryItem extends StatelessWidget {
                         GalleryViewConfig.imageCountBorderRadius),
                   ),
                   child: Text(
-                    '${memo.imageUrls!.length}',
+                    '${memo.images!.length}',
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: GalleryViewConfig.imageCountFontSize,

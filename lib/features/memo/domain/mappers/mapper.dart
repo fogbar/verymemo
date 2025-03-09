@@ -1,0 +1,7 @@
+import 'package:verymemo/features/memo/domain/dtos/dto.dart';
+import 'package:verymemo/features/memo/domain/models/model.dart';
+
+part 'memo_mapper.dart';
+part 'image_mapper.dart';
+part 'link_mapper.dart';
+part 'tag_mapper.dart';
