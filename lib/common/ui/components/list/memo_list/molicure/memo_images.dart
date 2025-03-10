@@ -1,6 +1,5 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
+import 'package:verymemo/common/barrel/view_common.dart';
 import 'package:verymemo/features/memo/domain/models/model.dart';
 import 'package:verymemo/features/memo/presentation/viewmodels/memo_home_viewmodel.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,7 +15,7 @@ class MemoImages extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final viewModel = ref.watch(memoListProvider);
+    final viewModel = ref.watch(memoHomeProvider.notifier);
 
     return viewModel.isDesktopPlatform
         ? _GridView(memo: memo, viewModel: viewModel)
@@ -26,7 +25,7 @@ class MemoImages extends ConsumerWidget {
 
 class _CarouselView extends StatelessWidget {
   final MemoModel memo;
-  final MemoListViewModel viewModel;
+  final MemoHomeViewModel viewModel;
 
   const _CarouselView({
     required this.memo,
@@ -60,25 +59,11 @@ class _CarouselView extends StatelessWidget {
                 child: GestureDetector(
                   onTap: () => viewModel.showImageDetail(context, memo, index),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.network(
-                      imageUrls[index].imageUrl!,
-                      width: imageSize,
-                      height: imageSize,
-                      fit: BoxFit.cover,
-                      cacheWidth: 300,
-                      frameBuilder:
-                          (context, child, frame, wasSynchronouslyLoaded) {
-                        if (wasSynchronouslyLoaded) return child;
-                        return AnimatedOpacity(
-                          opacity: frame == null ? 0 : 1,
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeOut,
-                          child: child,
-                        );
-                      },
-                    ),
-                  ),
+                      borderRadius: BorderRadius.circular(8),
+                      child: ImageUtil.showImage(
+                        imageUrls[index].imageUrl!,
+                        size: Size(imageSize, imageSize),
+                      )),
                 ),
               ),
             ),
@@ -91,7 +76,7 @@ class _CarouselView extends StatelessWidget {
 
 class _GridView extends StatelessWidget {
   final MemoModel memo;
-  final MemoListViewModel viewModel;
+  final MemoHomeViewModel viewModel;
 
   const _GridView({
     required this.memo,
@@ -161,7 +146,7 @@ class _GridView extends StatelessWidget {
 class _RemainingCountOverlay extends StatelessWidget {
   final MemoModel memo;
   final String url;
-  final MemoListViewModel viewModel;
+  final MemoHomeViewModel viewModel;
 
   const _RemainingCountOverlay({
     required this.memo,

@@ -37,6 +37,7 @@ class MemoMapper {
           DateTime.parse(dto.createdAt ?? DateTime.now().toIso8601String()),
       updatedAt: dto.updatedAt != null ? DateTime.parse(dto.updatedAt!) : null,
       isLocalMemo: dto.isLocalMemo == 1,
+      isBookMarked: dto.isBookMarked == 1,
     );
   }
 }

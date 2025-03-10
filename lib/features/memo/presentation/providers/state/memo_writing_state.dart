@@ -1,0 +1,43 @@
+import 'package:flutter/material.dart';
+import 'package:verymemo/common/ui/components/button/button_state.dart';
+
+class MemoWritingState {
+  final List<String> selectedImages;
+  final bool visible;
+  final TextEditingController textController;
+  final FocusNode focusNode;
+  final String debouncedText;
+  final ButtonState buttonState;
+
+  MemoWritingState({
+    this.selectedImages = const [],
+    this.visible = false,
+    TextEditingController? textController,
+    FocusNode? focusNode,
+    this.debouncedText = "",
+    this.buttonState = ButtonState.disabled,
+  })  : textController = textController ?? TextEditingController(),
+        focusNode = focusNode ?? FocusNode();
+
+  /// 상태 복제 메서드
+  MemoWritingState copyWith({
+    List<String>? selectedImages,
+    bool? visible,
+    TextEditingController? textController,
+    FocusNode? focusNode,
+    String? debouncedText,
+    ButtonState? buttonState,
+  }) {
+    return MemoWritingState(
+      selectedImages: selectedImages ?? this.selectedImages,
+      visible: visible ?? this.visible,
+      textController: textController ?? this.textController,
+      focusNode: focusNode ?? this.focusNode,
+      debouncedText: debouncedText ?? this.debouncedText,
+      buttonState: buttonState ?? this.buttonState,
+    );
+  }
+
+  /// Opacity 계산
+  double get opacity => visible ? 1.0 : 0.0;
+}

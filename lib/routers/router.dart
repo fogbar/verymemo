@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:verymemo/common/barrel/memo_writing.dart';
 import 'package:verymemo/common/const/app_const.dart';
 import 'package:verymemo/common/extensions/widget_extension.dart';
 import 'package:verymemo/common/ui/components/layout/variable_header.dart';
@@ -26,7 +26,6 @@ import 'package:verymemo/features/permission/providers/permission_provider.dart'
 import 'package:verymemo/features/settings/presentation/settings_view.dart';
 import 'package:verymemo/features/auth/presentation/profile/profile_setting_view.dart';
 import 'package:verymemo/features/splash/splash_view.dart';
-import 'package:verymemo/features/memo/presentation/providers/writing_provider.dart';
 
 part 'app_routes.dart';
 part 'app_router.dart';

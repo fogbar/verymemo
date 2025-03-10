@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:verymemo/common/barrel/memo_list.dart';
 import 'package:verymemo/common/barrel/view_common.dart';
 
@@ -11,8 +13,10 @@ class GalleryView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    var viewModel = MemoListViewModel();
-    final memos = viewModel.extractImages();
+    // var viewModel = MemoHomeViewModel();
+    // final memos = viewModel.extractImages();
+    final viewModel = ref.read(memoHomeProvider.notifier);
+    final memos = viewModel.memoList;
 
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -62,7 +66,7 @@ class GalleryItem extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: NetworkImage(memo.images!.first.imageUrl!),
+            image: FileImage(File(memo.images!.first.imageUrl!)),
             fit: BoxFit.cover,
           ),
         ),

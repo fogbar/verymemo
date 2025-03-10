@@ -8,7 +8,6 @@ class FeedView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final viewModel = ref.watch(memoListProvider);
-    return MemoList(viewModel: viewModel);
+    return MemoList();
   }
 }

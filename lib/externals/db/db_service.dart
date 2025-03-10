@@ -58,6 +58,7 @@ class DbService {
               userId INTEGER NOT NULL,
               content TEXT NOT NULL,
               isLocalMemo INTEGER NOT NULL DEFAULT 0,
+              isBookMarked INTEGER NOT NULL DEFAULT 0,
               createdAt TEXT NOT NULL,
               updatedAt TEXT,
               FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE

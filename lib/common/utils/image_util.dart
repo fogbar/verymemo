@@ -37,7 +37,22 @@ class ImageUtil {
           //     Image.asset("assets/images/no_image.svg"),
         );
       } else if (path.contains('/cache')) {
-        return Image.file(File(path));
+        return Image.file(
+          File(path),
+          width: size?.width,
+          height: size?.height,
+          fit: fit ?? BoxFit.cover,
+          cacheWidth: 300,
+          frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+            if (wasSynchronouslyLoaded) return child;
+            return AnimatedOpacity(
+              opacity: frame == null ? 0 : 1,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeOut,
+              child: child,
+            );
+          },
+        );
       } else if (path.contains('.svg')) {
         return SvgPicture.asset(
           path,

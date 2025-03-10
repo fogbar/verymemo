@@ -27,7 +27,7 @@ class _HomeScaffoldState extends ConsumerState<HomeScaffold> {
 
   @override
   Widget build(BuildContext context) {
-    final isWritingVisible = ref.watch(writingStateProvider);
+    final state = ref.watch(memoWritingViewModelProvider);
 
     return Stack(
       children: [
@@ -54,8 +54,6 @@ class _HomeScaffoldState extends ConsumerState<HomeScaffold> {
                       onTabChanged: (index) {
                         setState(() {
                           _currentTabIndex = index;
-                          log("---> _currentTabIndex: $_currentTabIndex");
-                          log("---> _selectedIntex: $_selectedIndex");
                         });
                       },
                     ),
@@ -90,7 +88,8 @@ class _HomeScaffoldState extends ConsumerState<HomeScaffold> {
                 });
               },
               onFloatingButtonTap: () {
-                ref.read(writingStateProvider.notifier).toggle();
+                //ref.read(writingStateProvider.notifier).toggle();
+                ref.read(memoWritingViewModelProvider.notifier).toggle();
               },
             ),
           ),
@@ -100,20 +99,21 @@ class _HomeScaffoldState extends ConsumerState<HomeScaffold> {
           curve: Curves.easeOutExpo,
           left: 0,
           right: 0,
-          bottom: isWritingVisible
+          bottom: state.visible
               ? MediaQuery.of(context).viewInsets.bottom
               : -MediaQuery.of(context).size.height,
-          child: isWritingVisible
-              ? GestureDetector(
-                  onVerticalDragEnd: (details) {
-                    if (details.primaryVelocity! > 100) {
-                      ref.read(writingStateProvider.notifier).toggle();
-                    }
-                  },
-                  behavior: HitTestBehavior.translucent,
-                  child: const WritingView(),
-                )
-              : const SizedBox(),
+          child: Visibility(
+            visible: state.visible,
+            child: GestureDetector(
+              onVerticalDragEnd: (details) {
+                if (details.primaryVelocity! > 100) {
+                  ref.read(memoWritingViewModelProvider.notifier).toggle();
+                }
+              },
+              behavior: HitTestBehavior.translucent,
+              child: const MemoWritingView(),
+            ),
+          ),
         )
       ],
     );

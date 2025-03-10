@@ -1,101 +1,78 @@
 import 'dart:io';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:verymemo/features/memo/domain/caches/memo_cache.dart';
 import 'package:verymemo/features/memo/domain/models/model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:verymemo/common/ui/components/modal/modal_select.dart';
 import 'package:verymemo/features/memo/presentation/image_detail_view.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:verymemo/features/memo/presentation/providers/memo_provider.dart';
 
-class MemoListViewModel extends ChangeNotifier {
-// 데이터와 로직 관리
+import 'package:verymemo/features/memo/presentation/providers/state/memo_state.dart';
 
-  List<MemoModel> memoList = [
-    MemoModel(
-      userName: '하누리',
-      content:
-          'StatefulWidget으로 변경하여 접기/펼치기 상태를 관리합니다.StatefulWidget으로 변경하여 접기/펼치기 상태를 관리합니다.StatefulWidget으로 변경하여 접기/펼치기 상태를 관리합니다.StatefulWidget으로 변경하여 접기/펼치기 상태를 관리합니다. StatefulWidget으로 변경하여 접기/펼치기 상태를 관리합니다.',
-      links: [
-        LinkModel(
-          linkUrl: 'https://flutter.dev',
-          thumbnail:
-              'https://blog.kakaocdn.net/dn/cGbz7k/btsD1mY2YBd/LkWiVVFa4fwyHiCkSW0Ru0/img.png',
-          metaTitle:
-              '여기는 링크 메타데이터 타이틀입니다. 몇 줄로 제한할지 고민이 됩니다. 몇 줄까지 나오는 걸까요????',
-          metaDescription: '서브스크린션 영역입니다',
-        ),
-      ],
-      createdAt: DateTime.now().subtract(const Duration(days: 1)),
-      images: [
-        ImageModel(
-          imageId: 0,
-          imageUrl:
-              'https://blog.kakaocdn.net/dn/cGbz7k/btsD1mY2YBd/LkWiVVFa4fwyHiCkSW0Ru0/img.png',
-        ),
-        ImageModel(
-          imageId: 1,
-          imageUrl:
-              'https://blog.kakaocdn.net/dn/cGbz7k/btsD1mY2YBd/LkWiVVFa4fwyHiCkSW0Ru0/img.png',
-        ),
-      ],
-      isLocalMemo: true,
-    ),
-    MemoModel(
-      userName: '장보기 메모',
-      content: '사과, 바나나, 우유, 계란, 치즈',
-      links: [
-        LinkModel(
-          linkUrl: 'https://pub.dev',
-          thumbnail:
-              'https://blog.kakaocdn.net/dn/cGbz7k/btsD1mY2YBd/LkWiVVFa4fwyHiCkSW0Ru0/img.png',
-          metaTitle: 'Pub.dev - Flutter packages',
-          metaDescription:
-              'Pub is the package manager for the Dart programming language.',
-        ),
-      ],
-      createdAt: DateTime.now().subtract(const Duration(days: 2)),
-      images: [
-        ImageModel(
-          imageId: 2,
-          imageUrl:
-              'https://blog.kakaocdn.net/dn/cGbz7k/btsD1mY2YBd/LkWiVVFa4fwyHiCkSW0Ru0/img.png',
-        ),
-        ImageModel(
-          imageId: 3,
-          imageUrl:
-              'https://blog.kakaocdn.net/dn/cGbz7k/btsD1mY2YBd/LkWiVVFa4fwyHiCkSW0Ru0/img.png',
-        ),
-      ],
-    ),
-    MemoModel(
-      userName: '이미지 많아요',
-      content: null,
-      createdAt: DateTime.now().subtract(const Duration(days: 2)),
-      images: [
-        ImageModel(
-          imageId: 4,
-          imageUrl:
-              'https://blog.kakaocdn.net/dn/cGbz7k/btsD1mY2YBd/LkWiVVFa4fwyHiCkSW0Ru0/img.png',
-        ),
-        ImageModel(
-          imageId: 5,
-          imageUrl:
-              'https://blog.kakaocdn.net/dn/cGbz7k/btsD1mY2YBd/LkWiVVFa4fwyHiCkSW0Ru0/img.png',
-        ),
-      ],
-    )
-  ];
+final memoHomeProvider =
+    StateNotifierProvider<MemoHomeViewModel, MemoState>((ref) {
+  return MemoHomeViewModel(ref);
+});
 
-  List<LinkModel> extractLinks() {
-    return memoList
-        .where((memo) => memo.links != null && memo.links!.isNotEmpty)
-        .expand((memo) => memo.links!) //메모안에 복수의 링크가 있으면 모두 새로운 리스트로
-        .toList();
+class MemoHomeViewModel extends StateNotifier<MemoState> {
+  final Ref _ref;
+  late List<MemoModel> memoList;
+  MemoHomeViewModel(this._ref) : super(const MemoState.loading()) {
+    memoList = MemoCache().getAllMemos();
   }
 
-  List<MemoModel> extractImages() {
-    return memoList
-        .where((memo) => memo.images != null && memo.images!.isNotEmpty)
-        .toList();
+  /// 🔄 [메모 로드]
+  Future<void> _loadMemos() async {
+    await _ref.read(memoProvider.notifier).getAllMemos(); // 🔄 memoProvider 사용
+    state = _ref.read(memoProvider); // 🔄 현재 상태 설정
+  }
+
+  /// 🔄 [메모 추가]
+  Future<void> addMemo(MemoModel memo) async {
+    await _ref.read(memoProvider.notifier).addMemo(memo);
+    await _loadMemos();
+  }
+
+  Future<void> updateMemo(MemoModel memo) async {
+    await _ref.read(memoProvider.notifier).updateMemo(memo);
+    await _loadMemos();
+  }
+
+  /// 🔄 [메모 삭제]
+  Future<void> deleteMemo(int memoId) async {
+    await _ref.read(memoProvider.notifier).deleteMemo(memoId);
+    await _loadMemos(); // 🔄 목록 갱신
+  }
+
+  /// 🔄 [메모 길게 누를 때]
+  void handleMemoLongPress(BuildContext context, MemoModel memo) {
+    ModalSelect.show(
+      context: context,
+      options: ['수정', '북마크', '공유', '공개', '삭제'],
+      onSelect: (value) => _handleModalSelection(value, memo),
+      isHighlighted: [false, false, false, true, true],
+    );
+  }
+
+  void _handleModalSelection(String value, MemoModel memo) {
+    switch (value) {
+      case '수정':
+        updateMemo(memo);
+        break;
+      case '북마크':
+        _bookmarkMemo(memo);
+        break;
+      case '공유':
+        _shareMemo(memo);
+        break;
+      case '공개':
+        _togglePublicMemo(memo);
+        break;
+      case '삭제':
+        deleteMemo(memo.memoId!);
+        break;
+    }
   }
 
   // 이미지 관련 로직 추가
@@ -117,46 +94,8 @@ class MemoListViewModel extends ChangeNotifier {
   bool shouldShowRemainingCount(List<String>? imageUrls, int index) =>
       index == 4 && getRemainingCount(imageUrls) > 0;
 
-//딥 클릭 모달
-  void handleMemoLongPress(BuildContext context, MemoModel memo) {
-    ModalSelect.show(
-      context: context,
-      options: ['수정', '북마크', '공유', '공개', '삭제'],
-      onSelect: (value) => _handleModalSelection(value, memo),
-      isHighlighted: [false, false, false, true, true],
-    );
-  }
-
-  void _handleModalSelection(String value, MemoModel memo) {
-    switch (value) {
-      case '수정':
-        _editMemo(memo);
-        break;
-      case '북마크':
-        _bookmarkMemo(memo);
-        break;
-      case '공유':
-        _shareMemo(memo);
-        break;
-      case '공개':
-        _togglePublicMemo(memo);
-        break;
-      case '삭제':
-        _deleteMemo(memo);
-        break;
-    }
-  }
-
-  void _editMemo(MemoModel memo) {
-    // 수정 로직 구현
-  }
-
   void _bookmarkMemo(MemoModel memo) {
     // 북마크 로직 구현
-  }
-
-  void _deleteMemo(MemoModel memo) {
-    // 삭제 로직 구현
   }
 
   void _shareMemo(MemoModel memo) {
@@ -233,5 +172,3 @@ class MemoListViewModel extends ChangeNotifier {
     );
   }
 }
-
-final memoListProvider = ChangeNotifierProvider((ref) => MemoListViewModel());

@@ -1,16 +1,15 @@
-import 'package:verymemo/common/types/typedef.dart';
 import 'package:verymemo/features/memo/domain/models/model.dart';
 
 abstract class MemoRepository {
   /// [Create Memo]
-  Future<int> addMemo(MAP memo);
+  Future<void> addMemo(MemoModel memo);
 
   /// [Read Memo]
-  Future<MemoModel?> getMemo(int memoId);
-  Future<List<MemoModel?>> getAllMemos();
+  Future<MemoModel?> getMemoById(int memoId);
+  Future<List<MemoModel>?> getAllMemos();
 
   /// [Update Memo]
-  Future<int> updateMemo(int memoId, MAP memo);
+  Future<int> updateMemo(MemoModel memo);
 
   /// [Delete Memo]
   Future<int> deleteMemo(int memoId);
