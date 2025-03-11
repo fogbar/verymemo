@@ -41,15 +41,19 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
     super.dispose();
   }
 
-  /// 텍스트 변경 감지
+  /// 텍스트 변경 감지 - 버튼 상태용
   void _onTextChanged() {
+    final text = state.textController.text.trim();
+    log("텍스트 변경: '$text'");
+    state = state.copyWith(
+      buttonState: text.isNotEmpty ? ButtonState.primary : ButtonState.disabled,
+    );
+
+    // 서버 요청을 위한 디바운스는 따로 처리
     if (_debounce?.isActive ?? false) _debounce!.cancel();
     _debounce = Timer(const Duration(seconds: 1), () {
-      final text = state.textController.text.trim();
       state = state.copyWith(
         debouncedText: text,
-        buttonState:
-            text.isNotEmpty ? ButtonState.primary : ButtonState.disabled,
       );
     });
   }
@@ -114,10 +118,18 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => SizedBox(
-        height: screenHeight - keyboardHeight - mediaQuery.padding.top,
-        child: const MemoWritingView(),
+      enableDrag: true,
+      useSafeArea: true,
+      showDragHandle: true,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: SizedBox(
+          height: screenHeight - keyboardHeight - mediaQuery.padding.top,
+          child: const MemoWritingView(),
+        ),
       ),
     );
   }
@@ -135,9 +147,23 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
 
   /// 업로드 처리
   Future<void> onUploadTab(BuildContext context) async {
-    await saveMemo();
-    state = state.copyWith();
-    if (context.mounted) closeWriting(context);
+    try {
+      await saveMemo();
+      if (context.mounted) {
+        closeWriting(context);
+        state = state.copyWith(
+          textController: TextEditingController(), // 새로운 컨트롤러 생성
+          debouncedText: "",
+          buttonState: ButtonState.disabled,
+        );
+      }
+    } catch (e) {
+      log("업로드 실패: $e");
+      // 에러 발생 시에도 상태 리셋
+      state = state.copyWith(
+        buttonState: ButtonState.disabled,
+      );
+    }
   }
 
   /// 메모 데이터 저장
@@ -156,6 +182,7 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
         isLocalMemo: true,
         isBookMarked: false,
       );
+      log("저장할 메모 데이터: $memoModel");
       await memoProvider.addMemo(memoModel);
       log("---> 메모 저장 완료! $userId");
     } catch (e) {

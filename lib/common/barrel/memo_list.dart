@@ -1,7 +1,7 @@
-export 'package:verymemo/common/ui/components/list/memo_list/molicure/index_memo_list_component.dart';
-export 'package:verymemo/common/ui/components/list/memo_list/gallery_view.dart';
-export 'package:verymemo/common/ui/components/list/memo_list/link_view.dart';
-export 'package:verymemo/common/ui/components/list/memo_list/memo_list.dart';
+export 'package:verymemo/features/memo/presentation/memo_list/molicure/index_memo_list_component.dart';
+export 'package:verymemo/features/memo/presentation/memo_list/gallery_view.dart';
+export 'package:verymemo/features/memo/presentation/memo_list/link_view.dart';
+export 'package:verymemo/features/memo/presentation/memo_list/memo_list.dart';
 export 'package:verymemo/common/ui/components/list/profile_list/avatar.dart';
 export 'package:verymemo/common/ui/components/list/profile_list/profile_list.dart';
 export 'package:verymemo/features/memo/domain/models/model.dart';
