@@ -40,8 +40,12 @@ class MemoHomeViewModel extends StateNotifier<MemoState> {
   }
 
   /// 🔄 [메모 삭제]
-  Future<void> deleteMemo(int memoId) async {
-    await _ref.read(memoProvider.notifier).deleteMemo(memoId);
+  ///
+  Future<void> deleteMemo(dynamic memoId) async {
+    final List<int> idsToDelete =
+        memoId is int ? [memoId] : List<int>.from(memoId);
+
+    await _ref.read(memoProvider.notifier).deleteMemo(idsToDelete);
     await _loadMemos(); // 🔄 목록 갱신
   }
 

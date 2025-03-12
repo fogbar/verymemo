@@ -12,5 +12,5 @@ abstract class MemoRepository {
   Future<int> updateMemo(MemoModel memo);
 
   /// [Delete Memo]
-  Future<int> deleteMemo(int memoId);
+  Future<int> deleteMemo(List<int> memoIds);
 }

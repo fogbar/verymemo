@@ -139,6 +139,7 @@ class MemoWritingView extends ConsumerWidget {
                 ),
                 WritingMenuBar(
                   onGalleryTap: () => viewModel.pickImages(context),
+                  onLinkTap: () => viewModel.setLinks(context),
                   onUploadTap: () async {
                     await viewModel.onUploadTab(context);
                   },

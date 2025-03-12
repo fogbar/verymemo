@@ -224,14 +224,21 @@ class MemoLocalDataSource {
   }
 
   /// [Delete Memo]
-  Future<int> deleteMemo(int memoId) async {
+  Future<int> deleteMemos(List<int> memoIds) async {
     final db = await dbService.database;
     return await db.transaction((txn) async {
-      await txn.delete(tableName[2], where: 'memoId = ?', whereArgs: [memoId]);
-      await txn.delete(tableName[3], where: 'memoId = ?', whereArgs: [memoId]);
-      await txn.delete('memo_tags', where: 'memoId = ?', whereArgs: [memoId]);
-      return await txn
-          .delete(tableName[0], where: 'id = ?', whereArgs: [memoId]);
+      int count = 0;
+      for (final memoId in memoIds) {
+        await txn
+            .delete(tableName[2], where: 'memoId = ?', whereArgs: [memoId]);
+        await txn
+            .delete(tableName[3], where: 'memoId = ?', whereArgs: [memoId]);
+        await txn.delete('memo_tags', where: 'memoId = ?', whereArgs: [memoId]);
+        final deleted = await txn
+            .delete(tableName[0], where: 'id = ?', whereArgs: [memoId]);
+        if (deleted > 0) count++;
+      }
+      return count; // 🔄 삭제된 개수 반환
     });
   }
 }

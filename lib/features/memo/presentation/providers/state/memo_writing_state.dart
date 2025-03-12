@@ -5,6 +5,7 @@ class MemoWritingState {
   final List<String> selectedImages;
   final bool visible;
   final TextEditingController textController;
+  final TextEditingController linkController;
   final FocusNode focusNode;
   final String debouncedText;
   final ButtonState buttonState;
@@ -13,10 +14,12 @@ class MemoWritingState {
     this.selectedImages = const [],
     this.visible = false,
     TextEditingController? textController,
+    TextEditingController? linkController,
     FocusNode? focusNode,
     this.debouncedText = "",
     this.buttonState = ButtonState.disabled,
   })  : textController = textController ?? TextEditingController(),
+        linkController = linkController ?? TextEditingController(),
         focusNode = focusNode ?? FocusNode();
 
   /// 상태 복제 메서드
@@ -24,6 +27,7 @@ class MemoWritingState {
     List<String>? selectedImages,
     bool? visible,
     TextEditingController? textController,
+    TextEditingController? linkController,
     FocusNode? focusNode,
     String? debouncedText,
     ButtonState? buttonState,
@@ -32,6 +36,7 @@ class MemoWritingState {
       selectedImages: selectedImages ?? this.selectedImages,
       visible: visible ?? this.visible,
       textController: textController ?? this.textController,
+      linkController: linkController ?? this.linkController,
       focusNode: focusNode ?? this.focusNode,
       debouncedText: debouncedText ?? this.debouncedText,
       buttonState: buttonState ?? this.buttonState,

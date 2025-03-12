@@ -83,9 +83,9 @@ class MemoRepositoryImpl implements MemoRepository {
   }
 
   @override
-  Future<int> deleteMemo(int memoId) async {
+  Future<int> deleteMemo(List<int> memoIds) async {
     try {
-      return await localDataSource.deleteMemo(memoId);
+      return await localDataSource.deleteMemos(memoIds);
     } catch (e) {
       log("❌ Error deleting memo: $e");
       return 0; // 🔄 에러 발생 시 0 반환

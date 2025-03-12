@@ -16,14 +16,12 @@ final memoWritingViewModelProvider =
     StateNotifierProvider<MemoWritingViewModel, MemoWritingState>((ref) {
   final memoNotifier = ref.watch(memoProvider.notifier);
   final userNotifier = ref.watch(userProvider.notifier);
-  // final writingMenuStateNotifier = ref.watch(writingMenuStateProvider.notifier);
   return MemoWritingViewModel(memoNotifier, userNotifier);
 });
 
 class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
   final MemoNotifier memoProvider;
   final UserNotifier userProvider;
-  // final WritingMenuState writingMenuState;
   Timer? _debounce;
 
   MemoWritingViewModel(
@@ -90,6 +88,9 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
     }
   }
 
+  /// [링크 추가]
+  Future<void> setLinks(BuildContext context) async {}
+
   /// 이미지 삭제
   void removeImage(int index) {
     final updatedImages = List<String>.from(state.selectedImages);
@@ -129,7 +130,7 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
       debouncedText: "",
       textController: TextEditingController(),
       selectedImages: [],
-      buttonState: ButtonState.disabled,
+      // buttonState: ButtonState.disabled,
     );
   }
 
