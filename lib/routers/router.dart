@@ -8,8 +8,8 @@ import 'package:verymemo/common/const/app_const.dart';
 import 'package:verymemo/common/extensions/widget_extension.dart';
 import 'package:verymemo/common/ui/components/layout/variable_header.dart';
 import 'package:verymemo/common/ui/components/layout/variable_nevbar.dart';
-import 'package:verymemo/common/ui/components/list/memo_list/gallery_view.dart';
-import 'package:verymemo/common/ui/components/list/memo_list/link_view.dart';
+import 'package:verymemo/features/memo/presentation/memo_list/gallery_view.dart';
+import 'package:verymemo/features/memo/presentation/memo_list/link_view.dart';
 import 'package:verymemo/common/ui/components/tab/tab_menu.dart';
 import 'package:verymemo/common/utils/image_util.dart';
 import 'package:verymemo/externals/storage/storage_service.dart';
@@ -27,6 +27,7 @@ import 'package:verymemo/features/permission/providers/permission_provider.dart'
 import 'package:verymemo/features/settings/presentation/settings_view.dart';
 import 'package:verymemo/features/auth/presentation/profile/profile_setting_view.dart';
 import 'package:verymemo/features/splash/splash_view.dart';
+import 'package:verymemo/features/memo/presentation/select/align.dart';
 
 part 'app_routes.dart';
 part 'app_router.dart';

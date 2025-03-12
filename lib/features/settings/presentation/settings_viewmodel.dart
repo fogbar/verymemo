@@ -1,8 +1,7 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:verymemo/common/barrel/view_common.dart';
 import 'package:verymemo/features/settings/providers/theme_providers.dart';
 import 'package:verymemo/features/settings/presentation/modals/withdrawal_modal.dart';
 import 'package:verymemo/features/settings/presentation/modals/sync_modal.dart';
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:verymemo/routers/router.dart';
 

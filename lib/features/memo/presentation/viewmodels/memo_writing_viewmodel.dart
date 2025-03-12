@@ -40,7 +40,7 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
     super.dispose();
   }
 
-  /// 텍스트 변경 감지
+  /// 텍스트 변경 감지 - 버튼 상태용
   void _onTextChanged() {
     final text = state.textController.text.trim();
     state = state.copyWith(
@@ -122,10 +122,18 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => SizedBox(
-        height: screenHeight - keyboardHeight - mediaQuery.padding.top,
-        child: const MemoWritingView(),
+      enableDrag: true,
+      useSafeArea: true,
+      showDragHandle: true,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: SizedBox(
+          height: screenHeight - keyboardHeight - mediaQuery.padding.top,
+          child: const MemoWritingView(),
+        ),
       ),
     );
   }
@@ -166,6 +174,7 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
         isLocalMemo: true,
         isBookMarked: false,
       );
+      log("저장할 메모 데이터: $memoModel");
       await memoProvider.addMemo(memoModel);
       log("---> 메모 저장 완료! $userId");
     } catch (e) {

@@ -1,13 +1,10 @@
 import 'dart:io';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:verymemo/common/barrel/view_common.dart';
 import 'package:verymemo/features/memo/domain/caches/memo_cache.dart';
 import 'package:verymemo/features/memo/domain/models/model.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:verymemo/common/ui/components/modal/modal_select.dart';
 import 'package:verymemo/features/memo/presentation/image_detail_view.dart';
 import 'package:verymemo/features/memo/presentation/providers/memo_provider.dart';
-
 import 'package:verymemo/features/memo/presentation/providers/state/memo_state.dart';
 
 final memoHomeProvider =
@@ -175,4 +172,20 @@ class MemoHomeViewModel extends StateNotifier<MemoState> {
       ],
     );
   }
+
+//   void sortMemos(String sortOption) {
+//     final List<MemoModel> sortedMemos = [...state.memos];
+
+//     switch (sortOption) {
+//       case '최근 본 메모':
+//         sortedMemos.sort((a, b) => (b.lastViewedAt ?? b.createdAt)
+//             .compareTo(a.lastViewedAt ?? a.createdAt));
+//       case '최신 작성일':
+//         sortedMemos.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+//       case '오래된 작성일':
+//         sortedMemos.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+//     }
+
+//     state = state.copyWith(memos: sortedMemos);
+//   }
 }

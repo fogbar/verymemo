@@ -120,6 +120,8 @@ class MemoWritingView extends ConsumerWidget {
                             controller: state.textController,
                             focusNode: state.focusNode,
                             autofocus: true,
+                            showCursor: true,
+                            enableInteractiveSelection: true,
                             expands: true,
                             keyboardType: TextInputType.multiline,
                             textAlignVertical: TextAlignVertical.top,
