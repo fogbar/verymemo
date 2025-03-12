@@ -9,6 +9,7 @@ abstract class AppRoute {
   static const profileSetting = "/profileSetting";
   static const home = "/home";
   static const edit = "/edit";
+  static const detail = "/detail";
   static const feed = "/feed";
   static const delete = "/delete";
   static const search = "/search";
@@ -29,6 +30,9 @@ abstract class NavigatorKey {
   static final GlobalKey<NavigatorState> detailShellKey =
       GlobalKey<NavigatorState>(debugLabel: "detailShellKey");
 
+  static final GlobalKey<NavigatorState> emptyShellKey =
+      GlobalKey<NavigatorState>(debugLabel: "emptyShellKey");
+
   static final GlobalKey<NavigatorState> splashBranchKey =
       GlobalKey<NavigatorState>(debugLabel: "splashBranchKey");
 
@@ -46,6 +50,9 @@ abstract class NavigatorKey {
 
   static final GlobalKey<NavigatorState> editBranchKey =
       GlobalKey<NavigatorState>(debugLabel: "editBranchKey");
+
+  static final GlobalKey<NavigatorState> detailBranchKey =
+      GlobalKey<NavigatorState>(debugLabel: "detailBranchKey");
 
   static final GlobalKey<NavigatorState> feedBranchKey =
       GlobalKey<NavigatorState>(debugLabel: "feedBranchKey");

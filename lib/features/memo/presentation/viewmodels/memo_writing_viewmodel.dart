@@ -35,19 +35,24 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
   @override
   void dispose() {
     state.textController.dispose();
+    state.linkController.dispose();
     state.textController.removeListener(_onTextChanged);
     super.dispose();
   }
 
   /// 텍스트 변경 감지
   void _onTextChanged() {
+    final text = state.textController.text.trim();
+    state = state.copyWith(
+      buttonState: (text.isNotEmpty || state.selectedImages.isNotEmpty)
+          ? ButtonState.primary
+          : ButtonState.disabled,
+    );
     if (_debounce?.isActive ?? false) _debounce!.cancel();
-    _debounce = Timer(const Duration(seconds: 1), () {
-      final text = state.textController.text.trim();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      log("---> onTextChanged: $text");
       state = state.copyWith(
         debouncedText: text,
-        buttonState:
-            text.isNotEmpty ? ButtonState.primary : ButtonState.disabled,
       );
     });
   }
@@ -80,8 +85,10 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
             .map((file) => file.path!)
             .toList();
 
-        state =
-            state.copyWith(selectedImages: [...state.selectedImages, ...paths]);
+        state = state.copyWith(
+          selectedImages: [...state.selectedImages, ...paths],
+          buttonState: ButtonState.primary,
+        );
       }
     } catch (e) {
       debugPrint('Error picking images: $e');
@@ -125,19 +132,20 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
 
   /// 작성 창 닫기
   void closeWriting(BuildContext context) {
+    state.textController.clear();
+    state.linkController.clear();
     state = state.copyWith(
       visible: !state.visible,
       debouncedText: "",
-      textController: TextEditingController(),
+      // textController: TextEditingController(),
       selectedImages: [],
-      // buttonState: ButtonState.disabled,
+      buttonState: ButtonState.disabled,
     );
   }
 
   /// 업로드 처리
   Future<void> onUploadTab(BuildContext context) async {
     await saveMemo();
-    state = state.copyWith();
     if (context.mounted) closeWriting(context);
   }
 
@@ -145,9 +153,10 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
   Future<void> saveMemo() async {
     try {
       final userId = userProvider.getUser()?.id ?? "UnKwon User";
+      // final text = state.textController.text.trim();
       final memoModel = MemoModel(
         userId: userId,
-        content: state.debouncedText,
+        content: state.debouncedText, // state.debouncedText,
         images:
             state.selectedImages.map((e) => ImageModel(imageUrl: e)).toList(),
         links: [],

@@ -35,7 +35,11 @@ class MemoWritingState {
     return MemoWritingState(
       selectedImages: selectedImages ?? this.selectedImages,
       visible: visible ?? this.visible,
+      // textController: textController ??
+      //     TextEditingController(text: this.textController.text),
       textController: textController ?? this.textController,
+      // linkController: linkController ??
+      //     TextEditingController(text: this.linkController.text),
       linkController: linkController ?? this.linkController,
       focusNode: focusNode ?? this.focusNode,
       debouncedText: debouncedText ?? this.debouncedText,

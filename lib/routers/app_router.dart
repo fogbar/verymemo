@@ -85,14 +85,14 @@ class HomeShell extends Shell {
         TypedGoRoute<EditRoute>(path: AppRoute.edit),
       ],
     ),
+    TypedStatefulShellBranch<DetailBranch>(
+      routes: [
+        TypedGoRoute<DetailRoute>(path: AppRoute.detail),
+      ],
+    ),
     TypedStatefulShellBranch<DeleteBranch>(
       routes: [
         TypedGoRoute<DeleteRoute>(path: AppRoute.delete),
-      ],
-    ),
-    TypedStatefulShellBranch<SearchBranch>(
-      routes: [
-        TypedGoRoute<SearchRoute>(path: AppRoute.search),
       ],
     ),
     TypedStatefulShellBranch<SettingsBranch>(
@@ -115,6 +115,24 @@ class DetailShell extends Shell {
         navigationShell: navigationShell,
         state: state,
       );
+}
+
+@TypedStatefulShellRoute<EmptyShell>(
+  branches: [
+    TypedStatefulShellBranch<SearchBranch>(
+      routes: [
+        TypedGoRoute<SearchRoute>(path: AppRoute.search),
+      ],
+    ),
+  ],
+)
+class EmptyShell extends Shell {
+  @override
+  GlobalKey<NavigatorState> get shellKey => NavigatorKey.emptyShellKey;
+  @override
+  Widget buildScaffold(BuildContext context, GoRouterState state,
+          StatefulNavigationShell navigationShell) =>
+      EmptyScaffold(navigationShell: navigationShell, state: state);
 }
 
 ////////////////////////////////////////////////////////////
@@ -204,15 +222,19 @@ class EditBranch extends Branch {
   EditBranch()
       : super(
           initialLocation: AppRoute.edit,
-          // selectedIcon: ImageUtil.showImage(
-          //   "assets/icons/edit.svg",
-          //   color: Colors.white,
-          // ),
-          // icon: ImageUtil.showImage(
-          //   "assets/icons/edit_unselected.svg",
-          //   color: Colors.white,
-          // ),
           label: "수정",
+        );
+}
+
+// ✅ Detail 브랜치
+class DetailBranch extends Branch {
+  @override
+  GlobalKey<NavigatorState> get branchKey => NavigatorKey.detailBranchKey;
+
+  DetailBranch()
+      : super(
+          initialLocation: AppRoute.detail,
+          label: "상세",
         );
 }
 
@@ -346,6 +368,14 @@ class EditRoute extends Route {
   bool checkAuth(BuildContext context) => true;
 
   const EditRoute() : super(const MemoEditView());
+}
+
+// ✅ 상세 라우터
+class DetailRoute extends Route {
+  @override
+  bool checkAuth(BuildContext context) => true;
+
+  const DetailRoute() : super(const MemoDetailView());
 }
 
 // ✅ 피드 라우터

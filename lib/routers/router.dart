@@ -16,6 +16,7 @@ import 'package:verymemo/externals/storage/storage_service.dart';
 import 'package:verymemo/features/auth/presentation/auth_view.dart';
 import 'package:verymemo/features/feed/presentation/feed_view.dart';
 import 'package:verymemo/features/memo/presentation/memo_delete_view.dart';
+import 'package:verymemo/features/memo/presentation/memo_detail_view.dart';
 import 'package:verymemo/features/memo/presentation/memo_edit_view.dart';
 import 'package:verymemo/features/memo/presentation/memo_home_view.dart';
 import 'package:verymemo/features/memo/presentation/memo_writing_view.dart';
@@ -34,5 +35,6 @@ part 'app_router_provider.dart';
 part 'shell/home_scaffold.dart';
 part 'shell/intro_scaffold.dart';
 part 'shell/detail_scaffold.dart';
+part 'shell/empty_scaffold.dart';
 
 part 'router.g.dart';

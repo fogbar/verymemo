@@ -28,40 +28,40 @@ class MemoNotifier extends StateNotifier<MemoState> {
 
   /// [모든 메모 가져오기] : 초기에 한 번 모든 메모를 로드한다
   Future<void> getAllMemos() async {
-    // state = const MemoState.loading();
-    // try {
-    //   final memoModels = await memoRepository.getAllMemos();
-    //   final memos = memoModels?.whereType<MemoModel>().toList() ?? [];
-
-    //   log("---> memos: $memos");
-    //   MemoCache().addMemos(memos); // 🔄 캐시에 저장
-    //   state = MemoState.successed(memos);
-    // } catch (e) {
-    //   log("❌ Error fetching memos: $e");
-    //   state = MemoState.error('메모를 불러오지 못했습니다.');
-    // }
     state = const MemoState.loading();
     try {
-      // 1️⃣ 캐시 먼저 조회
-      final cachedMemos = MemoCache().getAllMemos();
-      if (cachedMemos.isNotEmpty) {
-        state = MemoState.successed(cachedMemos);
-        return;
-      }
-
-      // 2️⃣ 서버에서 가져오기
       final memoModels = await memoRepository.getAllMemos();
       final memos = memoModels?.whereType<MemoModel>().toList() ?? [];
 
-      log("📜 Loaded Memos: ${memos.length}");
-
-      // 3️⃣ 캐시에 저장 후 상태 업데이트
-      MemoCache().addMemos(memos);
+      log("---> memos: $memos");
+      MemoCache().addMemos(memos); // 🔄 캐시에 저장
       state = MemoState.successed(memos);
     } catch (e) {
-      log("❌ 메모 불러오기 오류: $e");
+      log("❌ Error fetching memos: $e");
       state = MemoState.error('메모를 불러오지 못했습니다.');
     }
+    // state = const MemoState.loading();
+    // try {
+    //   // 1️⃣ 캐시 먼저 조회
+    //   final cachedMemos = MemoCache().getAllMemos();
+    //   if (cachedMemos.isNotEmpty) {
+    //     state = MemoState.successed(cachedMemos);
+    //     return;
+    //   }
+
+    //   // 2️⃣ 서버에서 가져오기
+    //   final memoModels = await memoRepository.getAllMemos();
+    //   final memos = memoModels?.whereType<MemoModel>().toList() ?? [];
+
+    //   log("📜 Loaded Memos: ${memos.length}");
+
+    //   // 3️⃣ 캐시에 저장 후 상태 업데이트
+    //   MemoCache().addMemos(memos);
+    //   state = MemoState.successed(memos);
+    // } catch (e) {
+    //   log("❌ 메모 불러오기 오류: $e");
+    //   state = MemoState.error('메모를 불러오지 못했습니다.');
+    // }
   }
 
   /// [특정 메모 가져오기]
