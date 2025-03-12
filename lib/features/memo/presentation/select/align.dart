@@ -21,7 +21,7 @@ class AlignSelect {
       isHighlighted: highlightedIndices,
       onSelect: (selected) {
         ref.read(alignStateProvider.notifier).state = selected;
-        ref.read(memoHomeViewModelProvider.notifier).sortMemos(selected);
+        // ref.read(memoHomeViewModelProvider.notifier).sortMemos(selected);
       },
     );
   }

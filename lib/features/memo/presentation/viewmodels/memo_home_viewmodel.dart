@@ -169,19 +169,19 @@ class MemoHomeViewModel extends StateNotifier<MemoState> {
     );
   }
 
-  void sortMemos(String sortOption) {
-    final List<MemoModel> sortedMemos = [...state.memos];
+//   void sortMemos(String sortOption) {
+//     final List<MemoModel> sortedMemos = [...state.memos];
 
-    switch (sortOption) {
-      case '최근 본 메모':
-        sortedMemos.sort((a, b) => (b.lastViewedAt ?? b.createdAt)
-            .compareTo(a.lastViewedAt ?? a.createdAt));
-      case '최신 작성일':
-        sortedMemos.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-      case '오래된 작성일':
-        sortedMemos.sort((a, b) => a.createdAt.compareTo(b.createdAt));
-    }
+//     switch (sortOption) {
+//       case '최근 본 메모':
+//         sortedMemos.sort((a, b) => (b.lastViewedAt ?? b.createdAt)
+//             .compareTo(a.lastViewedAt ?? a.createdAt));
+//       case '최신 작성일':
+//         sortedMemos.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+//       case '오래된 작성일':
+//         sortedMemos.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+//     }
 
-    state = state.copyWith(memos: sortedMemos);
-  }
+//     state = state.copyWith(memos: sortedMemos);
+//   }
 }
