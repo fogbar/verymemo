@@ -9,6 +9,7 @@ class MemoWritingState {
   final FocusNode focusNode;
   final String debouncedText;
   final ButtonState buttonState;
+  final bool autofocus;
 
   MemoWritingState({
     this.selectedImages = const [],
@@ -18,6 +19,7 @@ class MemoWritingState {
     FocusNode? focusNode,
     this.debouncedText = "",
     this.buttonState = ButtonState.disabled,
+    this.autofocus = true,
   })  : textController = textController ?? TextEditingController(),
         linkController = linkController ?? TextEditingController(),
         focusNode = focusNode ?? FocusNode();
@@ -31,19 +33,17 @@ class MemoWritingState {
     FocusNode? focusNode,
     String? debouncedText,
     ButtonState? buttonState,
+    bool? autofocus,
   }) {
     return MemoWritingState(
       selectedImages: selectedImages ?? this.selectedImages,
       visible: visible ?? this.visible,
-      // textController: textController ??
-      //     TextEditingController(text: this.textController.text),
       textController: textController ?? this.textController,
-      // linkController: linkController ??
-      //     TextEditingController(text: this.linkController.text),
       linkController: linkController ?? this.linkController,
       focusNode: focusNode ?? this.focusNode,
       debouncedText: debouncedText ?? this.debouncedText,
       buttonState: buttonState ?? this.buttonState,
+      autofocus: autofocus ?? this.autofocus,
     );
   }
 

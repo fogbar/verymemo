@@ -24,8 +24,8 @@ class MemoList extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 4),
-                if (!memo.isLocalMemo) //서버에서 받아온 메모만 프로필 표시
+                if (!memo.isLocalMemo) ...[
+                  const SizedBox(height: 4),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: ProfileList(
@@ -34,15 +34,18 @@ class MemoList extends ConsumerWidget {
                       description: "",
                     ),
                   ),
-                const SizedBox(height: 4),
-                if (memo.content != null)
+                ],
+                if (memo.content != null && memo.content!.isNotEmpty) ...[
+                  const SizedBox(height: 4),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: MemoContent(text: memo.content!),
                   ),
-                const SizedBox(height: 4),
-                if (memo.images != null && memo.images!.isNotEmpty)
+                ],
+                if (memo.images != null && memo.images!.isNotEmpty) ...[
+                  const SizedBox(height: 4),
                   MemoImages(memo: memo),
+                ],
                 const SizedBox(height: 4),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),

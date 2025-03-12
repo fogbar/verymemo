@@ -12,15 +12,18 @@ class App extends ConsumerWidget {
     final router = ref.watch(appRouterProvider);
     final theme = ref.watch(themeProvider);
     final dbService = ref.watch(dbServiceProvider);
-    return MaterialApp.router(
-      scaffoldMessengerKey: GlobalKey<ScaffoldMessengerState>(
-        debugLabel: "scaffold_key",
+    return PopScope(
+      canPop: false, // 앱 종료 방지
+      child: MaterialApp.router(
+        scaffoldMessengerKey: GlobalKey<ScaffoldMessengerState>(
+          debugLabel: "scaffold_key",
+        ),
+        routerConfig: router.config,
+        theme: theme,
+        darkTheme: theme,
+        themeMode:
+            ref.watch(isDarkModeProvider) ? ThemeMode.dark : ThemeMode.light,
       ),
-      routerConfig: router.config,
-      theme: theme,
-      darkTheme: theme,
-      themeMode:
-          ref.watch(isDarkModeProvider) ? ThemeMode.dark : ThemeMode.light,
     );
   }
 }

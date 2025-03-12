@@ -64,11 +64,7 @@ class _HomeScaffoldState extends ConsumerState<HomeScaffold> {
                   child: switch (_currentTabIndex) {
                     0 => widget.navigationShell,
                     1 => widget.navigationShell,
-                    2 => GalleryView(
-                        onImageTap: (String imageUrl) {
-                          debugPrint('Image tapped: $imageUrl');
-                        },
-                      ),
+                    2 => const GalleryView(),
                     3 => const LinkList(),
                     _ => widget.navigationShell,
                   },

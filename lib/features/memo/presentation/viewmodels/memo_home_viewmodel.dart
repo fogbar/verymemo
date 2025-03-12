@@ -76,7 +76,7 @@ class MemoHomeViewModel extends StateNotifier<MemoState> {
     }
   }
 
-  // 이미지 관련 로직 추가
+  // 이미지 관련 로직
   bool get isDesktopPlatform =>
       kIsWeb || Platform.isWindows || Platform.isLinux || Platform.isMacOS;
 
@@ -108,15 +108,20 @@ class MemoHomeViewModel extends StateNotifier<MemoState> {
   }
 
 //이미지 상세 뷰 띄우기
-  void showImageDetail(BuildContext context, MemoModel memo, int index) {
+  void showImageDetail(BuildContext context, MemoModel memo, int initialIndex) {
+    final imageUrls = memo.images?.map((e) => e.imageUrl ?? '').toList() ?? [];
+
     showDialog(
       context: context,
       barrierColor: Theme.of(context).colorScheme.surfaceContainerHighest,
       builder: (context) => ImageDetailView(
-        imageUrl: memo.images![index].imageUrl!,
-        imageUrls: memo.images!.map((e) => e.imageUrl.toString()).toList(),
-        currentIndex: index,
+        imageUrl: imageUrls[initialIndex],
+        imageUrls: imageUrls,
+        currentIndex: initialIndex,
         onClose: () => Navigator.pop(context),
+        isLocalFile: memo.isLocalMemo,
+        showDelete: true,
+        showDownload: !memo.isLocalMemo,
       ),
     );
   }

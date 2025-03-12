@@ -109,6 +109,11 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
     state = state.copyWith(
       visible: !state.visible,
     );
+
+    if (state.visible) {
+      // visible이 true로 바뀌면
+      state.focusNode.requestFocus(); // 포커스 요청
+    }
   }
 
   /// 작성 창 확장
