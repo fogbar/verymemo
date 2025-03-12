@@ -1,6 +1,7 @@
 import 'package:verymemo/common/barrel/memo_list.dart';
 import 'package:verymemo/common/barrel/view_common.dart';
 import 'package:verymemo/features/memo/presentation/providers/memo_provider.dart';
+import 'package:verymemo/features/memo/presentation/select/deep_click.dart';
 
 class MemoList extends ConsumerWidget {
   const MemoList({
@@ -13,50 +14,57 @@ class MemoList extends ConsumerWidget {
     final viewModel = ref.read(memoHomeProvider.notifier);
     return state.when(
       initial: () => const Center(child: Text("메모가 없습니다.")),
-      loading: () => Center(),
+      loading: () => const Center(),
       error: (err) => Center(child: Text("오류 발생: $err")),
       successed: (data) => ListView.builder(
         itemCount: data.length,
         itemBuilder: (context, index) {
           final memo = data[index];
           return GestureDetector(
-            onLongPress: () => viewModel.handleMemoLongPress(context, memo),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (!memo.isLocalMemo) ...[
-                  const SizedBox(height: 4),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: ProfileList(
-                      profileImageUrl: memo.profileImageUrl,
-                      userName: memo.userName ?? '',
-                      description: "",
+            onLongPress: () => DeepClickSelect.show(
+              context,
+              memo,
+              (value, memo) => viewModel.handleModalSelection(value, memo),
+            ),
+            child: Container(
+              color: Colors.transparent,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (!memo.isLocalMemo) ...[
+                    const SizedBox(height: 4),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: ProfileList(
+                        profileImageUrl: memo.profileImageUrl,
+                        userName: memo.userName ?? '',
+                        description: "",
+                      ),
                     ),
-                  ),
-                ],
-                if (memo.content != null && memo.content!.isNotEmpty) ...[
+                  ],
+                  if (memo.content != null && memo.content!.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: MemoContent(text: memo.content!),
+                    ),
+                  ],
+                  if (memo.images != null && memo.images!.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    MemoImages(memo: memo),
+                  ],
                   const SizedBox(height: 4),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: MemoContent(text: memo.content!),
+                    child: MemoFooter(createdAt: memo.createdAt),
+                  ),
+                  const SizedBox(height: 4),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Divider(),
                   ),
                 ],
-                if (memo.images != null && memo.images!.isNotEmpty) ...[
-                  const SizedBox(height: 4),
-                  MemoImages(memo: memo),
-                ],
-                const SizedBox(height: 4),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: MemoFooter(createdAt: memo.createdAt),
-                ),
-                const SizedBox(height: 4),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Divider(),
-                ),
-              ],
+              ),
             ),
           );
         },

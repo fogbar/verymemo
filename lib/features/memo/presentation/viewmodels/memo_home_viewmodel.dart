@@ -47,16 +47,7 @@ class MemoHomeViewModel extends StateNotifier<MemoState> {
   }
 
   /// 🔄 [메모 길게 누를 때]
-  void handleMemoLongPress(BuildContext context, MemoModel memo) {
-    ModalSelect.show(
-      context: context,
-      options: ['수정', '북마크', '공유', '공개', '삭제'],
-      onSelect: (value) => _handleModalSelection(value, memo),
-      isHighlighted: [false, false, false, true, true],
-    );
-  }
-
-  void _handleModalSelection(String value, MemoModel memo) {
+  void handleModalSelection(String value, MemoModel memo) {
     switch (value) {
       case '수정':
         updateMemo(memo);

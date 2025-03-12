@@ -7,6 +7,8 @@ class ImageDetailViewModel extends ChangeNotifier {
   late final PageController pageController;
   final TransformationController transformationController =
       TransformationController();
+  double offset = 0;
+  double opacity = 1.0;
 
   ImageDetailViewModel({
     required this.initialIndex,
@@ -34,6 +36,23 @@ class ImageDetailViewModel extends ChangeNotifier {
 
   void handleDelete() {
     // 삭제 로직
+  }
+
+  void handleVerticalDragUpdate(DragUpdateDetails details) {
+    offset += details.delta.dy;
+    opacity = (1 - (offset.abs() / 1000)).clamp(0.5, 1.0);
+    notifyListeners();
+  }
+
+  void handleVerticalDragEnd(DragEndDetails details, BuildContext context) {
+    if (offset.abs() > 100 || details.primaryVelocity! > 200) {
+      Navigator.of(context).pop();
+    } else {
+      // 원위치로 돌아가기
+      offset = 0;
+      opacity = 1.0;
+      notifyListeners();
+    }
   }
 
   @override
