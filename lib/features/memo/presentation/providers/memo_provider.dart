@@ -68,13 +68,26 @@ class MemoNotifier extends StateNotifier<MemoState> {
 
   /// [메모 추가]
   Future<void> addMemo(MemoModel memo) async {
-    state = const MemoState.loading();
     try {
+      state = const MemoState.loading();
       await memoRepository.addMemo(memo);
-      await getAllMemos(); // 이미 getAllMemos에서 정렬을 수행하므로 새로운 메모가 맨 위에 표시됨
+
+      // 메모 추가 후 전체 메모 다시 로드
+      final memoModels = await memoRepository.getAllMemos();
+      final memos = memoModels?.whereType<MemoModel>().toList() ?? [];
+
+      // 작성일 기준 내림차순 정렬 (최신순)
+      memos.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
+      // 캐시 업데이트
+      MemoCache().clearCache(); // 캐시 초기화
+      MemoCache().addMemos(memos);
+
+      state = MemoState.successed(memos);
     } catch (e) {
       log("❌ Error adding memo: $e");
       state = MemoState.error("메모를 추가하지 못했습니다.");
+      rethrow;
     }
   }
 

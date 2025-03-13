@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:verymemo/common/ui/components/button/button_state.dart';
+import 'package:verymemo/features/memo/domain/models/model.dart';
 
 class MemoWritingState {
   final List<String> selectedImages;
+  final List<LinkModel> links;
   final bool visible;
   final TextEditingController textController;
   final TextEditingController linkController;
@@ -15,6 +17,7 @@ class MemoWritingState {
 
   MemoWritingState({
     this.selectedImages = const [],
+    this.links = const [],
     this.visible = false,
     TextEditingController? textController,
     TextEditingController? linkController,
@@ -31,6 +34,7 @@ class MemoWritingState {
   /// 상태 복제 메서드
   MemoWritingState copyWith({
     List<String>? selectedImages,
+    List<LinkModel>? links,
     bool? visible,
     TextEditingController? textController,
     TextEditingController? linkController,
@@ -43,6 +47,7 @@ class MemoWritingState {
   }) {
     return MemoWritingState(
       selectedImages: selectedImages ?? this.selectedImages,
+      links: links ?? this.links,
       visible: visible ?? this.visible,
       textController: textController ?? this.textController,
       linkController: linkController ?? this.linkController,

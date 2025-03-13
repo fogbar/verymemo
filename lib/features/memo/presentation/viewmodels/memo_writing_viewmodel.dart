@@ -4,16 +4,12 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 
-import 'package:flutter/material.dart';
+import 'package:verymemo/common/barrel/model_common.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:verymemo/common/barrel/memo_list.dart';
 import 'package:verymemo/common/barrel/memo_writing.dart';
 import 'package:verymemo/common/ui/components/button/button_state.dart';
 import 'package:verymemo/features/auth/presentation/providers/user_provider.dart';
-import 'package:verymemo/features/memo/presentation/memo_writing_view.dart';
-import 'package:verymemo/features/memo/presentation/providers/memo_provider.dart';
-import 'package:verymemo/features/memo/presentation/providers/state/memo_writing_state.dart';
+import 'package:any_link_preview/any_link_preview.dart';
 
 final memoWritingViewModelProvider =
     StateNotifierProvider<MemoWritingViewModel, MemoWritingState>((ref) {
@@ -121,15 +117,55 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
     );
   }
 
-  /// 링크 입력 완료
-  void addLink(BuildContext context) {
-    final link = state.linkController.text.trim();
-    if (link.isNotEmpty) {
-      // TODO: 여기에 링크 처리 로직 추가
-      state.linkController.clear();
+  /// 링크 입력 감지
+  void _onLinkChanged() {
+    final text = state.linkController.text.trim();
+    if (_isValidUrl(text)) {
       state = state.copyWith(
-        showLinkInput: false,
+        buttonState: ButtonState.primary,
       );
+    }
+  }
+
+  bool _isValidUrl(String url) {
+    if (url.isEmpty) return false;
+    try {
+      final uri = Uri.parse(url);
+      return uri.scheme == 'http' || uri.scheme == 'https';
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /// 링크 추가
+  Future<void> addLink(BuildContext context) async {
+    final url = state.linkController.text.trim();
+    if (_isValidUrl(url) && !state.links.any((link) => link.linkUrl == url)) {
+      try {
+        final metadata = await AnyLinkPreview.getMetadata(
+          link: url,
+          cache: const Duration(days: 7),
+        );
+
+        state = state.copyWith(
+          links: [
+            ...state.links,
+            LinkModel(
+              linkUrl: url,
+              metaTitle: metadata?.title ?? url,
+              metaDescription: metadata?.desc,
+              thumbnail: metadata?.image,
+            )
+          ],
+          showLinkInput: false,
+        );
+      } catch (e) {
+        state = state.copyWith(
+          links: [...state.links, LinkModel(linkUrl: url, metaTitle: url)],
+          showLinkInput: false,
+        );
+      }
+      state.linkController.clear();
     }
   }
 
@@ -178,8 +214,8 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
     state = state.copyWith(
       visible: !state.visible,
       debouncedText: "",
-      // textController: TextEditingController(),
       selectedImages: [],
+      links: [],
       buttonState: ButtonState.disabled,
     );
   }
@@ -193,18 +229,22 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
   /// 메모 데이터 저장
   Future<void> saveMemo() async {
     try {
-      final userId = userProvider.getUser()?.id ?? "UnKwon User";
+      final userId = userProvider.getUser()?.id ?? "1";
+      log("---> 메모 저장 시작");
+      log("---> 텍스트: ${state.debouncedText}");
+      log("---> 이미지: ${state.selectedImages}");
+      log("---> 링크: ${state.links}");
+
       final memoModel = MemoModel(
         userId: userId,
         content: state.debouncedText,
         images: state.selectedImages
             .map((e) => ImageModel(
                   imageUrl: e,
-                  // 이미지가 앱 내부 저장소에 있음을 표시
                   description: 'internal_storage',
                 ))
             .toList(),
-        links: [],
+        links: state.links,
         tags: [],
         createdAt: DateTime.now(),
         updatedAt: null,
@@ -212,18 +252,13 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
         isBookMarked: false,
       );
 
+      log("---> MemoModel 생성 완료: $memoModel");
       await memoProvider.addMemo(memoModel);
-      log("---> 메모 저장 완료! $userId");
-    } catch (e) {
+      log("---> 메모 저장 완료!");
+    } catch (e, stackTrace) {
       log("---> 메모 저장 실패: $e");
+      log("---> 스택트레이스: $stackTrace");
+      rethrow;
     }
-  }
-
-  /// 링크 입력 감지
-  void _onLinkChanged() {
-    // 상태 업데이트를 통해 UI 리빌드
-    state = state.copyWith(
-      showLinkInput: state.showLinkInput,
-    );
   }
 }

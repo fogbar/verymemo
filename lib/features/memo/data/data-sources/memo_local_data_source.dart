@@ -4,6 +4,7 @@ import 'package:verymemo/externals/db/db_service.dart';
 import 'package:verymemo/features/memo/domain/dtos/dto.dart';
 import 'package:verymemo/features/memo/domain/mappers/mapper.dart';
 import 'package:verymemo/features/memo/domain/models/model.dart';
+import 'package:flutter/foundation.dart';
 
 final memoLocalDataSourceProvider = Provider<MemoLocalDataSource>((ref) {
   final dbService = ref.watch(dbServiceProvider);
@@ -22,56 +23,83 @@ class MemoLocalDataSource {
     List<LinkDTO> links = const [],
     List<TagDTO> tags = const [],
   }) async {
+    ("---> DB 저장 시작");
+    ("---> DTO: $dto");
+    ("---> Images: $images");
+    ("---> Links: $links");
+    ("---> Tags: $tags");
+
     final db = await dbService.database;
+    ("---> DB 연결 성공");
 
     // 🔄 트랜잭션 사용해 원자성 확보
     await db.transaction((txn) async {
-      // 🔄 memos 테이블에 저장 및 memoId 획득 (중복 제거)
-      final memoId = await txn.insert(tableName[0], dto.toJson());
+      try {
+        // 🔄 memos 테이블에 저장 및 memoId 획득
+        final memoData = dto.toJson();
+        ("---> Memo 데이터: $memoData");
+        final memoId = await txn.insert(tableName[0], memoData);
+        ("---> Memo 저장 완료. ID: $memoId");
 
-      // 🔄 images 테이블에 저장 (batch 사용)
-      final imageBatch = txn.batch();
-      for (var image in images) {
-        imageBatch.insert(tableName[2], {
-          'memoId': memoId,
-          'imageUrl': image.imageUrl,
-          'description': image.description ?? '',
-        });
-      }
-      await imageBatch.commit(noResult: true);
-
-      // 🔄 links 테이블에 저장 (batch 사용)
-      final linkBatch = txn.batch();
-      for (var link in links) {
-        linkBatch.insert(tableName[3], {
-          'memoId': memoId,
-          'url': link.linkUrl,
-          'thumbnail': link.thumbnail ?? '',
-          'metaTitle': link.metaTitle ?? '',
-          'metaDescription': link.metaDescription ?? '',
-        });
-      }
-      await linkBatch.commit(noResult: true);
-
-      // 🔄 tags 테이블에 저장 및 memo_tags 처리 (batch 사용)
-      final tagBatch = txn.batch();
-      for (var tag in tags) {
-        final tagResult = await txn
-            .query('tags', where: 'tagName = ?', whereArgs: [tag.tagName]);
-        int tagId;
-
-        if (tagResult.isNotEmpty) {
-          tagId = tagResult.first['id'] as int;
-        } else {
-          tagId = await txn.insert(tableName[4], {'tagName': tag.tagName});
+        // 🔄 images 테이블에 저장
+        if (images.isNotEmpty) {
+          final imageBatch = txn.batch();
+          for (var image in images) {
+            imageBatch.insert(tableName[2], {
+              'memoId': memoId,
+              'imageUrl': image.imageUrl,
+              'description': image.description ?? '',
+            });
+          }
+          await imageBatch.commit(noResult: true);
+          ("---> 이미지 저장 완료");
         }
 
-        tagBatch.insert(tableName[5], {
-          'memoId': memoId,
-          'tagId': tagId,
-        });
+        // 🔄 links 테이블에 저장
+        if (links.isNotEmpty) {
+          final linkBatch = txn.batch();
+          for (var link in links) {
+            linkBatch.insert(tableName[3], {
+              'memoId': memoId,
+              'url': link.linkUrl,
+              'thumbnail': link.thumbnail ?? '',
+              'metaTitle': link.metaTitle ?? '',
+              'metaDescription': link.metaDescription ?? '',
+            });
+          }
+          await linkBatch.commit(noResult: true);
+          ("---> 링크 저장 완료");
+        }
+
+        // 🔄 tags 테이블에 저장
+        if (tags.isNotEmpty) {
+          final tagBatch = txn.batch();
+          for (var tag in tags) {
+            final tagResult = await txn
+                .query('tags', where: 'tagName = ?', whereArgs: [tag.tagName]);
+            int tagId;
+
+            if (tagResult.isNotEmpty) {
+              tagId = tagResult.first['id'] as int;
+            } else {
+              tagId = await txn.insert(tableName[4], {'tagName': tag.tagName});
+            }
+
+            tagBatch.insert(tableName[5], {
+              'memoId': memoId,
+              'tagId': tagId,
+            });
+          }
+          await tagBatch.commit(noResult: true);
+          ("---> 태그 저장 완료");
+        }
+
+        ("---> 트랜잭션 완료");
+      } catch (e, stackTrace) {
+        ("---> DB 저장 실패: $e");
+        ("---> 스택트레이스: $stackTrace");
+        rethrow;
       }
-      await tagBatch.commit(noResult: true);
     });
   }
 

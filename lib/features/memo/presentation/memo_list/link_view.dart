@@ -1,22 +1,21 @@
 import 'package:verymemo/common/barrel/memo_list.dart';
-import 'package:verymemo/common/barrel/memo_writing.dart';
 import 'package:verymemo/common/barrel/view_common.dart';
 import 'package:verymemo/common/barrel/list.dart';
 import 'package:verymemo/common/barrel/button.dart';
 
-class LinkList extends ConsumerWidget {
-  // final List<MemoListModel> memos;
+class LinkList extends StatelessWidget {
+  final List<LinkModel> links;
   final Function(String url)? onLinkTap;
 
-  const LinkList({super.key, this.onLinkTap});
+  const LinkList({
+    super.key,
+    required this.links,
+    this.onLinkTap,
+  });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final viewModel = ref.watch(memoProvider.notifier);
-    final links = viewModel.extractLinks();
-
+  Widget build(BuildContext context) {
     return ListView.builder(
-      // padding: const EdgeInsets.symmetric(vertical: 4),
       itemCount: links.length + 2,
       itemBuilder: (context, index) {
         if (index == 0 || index == links.length + 1) {

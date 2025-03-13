@@ -2,7 +2,6 @@ import 'package:verymemo/common/barrel/model_common.dart';
 import 'package:verymemo/common/barrel/memo_writing.dart';
 import 'dart:io';
 import 'package:verymemo/features/memo/presentation/image_detail_view.dart';
-import 'package:verymemo/features/memo/presentation/providers/state/memo_writing_state.dart';
 
 class MemoWritingView extends ConsumerWidget {
   const MemoWritingView({super.key});
@@ -63,52 +62,72 @@ class MemoWritingView extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    height: state.showLinkInput ? 48 : 0,
-                    child: SingleChildScrollView(
-                      child: Container(
-                        height: 48,
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .surfaceVariant
-                              .withOpacity(0.5),
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: TextField(
-                                controller: state.linkController,
-                                decoration: const InputDecoration(
-                                  hintText: "링크를 입력하세요...",
-                                  border: InputBorder.none,
-                                  contentPadding:
-                                      EdgeInsets.symmetric(horizontal: 12),
+                  if (state.showLinkInput)
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      height: state.showLinkInput ? 48 : 0,
+                      child: SingleChildScrollView(
+                        child: Container(
+                          height: 48,
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .surfaceVariant
+                                .withOpacity(0.5),
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  controller: state.linkController,
+                                  decoration: const InputDecoration(
+                                    hintText: "링크를 입력하세요...",
+                                    border: InputBorder.none,
+                                    contentPadding:
+                                        EdgeInsets.symmetric(horizontal: 12),
+                                  ),
                                 ),
                               ),
-                            ),
-                            IconButton(
-                              onPressed:
-                                  state.linkController.text.trim().isEmpty
-                                      ? null
-                                      : () => viewModel.addLink(context),
-                              icon: Icon(
-                                Icons.check,
-                                color: state.linkController.text.trim().isEmpty
-                                    ? Theme.of(context)
-                                        .colorScheme
-                                        .onSurface
-                                        .withOpacity(0.38)
-                                    : Theme.of(context).colorScheme.primary,
+                              IconButton(
+                                onPressed:
+                                    state.linkController.text.trim().isEmpty
+                                        ? null
+                                        : () => viewModel.addLink(context),
+                                icon: Icon(
+                                  Icons.check,
+                                  color: state.linkController.text
+                                          .trim()
+                                          .isEmpty
+                                      ? Theme.of(context)
+                                          .colorScheme
+                                          .onSurface
+                                          .withOpacity(0.38)
+                                      : Theme.of(context).colorScheme.primary,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
+                  if (state.links.isNotEmpty)
+                    SizedBox(
+                      height: 120,
+                      child: LinkList(
+                        links: state.links
+                            .map((url) => LinkModel(
+                                  linkUrl: url.linkUrl,
+                                  metaTitle: url.metaTitle,
+                                  thumbnail: url.thumbnail,
+                                  metaDescription: url.metaDescription,
+                                ))
+                            .toList(),
+                        onLinkTap: (url) {
+                          // URL 클릭 시 처리
+                        },
+                      ),
+                    ),
                   if (state.selectedImages.isNotEmpty)
                     SizedBox(
                       height: 80,
