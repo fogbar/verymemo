@@ -10,6 +10,8 @@ class MemoWritingState {
   final String debouncedText;
   final ButtonState buttonState;
   final bool autofocus;
+  final bool showLinkInput;
+  final bool isExpanded;
 
   MemoWritingState({
     this.selectedImages = const [],
@@ -20,6 +22,8 @@ class MemoWritingState {
     this.debouncedText = "",
     this.buttonState = ButtonState.disabled,
     this.autofocus = true,
+    this.showLinkInput = false,
+    this.isExpanded = false,
   })  : textController = textController ?? TextEditingController(),
         linkController = linkController ?? TextEditingController(),
         focusNode = focusNode ?? FocusNode();
@@ -34,6 +38,8 @@ class MemoWritingState {
     String? debouncedText,
     ButtonState? buttonState,
     bool? autofocus,
+    bool? showLinkInput,
+    bool? isExpanded,
   }) {
     return MemoWritingState(
       selectedImages: selectedImages ?? this.selectedImages,
@@ -44,6 +50,8 @@ class MemoWritingState {
       debouncedText: debouncedText ?? this.debouncedText,
       buttonState: buttonState ?? this.buttonState,
       autofocus: autofocus ?? this.autofocus,
+      showLinkInput: showLinkInput ?? this.showLinkInput,
+      isExpanded: isExpanded ?? this.isExpanded,
     );
   }
 

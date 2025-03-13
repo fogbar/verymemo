@@ -2,6 +2,7 @@ import 'package:verymemo/common/barrel/model_common.dart';
 import 'package:verymemo/common/barrel/memo_writing.dart';
 import 'dart:io';
 import 'package:verymemo/features/memo/presentation/image_detail_view.dart';
+import 'package:verymemo/features/memo/presentation/providers/state/memo_writing_state.dart';
 
 class MemoWritingView extends ConsumerWidget {
   const MemoWritingView({super.key});
@@ -18,11 +19,14 @@ class MemoWritingView extends ConsumerWidget {
         duration: const Duration(milliseconds: 200),
         child: Material(
           color: Colors.transparent,
-          child: Container(
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeInOut,
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.surface,
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(16)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(16),
+              ),
               boxShadow: [
                 BoxShadow(
                   color: Theme.of(context)
@@ -35,9 +39,66 @@ class MemoWritingView extends ConsumerWidget {
                 ),
               ],
             ),
-            height: MediaQuery.of(context).size.height * 0.25,
+            height: _calculateHeight(context, state),
             child: Column(
               children: [
+                Container(
+                  width: 32,
+                  height: 4,
+                  margin: const EdgeInsets.only(top: 8, bottom: 8),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurfaceVariant
+                        .withOpacity(0.4),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  height: state.showLinkInput ? 48 : 0,
+                  child: SingleChildScrollView(
+                    child: Container(
+                      height: 48,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .surfaceVariant
+                            .withOpacity(0.5),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: state.linkController,
+                              decoration: const InputDecoration(
+                                hintText: "링크를 입력하세요...",
+                                border: InputBorder.none,
+                                contentPadding:
+                                    EdgeInsets.symmetric(horizontal: 12),
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: state.linkController.text.trim().isEmpty
+                                ? null
+                                : () => viewModel.addLink(context),
+                            icon: Icon(
+                              Icons.check,
+                              color: state.linkController.text.trim().isEmpty
+                                  ? Theme.of(context)
+                                      .colorScheme
+                                      .onSurface
+                                      .withOpacity(0.38)
+                                  : Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
                 if (state.selectedImages.isNotEmpty)
                   SizedBox(
                     height: 80,
@@ -152,5 +213,17 @@ class MemoWritingView extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  double _calculateHeight(BuildContext context, MemoWritingState state) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
+
+    if (state.selectedImages.isNotEmpty || state.showLinkInput) {
+      return screenHeight * 0.9 + keyboardHeight - bottomPadding;
+    }
+
+    return screenHeight * 0.25;
   }
 }

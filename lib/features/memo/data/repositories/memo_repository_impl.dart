@@ -1,5 +1,6 @@
 import 'dart:developer';
-
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:verymemo/features/memo/data/data-sources/memo_local_data_source.dart';
 import 'package:verymemo/features/memo/domain/mappers/mapper.dart';
@@ -89,6 +90,36 @@ class MemoRepositoryImpl implements MemoRepository {
     } catch (e) {
       log("❌ Error deleting memo: $e");
       return 0; // 🔄 에러 발생 시 0 반환
+    }
+  }
+
+  @override
+  Future<void> cleanupUnusedImages() async {
+    try {
+      final memos = await getAllMemos();
+      final usedImages = <String>{};
+
+      for (var memo in memos ?? []) {
+        for (var image in memo.images) {
+          if (image.imageUrl != null &&
+              image.description == 'internal_storage') {
+            usedImages.add(image.imageUrl!);
+          }
+        }
+      }
+
+      final appDir = await getApplicationDocumentsDirectory();
+      final imageDir = Directory('${appDir.path}/memo_images');
+
+      if (await imageDir.exists()) {
+        await for (var entity in imageDir.list()) {
+          if (entity is File && !usedImages.contains(entity.path)) {
+            await entity.delete();
+          }
+        }
+      }
+    } catch (e) {
+      log("❌ Error cleaning up images: $e");
     }
   }
 }

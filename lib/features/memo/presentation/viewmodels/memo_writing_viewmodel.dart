@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as path;
 
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
@@ -12,8 +14,6 @@ import 'package:verymemo/features/auth/presentation/providers/user_provider.dart
 import 'package:verymemo/features/memo/presentation/memo_writing_view.dart';
 import 'package:verymemo/features/memo/presentation/providers/memo_provider.dart';
 import 'package:verymemo/features/memo/presentation/providers/state/memo_writing_state.dart';
-import 'package:image/image.dart' as img;
-import 'package:path_provider/path_provider.dart';
 
 final memoWritingViewModelProvider =
     StateNotifierProvider<MemoWritingViewModel, MemoWritingState>((ref) {
@@ -33,6 +33,7 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
     // this.writingMenuState,
   ) : super(MemoWritingState()) {
     state.textController.addListener(_onTextChanged);
+    state.linkController.addListener(_onLinkChanged);
   }
 
   @override
@@ -40,6 +41,7 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
     state.textController.dispose();
     state.linkController.dispose();
     state.textController.removeListener(_onTextChanged);
+    state.linkController.removeListener(_onLinkChanged);
     super.dispose();
   }
 
@@ -83,29 +85,27 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
       );
 
       if (result != null && result.files.isNotEmpty) {
-        List<String> fixedImagePaths = [];
+        final appDir = await getApplicationDocumentsDirectory();
+        final imageDir = Directory('${appDir.path}/memo_images');
+        if (!await imageDir.exists()) {
+          await imageDir.create(recursive: true);
+        }
 
+        final newPaths = <String>[];
         for (var file in result.files) {
           if (file.path != null) {
-            final bytes = await File(file.path!).readAsBytes();
-            final image = img.decodeImage(bytes);
+            final fileName =
+                '${DateTime.now().millisecondsSinceEpoch}_${path.basename(file.path!)}';
+            final newPath = '${imageDir.path}/$fileName';
 
-            if (image != null) {
-              final fixedImage = img.bakeOrientation(image);
-              final fixedBytes = img.encodeJpg(fixedImage);
-
-              final tempDir = await getTemporaryDirectory();
-              final tempFile = File(
-                  '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg');
-              await tempFile.writeAsBytes(fixedBytes);
-
-              fixedImagePaths.add(tempFile.path);
-            }
+            // 이미지를 앱 전용 디렉토리로 복사
+            await File(file.path!).copy(newPath);
+            newPaths.add(newPath);
           }
         }
 
         state = state.copyWith(
-          selectedImages: [...state.selectedImages, ...fixedImagePaths],
+          selectedImages: [...state.selectedImages, ...newPaths],
           buttonState: ButtonState.primary,
         );
       }
@@ -115,7 +115,23 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
   }
 
   /// [링크 추가]
-  Future<void> setLinks(BuildContext context) async {}
+  Future<void> setLinks(BuildContext context) async {
+    state = state.copyWith(
+      showLinkInput: !state.showLinkInput,
+    );
+  }
+
+  /// 링크 입력 완료
+  void addLink(BuildContext context) {
+    final link = state.linkController.text.trim();
+    if (link.isNotEmpty) {
+      // TODO: 여기에 링크 처리 로직 추가
+      state.linkController.clear();
+      state = state.copyWith(
+        showLinkInput: false,
+      );
+    }
+  }
 
   /// 이미지 삭제
   void removeImage(int index) {
@@ -139,27 +155,20 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
   void expandWriting(BuildContext context) {
     if (!context.mounted) return;
 
-    final MediaQueryData mediaQuery = MediaQuery.of(context);
-    final double screenHeight = mediaQuery.size.height;
-    final double keyboardHeight = mediaQuery.viewInsets.bottom;
-
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      enableDrag: true,
+      enableDrag: true, // 기본 드래그 활성화
       useSafeArea: true,
       showDragHandle: true,
       backgroundColor: Theme.of(context).colorScheme.surface,
-      builder: (context) => Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        child: SizedBox(
-          height: screenHeight - keyboardHeight - mediaQuery.padding.top,
-          child: const MemoWritingView(),
-        ),
-      ),
+      builder: (context) => const MemoWritingView(),
     );
+  }
+
+  /// 확장 상태 설정
+  void setExpanded(bool expanded) {
+    state = state.copyWith(isExpanded: expanded);
   }
 
   /// 작성 창 닫기
@@ -185,12 +194,16 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
   Future<void> saveMemo() async {
     try {
       final userId = userProvider.getUser()?.id ?? "UnKwon User";
-      // final text = state.textController.text.trim();
       final memoModel = MemoModel(
         userId: userId,
-        content: state.debouncedText, // state.debouncedText,
-        images:
-            state.selectedImages.map((e) => ImageModel(imageUrl: e)).toList(),
+        content: state.debouncedText,
+        images: state.selectedImages
+            .map((e) => ImageModel(
+                  imageUrl: e,
+                  // 이미지가 앱 내부 저장소에 있음을 표시
+                  description: 'internal_storage',
+                ))
+            .toList(),
         links: [],
         tags: [],
         createdAt: DateTime.now(),
@@ -198,11 +211,19 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
         isLocalMemo: true,
         isBookMarked: false,
       );
-      log("저장할 메모 데이터: $memoModel");
+
       await memoProvider.addMemo(memoModel);
       log("---> 메모 저장 완료! $userId");
     } catch (e) {
       log("---> 메모 저장 실패: $e");
     }
+  }
+
+  /// 링크 입력 감지
+  void _onLinkChanged() {
+    // 상태 업데이트를 통해 UI 리빌드
+    state = state.copyWith(
+      showLinkInput: state.showLinkInput,
+    );
   }
 }
