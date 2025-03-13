@@ -13,7 +13,7 @@ class GalleryView extends ConsumerWidget {
 
     return memoState.when(
       initial: () => const Center(child: Text("이미지가 없습니다.")),
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading: () => const SizedBox.shrink(),
       error: (error) => Center(child: Text(error)),
       successed: (memos) {
         final imagesWithMemos = memos
@@ -39,15 +39,21 @@ class GalleryView extends ConsumerWidget {
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  memo.isLocalMemo
-                      ? Image.file(
-                          File(memo.images!.first.imageUrl!),
-                          fit: BoxFit.cover,
-                        )
-                      : Image.network(
-                          memo.images!.first.imageUrl!,
-                          fit: BoxFit.cover,
-                        ),
+                  Hero(
+                    tag: memo.images!.first.imageUrl!,
+                    child: memo.isLocalMemo
+                        ? Image.file(
+                            File(memo.images!.first.imageUrl!),
+                            fit: BoxFit.cover,
+                            cacheWidth: 300,
+                            gaplessPlayback: true,
+                          )
+                        : Image.network(
+                            memo.images!.first.imageUrl!,
+                            fit: BoxFit.cover,
+                            cacheWidth: 300,
+                          ),
+                  ),
                   if (memo.images!.length > 1)
                     Positioned(
                       right: 8,

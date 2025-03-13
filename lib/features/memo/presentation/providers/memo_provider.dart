@@ -1,13 +1,10 @@
 import 'dart:developer';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:verymemo/common/ui/components/modal/modal_select.dart';
 import 'package:verymemo/features/memo/data/repositories/memo_repository_impl.dart';
 import 'package:verymemo/features/memo/domain/caches/memo_cache.dart';
 import 'package:verymemo/features/memo/domain/models/model.dart';
 import 'package:verymemo/features/memo/domain/repositories/memo_repository.dart';
-import 'package:verymemo/features/memo/presentation/image_detail_view.dart';
 import 'package:verymemo/features/memo/presentation/providers/state/memo_state.dart';
 
 final memoProvider = StateNotifierProvider<MemoNotifier, MemoState>((ref) {
@@ -33,35 +30,16 @@ class MemoNotifier extends StateNotifier<MemoState> {
       final memoModels = await memoRepository.getAllMemos();
       final memos = memoModels?.whereType<MemoModel>().toList() ?? [];
 
+      // 작성일 기준 내림차순 정렬 (최신순)
+      memos.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
       log("---> memos: $memos");
-      MemoCache().addMemos(memos); // 🔄 캐시에 저장
+      MemoCache().addMemos(memos);
       state = MemoState.successed(memos);
     } catch (e) {
       log("❌ Error fetching memos: $e");
       state = MemoState.error('메모를 불러오지 못했습니다.');
     }
-    // state = const MemoState.loading();
-    // try {
-    //   // 1️⃣ 캐시 먼저 조회
-    //   final cachedMemos = MemoCache().getAllMemos();
-    //   if (cachedMemos.isNotEmpty) {
-    //     state = MemoState.successed(cachedMemos);
-    //     return;
-    //   }
-
-    //   // 2️⃣ 서버에서 가져오기
-    //   final memoModels = await memoRepository.getAllMemos();
-    //   final memos = memoModels?.whereType<MemoModel>().toList() ?? [];
-
-    //   log("📜 Loaded Memos: ${memos.length}");
-
-    //   // 3️⃣ 캐시에 저장 후 상태 업데이트
-    //   MemoCache().addMemos(memos);
-    //   state = MemoState.successed(memos);
-    // } catch (e) {
-    //   log("❌ 메모 불러오기 오류: $e");
-    //   state = MemoState.error('메모를 불러오지 못했습니다.');
-    // }
   }
 
   /// [특정 메모 가져오기]
@@ -93,11 +71,7 @@ class MemoNotifier extends StateNotifier<MemoState> {
     state = const MemoState.loading();
     try {
       await memoRepository.addMemo(memo);
-      // MemoCache().addMemos([...MemoCache().getAllMemos(), memo]);
-      log("---> 메모가 추가됐어요: ${memo.content}");
-      await getAllMemos(); // 🔄 목록 갱신
-
-      state = MemoState.successed(MemoCache().getAllMemos());
+      await getAllMemos(); // 이미 getAllMemos에서 정렬을 수행하므로 새로운 메모가 맨 위에 표시됨
     } catch (e) {
       log("❌ Error adding memo: $e");
       state = MemoState.error("메모를 추가하지 못했습니다.");

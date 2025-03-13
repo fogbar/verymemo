@@ -52,8 +52,10 @@ dependencies:
   flutter_svg: ^2.0.17
   cached_network_image: ^3.4.1
   lottie: ^3.3.1
-  file_picker: ^9.0.2
+  file_picker: ^9.0.2  
   flutter_file_dialog: ^3.0.1
+  image: ^4.0.17 
+  path_provider: ^2.1.1
 
   # 토스트 메시지
   fluttertoast: ^8.2.12
@@ -69,7 +71,6 @@ dependencies:
   # 기타
   device_info_plus: ^10.0.1
   path: ^1.9.0
-  path_provider: ^2.1.5
   smooth_page_indicator: ^1.2.0+3
   flutter_native_splash: ^2.4.4
   crypto: ^3.0.3

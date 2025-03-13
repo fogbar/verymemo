@@ -36,8 +36,11 @@ class _HomeScaffoldState extends ConsumerState<HomeScaffold> {
           body: SafeArea(
             child: CustomScrollView(
               slivers: [
-                SliverToBoxAdapter(
-                  child: VariableHeader(
+                SliverAppBar(
+                  floating: true,
+                  snap: true,
+                  pinned: false,
+                  flexibleSpace: VariableHeader(
                     type: widget.navigationShell.currentIndex == 0
                         ? HeaderType.date
                         : HeaderType.logo,

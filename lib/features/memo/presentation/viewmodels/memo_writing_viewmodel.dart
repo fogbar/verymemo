@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
@@ -11,6 +12,8 @@ import 'package:verymemo/features/auth/presentation/providers/user_provider.dart
 import 'package:verymemo/features/memo/presentation/memo_writing_view.dart';
 import 'package:verymemo/features/memo/presentation/providers/memo_provider.dart';
 import 'package:verymemo/features/memo/presentation/providers/state/memo_writing_state.dart';
+import 'package:image/image.dart' as img;
+import 'package:path_provider/path_provider.dart';
 
 final memoWritingViewModelProvider =
     StateNotifierProvider<MemoWritingViewModel, MemoWritingState>((ref) {
@@ -80,13 +83,29 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
       );
 
       if (result != null && result.files.isNotEmpty) {
-        final paths = result.files
-            .where((file) => file.path != null)
-            .map((file) => file.path!)
-            .toList();
+        List<String> fixedImagePaths = [];
+
+        for (var file in result.files) {
+          if (file.path != null) {
+            final bytes = await File(file.path!).readAsBytes();
+            final image = img.decodeImage(bytes);
+
+            if (image != null) {
+              final fixedImage = img.bakeOrientation(image);
+              final fixedBytes = img.encodeJpg(fixedImage);
+
+              final tempDir = await getTemporaryDirectory();
+              final tempFile = File(
+                  '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg');
+              await tempFile.writeAsBytes(fixedBytes);
+
+              fixedImagePaths.add(tempFile.path);
+            }
+          }
+        }
 
         state = state.copyWith(
-          selectedImages: [...state.selectedImages, ...paths],
+          selectedImages: [...state.selectedImages, ...fixedImagePaths],
           buttonState: ButtonState.primary,
         );
       }
