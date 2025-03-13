@@ -11,219 +11,219 @@ class MemoWritingView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(memoWritingViewModelProvider);
     final viewModel = ref.read(memoWritingViewModelProvider.notifier);
+    final screenHeight = MediaQuery.of(context).size.height;
+    final maxHeight = screenHeight * 0.5;
+
     return PopScope(
       canPop: true,
       onPopInvokedWithResult: (didPop, _) => viewModel.onWillPop(),
-      child: AnimatedOpacity(
-        opacity: state.opacity,
-        duration: const Duration(milliseconds: 200),
-        child: Material(
-          color: Colors.transparent,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            curve: Curves.easeInOut,
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface,
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(16),
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .inverseSurface
-                      .withOpacity(0.1),
-                  blurRadius: 40,
-                  offset: const Offset(0, -6),
-                  spreadRadius: 8,
+      child: Positioned(
+        bottom: 0,
+        left: 0,
+        right: 0,
+        child: AnimatedOpacity(
+          opacity: state.opacity,
+          duration: const Duration(milliseconds: 200),
+          child: Material(
+            color: Colors.transparent,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeInOut,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(16),
                 ),
-              ],
-            ),
-            height: _calculateHeight(context, state),
-            child: Column(
-              children: [
-                Container(
-                  width: 32,
-                  height: 4,
-                  margin: const EdgeInsets.only(top: 8, bottom: 8),
-                  decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
                     color: Theme.of(context)
                         .colorScheme
-                        .onSurfaceVariant
-                        .withOpacity(0.4),
-                    borderRadius: BorderRadius.circular(2),
+                        .inverseSurface
+                        .withOpacity(0.1),
+                    blurRadius: 40,
+                    offset: const Offset(0, -6),
+                    spreadRadius: 8,
                   ),
-                ),
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  height: state.showLinkInput ? 48 : 0,
-                  child: SingleChildScrollView(
-                    child: Container(
-                      height: 48,
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .surfaceVariant
-                            .withOpacity(0.5),
+                ],
+              ),
+              height: state.selectedImages.isNotEmpty || state.showLinkInput
+                  ? maxHeight
+                  : screenHeight * 0.25,
+              child: Column(
+                children: [
+                  Container(
+                    width: 32,
+                    height: 4,
+                    margin: const EdgeInsets.only(top: 8, bottom: 8),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurfaceVariant
+                          .withOpacity(0.4),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    height: state.showLinkInput ? 48 : 0,
+                    child: SingleChildScrollView(
+                      child: Container(
+                        height: 48,
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .surfaceVariant
+                              .withOpacity(0.5),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: TextField(
+                                controller: state.linkController,
+                                decoration: const InputDecoration(
+                                  hintText: "링크를 입력하세요...",
+                                  border: InputBorder.none,
+                                  contentPadding:
+                                      EdgeInsets.symmetric(horizontal: 12),
+                                ),
+                              ),
+                            ),
+                            IconButton(
+                              onPressed:
+                                  state.linkController.text.trim().isEmpty
+                                      ? null
+                                      : () => viewModel.addLink(context),
+                              icon: Icon(
+                                Icons.check,
+                                color: state.linkController.text.trim().isEmpty
+                                    ? Theme.of(context)
+                                        .colorScheme
+                                        .onSurface
+                                        .withOpacity(0.38)
+                                    : Theme.of(context).colorScheme.primary,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
+                    ),
+                  ),
+                  if (state.selectedImages.isNotEmpty)
+                    SizedBox(
+                      height: 80,
+                      child: ListView.separated(
+                        padding: const EdgeInsets.only(
+                          left: 16.0,
+                          right: 16.0,
+                          top: 16.0,
+                        ),
+                        scrollDirection: Axis.horizontal,
+                        itemCount: state.selectedImages.length,
+                        separatorBuilder: (_, __) => const SizedBox(width: 8),
+                        itemBuilder: (context, index) {
+                          return Stack(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  showDialog(
+                                    context: context,
+                                    barrierColor: Theme.of(context)
+                                        .colorScheme
+                                        .surfaceContainerHighest,
+                                    builder: (context) => ImageDetailView(
+                                      imageUrl: state.selectedImages[index],
+                                      imageUrls: state.selectedImages,
+                                      currentIndex: index,
+                                      onClose: () => Navigator.pop(context),
+                                      isLocalFile: true,
+                                      showDelete: true,
+                                      showDownload: false,
+                                    ),
+                                  );
+                                },
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Image.file(
+                                    File(state.selectedImages[index]),
+                                    width: 64,
+                                    height: 64,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                top: 4,
+                                right: 4,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    viewModel.removeImage(index);
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.all(6),
+                                    decoration: BoxDecoration(
+                                      color:
+                                          Theme.of(context).colorScheme.surface,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Icon(
+                                      Icons.close,
+                                      size: 16,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
                       child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
                             child: TextField(
-                              controller: state.linkController,
+                              controller: state.textController,
+                              focusNode: state.focusNode,
+                              autofocus: true,
+                              showCursor: true,
+                              enableInteractiveSelection: true,
+                              expands: true,
+                              keyboardType: TextInputType.multiline,
+                              textAlignVertical: TextAlignVertical.top,
+                              maxLines: null,
                               decoration: const InputDecoration(
-                                hintText: "링크를 입력하세요...",
+                                hintText: "내용을 입력하세요...",
                                 border: InputBorder.none,
-                                contentPadding:
-                                    EdgeInsets.symmetric(horizontal: 12),
+                                filled: false,
+                                fillColor: Colors.transparent,
+                                contentPadding: EdgeInsets.zero,
                               ),
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: state.linkController.text.trim().isEmpty
-                                ? null
-                                : () => viewModel.addLink(context),
-                            icon: Icon(
-                              Icons.check,
-                              color: state.linkController.text.trim().isEmpty
-                                  ? Theme.of(context)
-                                      .colorScheme
-                                      .onSurface
-                                      .withOpacity(0.38)
-                                  : Theme.of(context).colorScheme.primary,
                             ),
                           ),
                         ],
                       ),
                     ),
                   ),
-                ),
-                if (state.selectedImages.isNotEmpty)
-                  SizedBox(
-                    height: 80,
-                    child: ListView.separated(
-                      padding: const EdgeInsets.only(
-                        left: 16.0,
-                        right: 16.0,
-                        top: 16.0,
-                      ),
-                      scrollDirection: Axis.horizontal,
-                      itemCount: state.selectedImages.length,
-                      separatorBuilder: (_, __) => const SizedBox(width: 8),
-                      itemBuilder: (context, index) {
-                        return Stack(
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                showDialog(
-                                  context: context,
-                                  barrierColor: Theme.of(context)
-                                      .colorScheme
-                                      .surfaceContainerHighest,
-                                  builder: (context) => ImageDetailView(
-                                    imageUrl: state.selectedImages[index],
-                                    imageUrls: state.selectedImages,
-                                    currentIndex: index,
-                                    onClose: () => Navigator.pop(context),
-                                    isLocalFile: true,
-                                    showDelete: true,
-                                    showDownload: false,
-                                  ),
-                                );
-                              },
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: Image.file(
-                                  File(state.selectedImages[index]),
-                                  width: 64,
-                                  height: 64,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              top: 4,
-                              right: 4,
-                              child: GestureDetector(
-                                onTap: () {
-                                  viewModel.removeImage(index);
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.all(6),
-                                  decoration: BoxDecoration(
-                                    color:
-                                        Theme.of(context).colorScheme.surface,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Icon(
-                                    Icons.close,
-                                    size: 16,
-                                    color:
-                                        Theme.of(context).colorScheme.onSurface,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
+                  WritingMenuBar(
+                    onGalleryTap: () => viewModel.pickImages(context),
+                    onLinkTap: () => viewModel.setLinks(context),
+                    onUploadTap: () async {
+                      await viewModel.onUploadTab(context);
+                    },
                   ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: state.textController,
-                            focusNode: state.focusNode,
-                            autofocus: true,
-                            showCursor: true,
-                            enableInteractiveSelection: true,
-                            expands: true,
-                            keyboardType: TextInputType.multiline,
-                            textAlignVertical: TextAlignVertical.top,
-                            maxLines: null,
-                            decoration: const InputDecoration(
-                              hintText: "내용을 입력하세요...",
-                              border: InputBorder.none,
-                              filled: false,
-                              fillColor: Colors.transparent,
-                              contentPadding: EdgeInsets.zero,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                WritingMenuBar(
-                  onGalleryTap: () => viewModel.pickImages(context),
-                  onLinkTap: () => viewModel.setLinks(context),
-                  onUploadTap: () async {
-                    await viewModel.onUploadTab(context);
-                  },
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
       ),
     );
-  }
-
-  double _calculateHeight(BuildContext context, MemoWritingState state) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
-    final bottomPadding = MediaQuery.of(context).padding.bottom;
-
-    if (state.selectedImages.isNotEmpty || state.showLinkInput) {
-      return screenHeight * 0.9 + keyboardHeight - bottomPadding;
-    }
-
-    return screenHeight * 0.25;
   }
 }
