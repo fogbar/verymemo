@@ -28,16 +28,22 @@ class MemoNotifier extends StateNotifier<MemoState> {
     state = const MemoState.loading();
     try {
       final memoModels = await memoRepository.getAllMemos();
-      final memos = memoModels?.whereType<MemoModel>().toList() ?? [];
+      log("---> 가져온 원본 메모: $memoModels");
+
+      final memos = memoModels?.where((memo) {
+            log("---> 메모 이미지: ${memo.images}");
+            return memo != null;
+          }).toList() ??
+          [];
 
       // 작성일 기준 내림차순 정렬 (최신순)
       memos.sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
-      log("---> memos: $memos");
       MemoCache().addMemos(memos);
       state = MemoState.successed(memos);
-    } catch (e) {
+    } catch (e, stack) {
       log("❌ Error fetching memos: $e");
+      log("❌ Stack trace: $stack");
       state = MemoState.error('메모를 불러오지 못했습니다.');
     }
   }

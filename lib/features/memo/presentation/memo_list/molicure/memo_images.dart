@@ -3,6 +3,7 @@ import 'package:verymemo/common/barrel/view_common.dart';
 import 'package:verymemo/features/memo/domain/models/model.dart';
 import 'package:verymemo/features/memo/presentation/viewmodels/memo_home_viewmodel.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'dart:io';
 
 //이미지 캐싱 추가함
 class MemoImages extends ConsumerWidget {
@@ -59,11 +60,34 @@ class _CarouselView extends StatelessWidget {
                 child: GestureDetector(
                   onTap: () => viewModel.showImageDetail(context, memo, index),
                   child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: ImageUtil.showImage(
-                        imageUrls[index].imageUrl!,
-                        size: Size(imageSize, imageSize),
-                      )),
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.file(
+                      File(imageUrls[index].imageUrl!),
+                      width: imageSize,
+                      height: imageSize,
+                      fit: BoxFit.cover,
+                      cacheWidth: (imageSize * 2).toInt(),
+                      frameBuilder:
+                          (context, child, frame, wasSynchronouslyLoaded) {
+                        if (wasSynchronouslyLoaded) return child;
+                        return AnimatedOpacity(
+                          opacity: frame == null ? 0 : 1,
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeOut,
+                          child: child,
+                        );
+                      },
+                      errorBuilder: (context, error, stackTrace) {
+                        print('Image error: $error');
+                        return Container(
+                          width: imageSize,
+                          height: imageSize,
+                          color: Colors.grey[200],
+                          child: const Icon(Icons.error_outline),
+                        );
+                      },
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -101,8 +125,8 @@ class _GridView extends StatelessWidget {
             child: viewModel.shouldShowRemainingCount(imageUrls, index)
                 ? _RemainingCountOverlay(
                     memo: memo, url: url, viewModel: viewModel)
-                : Image.network(
-                    url,
+                : Image.file(
+                    File(url),
                     fit: BoxFit.cover,
                     cacheWidth: 300,
                     frameBuilder:
@@ -113,6 +137,15 @@ class _GridView extends StatelessWidget {
                         duration: const Duration(milliseconds: 300),
                         curve: Curves.easeOut,
                         child: child,
+                      );
+                    },
+                    errorBuilder: (context, error, stackTrace) {
+                      print('Image error: $error');
+                      return Container(
+                        width: 300,
+                        height: 300,
+                        color: Colors.grey[200],
+                        child: const Icon(Icons.error_outline),
                       );
                     },
                   ),
@@ -159,17 +192,16 @@ class _RemainingCountOverlay extends StatelessWidget {
     return Stack(
       fit: StackFit.expand,
       children: [
-        Image.network(
-          url,
+        Image.file(
+          File(url),
           fit: BoxFit.cover,
-          cacheWidth: 300,
-          frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-            if (wasSynchronouslyLoaded) return child;
-            return AnimatedOpacity(
-              opacity: frame == null ? 0 : 1,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeOut,
-              child: child,
+          errorBuilder: (context, error, stackTrace) {
+            ('Image error: $error');
+            return Container(
+              width: 300,
+              height: 300,
+              color: Colors.grey[200],
+              child: const Icon(Icons.error_outline),
             );
           },
         ),
