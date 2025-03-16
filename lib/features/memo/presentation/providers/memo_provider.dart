@@ -21,6 +21,7 @@ class MemoNotifier extends StateNotifier<MemoState> {
   /// [초기 데터 로드]
   Future<void> _initialize() async {
     await getAllMemos();
+    // await deleteMemo([20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]);
   }
 
   /// [모든 메모 가져오기] : 초기에 한 번 모든 메모를 로드한다
@@ -31,7 +32,7 @@ class MemoNotifier extends StateNotifier<MemoState> {
       final memos = memoModels?.whereType<MemoModel>().toList() ?? [];
 
       // 작성일 기준 내림차순 정렬 (최신순)
-      memos.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      // memos.sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
       log("---> memos: $memos");
       MemoCache().addMemos(memos);

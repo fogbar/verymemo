@@ -29,13 +29,13 @@ class DbService {
     );
   }
 
-  Future<Database> testInitDB(List<String> tableSchemas) async {
-    return await _openDB(
-      'test_$appName.db',
-      version: 1,
-      tableSchemas: tableSchemas,
-    );
-  }
+  // Future<Database> testInitDB(List<String> tableSchemas) async {
+  //   return await _openDB(
+  //     'test_$appName.db',
+  //     version: 1,
+  //     tableSchemas: tableSchemas,
+  //   );
+  // }
 
   Future<Database> _openDB(
     String dbName, {
@@ -67,6 +67,8 @@ class DbService {
         for (final schema in tableSchemas) {
           await db.execute(schema);
         }
+
+        // await db.execute('DROP TABLE links');
       },
     );
   }

@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS images (
 CREATE TABLE IF NOT EXISTS links (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   memoId INTEGER NOT NULL,
-  url TEXT NOT NULL,
+  linkUrl TEXT NOT NULL,
   thumbnail TEXT,
   metaTitle TEXT,
   metaDescription TEXT,

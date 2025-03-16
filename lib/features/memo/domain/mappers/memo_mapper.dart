@@ -6,8 +6,8 @@ class MemoMapper {
     return MemoDTO(
       userId: model.user?.id ?? model.userId ?? "",
       content: model.content,
-      createdAt: model.createdAt.toIso8601String(),
-      updatedAt: model.updatedAt?.toIso8601String(),
+      createdAt: _dateTimeToString(model.createdAt),
+      updatedAt: _dateTimeToString(model.updatedAt),
       isLocalMemo: model.isLocalMemo ? 1 : 0,
       isBookMarked: model.isBookMarked ? 1 : 0,
     );
@@ -22,7 +22,7 @@ class MemoMapper {
   }) {
     return MemoModel(
       memoId: dto.id,
-      userId: dto.userId,
+      userId: dto.userId?.toString(),
       content: dto.content ?? "",
       images: images
           .map((img) => ImageModel(
@@ -33,11 +33,27 @@ class MemoMapper {
               LinkModel(linkUrl: lnk.linkUrl, metaTitle: lnk.metaTitle))
           .toList(),
       tags: tags.map((tag) => TagModel(tagName: tag.tagName)).toList(),
-      createdAt:
-          DateTime.parse(dto.createdAt ?? DateTime.now().toIso8601String()),
-      updatedAt: dto.updatedAt != null ? DateTime.parse(dto.updatedAt!) : null,
+      createdAt: _stringToDateTime(dto.createdAt),
+      updatedAt: _stringToDateTime(dto.updatedAt),
       isLocalMemo: dto.isLocalMemo == 1,
       isBookMarked: dto.isBookMarked == 1,
     );
+  }
+
+  // 🔄 DateTime → String 변환 (ISO 8601 형식)
+  static String? _dateTimeToString(DateTime? dateTime) {
+    return dateTime?.toIso8601String();
+  }
+
+  // 🔄 String → DateTime 변환 (예외 처리 추가)
+  static DateTime _stringToDateTime(String? dateTimeString) {
+    if (dateTimeString == null || dateTimeString.isEmpty) {
+      return DateTime.now(); // 기본값 설정
+    }
+    try {
+      return DateTime.parse(dateTimeString);
+    } catch (e) {
+      return DateTime.now(); // 파싱 오류 시 현재 시간 반환
+    }
   }
 }

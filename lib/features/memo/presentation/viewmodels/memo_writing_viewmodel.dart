@@ -209,8 +209,6 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
 
   /// 작성 창 닫기
   void closeWriting(BuildContext context) {
-    state.textController.clear();
-    state.linkController.clear();
     state = state.copyWith(
       visible: !state.visible,
       debouncedText: "",
@@ -218,6 +216,8 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
       links: [],
       buttonState: ButtonState.disabled,
     );
+    state.textController.clear();
+    state.linkController.clear();
   }
 
   /// 업로드 처리
@@ -254,7 +254,7 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
 
       log("---> MemoModel 생성 완료: $memoModel");
       await memoProvider.addMemo(memoModel);
-      log("---> 메모 저장 완료!");
+      log("---> 메모 저장 완료! ${memoModel.toJson()}");
     } catch (e, stackTrace) {
       log("---> 메모 저장 실패: $e");
       log("---> 스택트레이스: $stackTrace");

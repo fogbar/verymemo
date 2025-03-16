@@ -1,10 +1,11 @@
+import 'dart:developer';
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:verymemo/externals/db/db_scheme.dart';
 import 'package:verymemo/externals/db/db_service.dart';
 import 'package:verymemo/features/memo/domain/dtos/dto.dart';
 import 'package:verymemo/features/memo/domain/mappers/mapper.dart';
 import 'package:verymemo/features/memo/domain/models/model.dart';
-import 'package:flutter/foundation.dart';
 
 final memoLocalDataSourceProvider = Provider<MemoLocalDataSource>((ref) {
   final dbService = ref.watch(dbServiceProvider);
@@ -23,14 +24,7 @@ class MemoLocalDataSource {
     List<LinkDTO> links = const [],
     List<TagDTO> tags = const [],
   }) async {
-    ("---> DB 저장 시작");
-    ("---> DTO: $dto");
-    ("---> Images: $images");
-    ("---> Links: $links");
-    ("---> Tags: $tags");
-
     final db = await dbService.database;
-    ("---> DB 연결 성공");
 
     // 🔄 트랜잭션 사용해 원자성 확보
     await db.transaction((txn) async {
@@ -59,16 +53,18 @@ class MemoLocalDataSource {
         if (links.isNotEmpty) {
           final linkBatch = txn.batch();
           for (var link in links) {
+            if (link.linkUrl.isEmpty) {
+              continue;
+            }
             linkBatch.insert(tableName[3], {
               'memoId': memoId,
-              'url': link.linkUrl,
+              'linkUrl': link.linkUrl,
               'thumbnail': link.thumbnail ?? '',
               'metaTitle': link.metaTitle ?? '',
               'metaDescription': link.metaDescription ?? '',
             });
           }
           await linkBatch.commit(noResult: true);
-          ("---> 링크 저장 완료");
         }
 
         // 🔄 tags 테이블에 저장
@@ -106,46 +102,51 @@ class MemoLocalDataSource {
   /// [Read Memo]
   Future<List<MemoModel>?> getAllMemos() async {
     final db = await dbService.database;
-    if (!db.isOpen) return null;
-    final memoResults = await db.query(tableName[0]);
+    try {
+      if (!db.isOpen) return null;
+      final memoResults = await db.query(tableName[0]);
 
-    // 🔄 memoId별로 images, links, tags 불러오기
-    List<MemoModel> memoModels = [];
-    for (var memo in memoResults) {
-      final memoId = memo['id'] as int;
+      // 🔄 memoId별로 images, links, tags 불러오기
+      List<MemoModel> memoModels = [];
+      for (var memo in memoResults) {
+        final memoId = memo['id'] as int;
 
-      // 🔄 images 불러오기
-      final imageResults = await db.query(
-        tableName[2],
-        where: 'memoId = ?',
-        whereArgs: [memoId],
-      );
+        // 🔄 images 불러오기
+        final imageResults = await db.query(
+          tableName[2],
+          where: 'memoId = ?',
+          whereArgs: [memoId],
+        );
 
-      // 🔄 links 불러오기
-      final linkResults = await db.query(
-        tableName[3],
-        where: 'memoId = ?',
-        whereArgs: [memoId],
-      );
+        // 🔄 links 불러오기
+        final linkResults = await db.query(
+          tableName[3],
+          where: 'memoId = ?',
+          whereArgs: [memoId],
+        );
 
-      // 🔄 tags 불러오기 (N:M 관계 처리)
-      final tagResults = await db.rawQuery('''
+        // 🔄 tags 불러오기 (N:M 관계 처리)
+        final tagResults = await db.rawQuery('''
       SELECT t.* FROM tags t
       INNER JOIN memo_tags mt ON t.id = mt.tagId
       WHERE mt.memoId = ?
     ''', [memoId]);
+        // 🔄 MemoDTO → MemoModel 변환 + 확장
+        final memoDTO = MemoDTO.fromJson2(memo);
+        log("image: ${imageResults} \n link: $linkResults \n tag: $tagResults");
+        memoModels.add(MemoMapper.toModel(
+          memoDTO,
+          images: imageResults.map((e) => ImageDTO.fromJson(e)).toList(),
+          links: linkResults.map((e) => LinkDTO.fromJson(e)).toList(),
+          tags: tagResults.map((e) => TagDTO.fromJson(e)).toList(),
+        ));
+      }
 
-      // 🔄 MemoDTO → MemoModel 변환 + 확장
-      final memoDTO = MemoDTO.fromJson(memo);
-      memoModels.add(MemoMapper.toModel(
-        memoDTO,
-        images: imageResults.map((e) => ImageDTO.fromJson(e)).toList(),
-        links: linkResults.map((e) => LinkDTO.fromJson(e)).toList(),
-        tags: tagResults.map((e) => TagDTO.fromJson(e)).toList(),
-      ));
+      return memoModels;
+    } catch (e) {
+      log("---> getAllMemos Error: ${e}");
+      return null;
     }
-
-    return memoModels;
   }
 
   Future<MemoModel?> getMemoById(int memoId) async {

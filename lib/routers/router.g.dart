@@ -10,6 +10,7 @@ List<RouteBase> get $appRoutes => [
       $introShell,
       $homeShell,
       $detailShell,
+      $emptyShell,
     ];
 
 RouteBase get $introShell => StatefulShellRouteData.$route(
@@ -223,16 +224,16 @@ RouteBase get $detailShell => StatefulShellRouteData.$route(
         StatefulShellBranchData.$branch(
           routes: [
             GoRouteData.$route(
-              path: '/delete',
-              factory: $DeleteRouteExtension._fromState,
+              path: '/detail',
+              factory: $DetailRouteExtension._fromState,
             ),
           ],
         ),
         StatefulShellBranchData.$branch(
           routes: [
             GoRouteData.$route(
-              path: '/search',
-              factory: $SearchRouteExtension._fromState,
+              path: '/delete',
+              factory: $DeleteRouteExtension._fromState,
             ),
           ],
         ),
@@ -268,6 +269,23 @@ extension $EditRouteExtension on EditRoute {
   void replace(BuildContext context) => context.replace(location);
 }
 
+extension $DetailRouteExtension on DetailRoute {
+  static DetailRoute _fromState(GoRouterState state) => const DetailRoute();
+
+  String get location => GoRouteData.$location(
+        '/detail',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
 extension $DeleteRouteExtension on DeleteRoute {
   static DeleteRoute _fromState(GoRouterState state) => const DeleteRoute();
 
@@ -285,11 +303,11 @@ extension $DeleteRouteExtension on DeleteRoute {
   void replace(BuildContext context) => context.replace(location);
 }
 
-extension $SearchRouteExtension on SearchRoute {
-  static SearchRoute _fromState(GoRouterState state) => const SearchRoute();
+extension $SettingsRouteExtension on SettingsRoute {
+  static SettingsRoute _fromState(GoRouterState state) => const SettingsRoute();
 
   String get location => GoRouteData.$location(
-        '/search',
+        '/settings',
       );
 
   void go(BuildContext context) => context.go(location);
@@ -302,11 +320,29 @@ extension $SearchRouteExtension on SearchRoute {
   void replace(BuildContext context) => context.replace(location);
 }
 
-extension $SettingsRouteExtension on SettingsRoute {
-  static SettingsRoute _fromState(GoRouterState state) => const SettingsRoute();
+RouteBase get $emptyShell => StatefulShellRouteData.$route(
+      factory: $EmptyShellExtension._fromState,
+      branches: [
+        StatefulShellBranchData.$branch(
+          routes: [
+            GoRouteData.$route(
+              path: '/search',
+              factory: $SearchRouteExtension._fromState,
+            ),
+          ],
+        ),
+      ],
+    );
+
+extension $EmptyShellExtension on EmptyShell {
+  static EmptyShell _fromState(GoRouterState state) => EmptyShell();
+}
+
+extension $SearchRouteExtension on SearchRoute {
+  static SearchRoute _fromState(GoRouterState state) => const SearchRoute();
 
   String get location => GoRouteData.$location(
-        '/settings',
+        '/search',
       );
 
   void go(BuildContext context) => context.go(location);

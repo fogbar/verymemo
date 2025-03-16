@@ -1,5 +1,4 @@
 import 'package:verymemo/common/barrel/view_common.dart';
-import 'package:verymemo/features/memo/presentation/viewmodels/memo_home_viewmodel.dart';
 
 final alignStateProvider = StateProvider<String>((ref) => '최근 본 메모');
 
