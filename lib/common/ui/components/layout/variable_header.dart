@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:verymemo/common/ui/components/button/icon_btn.dart';
 import 'package:verymemo/common/utils/image_util.dart';
-import 'package:verymemo/common/ui/components/input/inputbox/inputbox.dart';
-import 'package:verymemo/common/ui/components/input/inputbox/config_inputbox.dart';
 
 enum HeaderType { date, logo, content, searchBar, imageviewer }
 
@@ -51,24 +49,30 @@ class VariableHeader extends StatelessWidget {
   final HeaderType type;
   final VoidCallback? onBack;
   final VoidCallback? onSearch;
+  final Function(String)? onSearchChanged;
+  final VoidCallback? onSearchClear;
   final VoidCallback? onSort;
   final VoidCallback? onMore;
   final VoidCallback? onDelete;
   final VoidCallback? onDownload;
   final bool showDelete;
   final bool showDownload;
+  final FocusNode? focusNode;
 
   const VariableHeader({
     super.key,
     required this.type,
     this.onBack,
     this.onSearch,
+    this.onSearchChanged,
+    this.onSearchClear,
     this.onSort,
     this.onMore,
     this.onDelete,
     this.onDownload,
     this.showDelete = true,
     this.showDownload = true,
+    this.focusNode,
   });
 
   @override
@@ -189,21 +193,28 @@ class VariableHeader extends StatelessWidget {
       children: [
         if (config.showBackArrow)
           SizedBox(
-            width: 48, // 아이콘 버튼의 고정 너비
+            width: 48,
             child: IconBtn(iconKey: "back", onTap: onBack, color: iconColor),
           ),
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: InputBox(
-              expanded: true,
-              hintText: "검색어를 입력하세요",
-              type: InputBoxType.singleline,
-              size: InputBoxSize.small,
-              onChanged: (value) => debugPrint('Search: $value'),
-              onSubmitted: () => debugPrint('Search submitted'),
-              onClear: () => debugPrint('Search cleared'),
-              onSearchTap: () => debugPrint('Search icon tapped'),
+            child: TextField(
+              autofocus: true,
+              focusNode: focusNode,
+              decoration: InputDecoration(
+                hintText: "검색어를 입력하세요",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                suffixIcon: IconBtn(
+                  iconKey: "search",
+                  onTap: onSearch,
+                ),
+              ),
+              onChanged: onSearchChanged,
+              onSubmitted: (_) => onSearch?.call(),
+              onEditingComplete: onSearchClear,
             ),
           ),
         ),

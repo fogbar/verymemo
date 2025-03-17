@@ -32,7 +32,7 @@ class MemoNotifier extends StateNotifier<MemoState> {
       final memos = memoModels?.whereType<MemoModel>().toList() ?? [];
 
       // 작성일 기준 내림차순 정렬 (최신순)
-      // memos.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      memos.sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
       log("---> memos: $memos");
       MemoCache().addMemos(memos);

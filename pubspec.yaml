@@ -88,6 +88,8 @@ dev_dependencies:
   json_serializable: ^6.9.0
   go_router_builder: ^2.7.5
   sqflite_common_ffi: ^2.3.5
+  flutter_launcher_icons: ^0.13.1
+
 
 flutter:
   # The following line ensures that the Material Icons font is
@@ -110,6 +112,12 @@ flutter:
         - asset: assets/fonts/SUIT-SemiBold.ttf
           weight: 600
 
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/app_icon.png"
+  adaptive_icon_background: "#ffffff"
+  adaptive_icon_foreground: "assets/images/app_icon.png"
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 
