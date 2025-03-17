@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:verymemo/common/ui/components/button/button_state.dart';
 import 'package:verymemo/common/ui/components/button/icon_btn.dart';
+import 'package:flutter/services.dart';
+import 'dart:io';
 
 enum NavigationBarType { home, content }
 
@@ -93,9 +95,18 @@ class VariableNavigationBar extends StatelessWidget {
         iconKey: iconKey,
         size: IconSize.large,
         color: isSelected
-            ? Theme.of(context).colorScheme.primary // ✅ 홈 네비게이션만 선택 시 색상 변경
+            ? Theme.of(context).colorScheme.primary
             : Theme.of(context).colorScheme.onSurface,
-        onTap: () => onItemSelected?.call(index),
+        onTap: () async {
+          try {
+            if (Platform.isIOS || Platform.isAndroid) {
+              await HapticFeedback.lightImpact();
+            }
+          } catch (e) {
+            debugPrint('Haptic feedback failed: $e');
+          }
+          onItemSelected?.call(index);
+        },
       ),
     );
   }
@@ -107,8 +118,14 @@ class VariableNavigationBar extends StatelessWidget {
       state: ButtonState.black,
       circleSize: CircleButtonSize.medium,
       backgroundColor: Theme.of(context).colorScheme.inverseSurface,
-      onTap: () {
-        // debugPrint("Floating button tapped");
+      onTap: () async {
+        try {
+          if (Platform.isIOS || Platform.isAndroid) {
+            await HapticFeedback.mediumImpact();
+          }
+        } catch (e) {
+          debugPrint('Haptic feedback failed: $e');
+        }
         if (onFloatingButtonTap != null) {
           onFloatingButtonTap!();
         }

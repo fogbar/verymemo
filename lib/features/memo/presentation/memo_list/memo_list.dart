@@ -2,6 +2,8 @@ import 'package:verymemo/common/barrel/memo_list.dart';
 import 'package:verymemo/common/barrel/view_common.dart';
 import 'package:verymemo/features/memo/presentation/providers/memo_provider.dart';
 import 'package:verymemo/features/memo/presentation/select/deep_click.dart';
+import 'package:flutter/services.dart';
+import 'dart:io';
 
 class MemoList extends ConsumerWidget {
   const MemoList({
@@ -21,11 +23,22 @@ class MemoList extends ConsumerWidget {
         itemBuilder: (context, index) {
           final memo = data[index];
           return GestureDetector(
-            onLongPress: () => DeepClickSelect.show(
-              context,
-              memo,
-              (value, memo) => viewModel.handleModalSelection(value, memo),
-            ),
+            onLongPress: () async {
+              try {
+                if (Platform.isIOS || Platform.isAndroid) {
+                  await HapticFeedback.mediumImpact();
+                  debugPrint('Haptic feedback success');
+                }
+              } catch (e) {
+                debugPrint('Haptic feedback failed: $e');
+              }
+
+              DeepClickSelect.show(
+                context,
+                memo,
+                (value, memo) => viewModel.handleModalSelection(value, memo),
+              );
+            },
             child: Container(
               color: Colors.transparent,
               child: Column(
