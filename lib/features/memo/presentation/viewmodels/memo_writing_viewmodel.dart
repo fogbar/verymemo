@@ -115,6 +115,10 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
     state = state.copyWith(
       showLinkInput: !state.showLinkInput,
     );
+
+    if (state.showLinkInput) {
+      state.linkFocusNode.requestFocus(); // 링크 입력 필드로 포커스 이동
+    }
   }
 
   /// 링크 입력 감지
@@ -139,7 +143,11 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
 
   /// 링크 추가
   Future<void> addLink(BuildContext context) async {
+    log("---> 체크 버튼 클릭됨");
     final url = state.linkController.text.trim();
+    log("---> 입력된 URL: $url");
+    log("---> 현재 links 길이: ${state.links.length}");
+
     if (_isValidUrl(url) && !state.links.any((link) => link.linkUrl == url)) {
       try {
         final metadata = await AnyLinkPreview.getMetadata(
@@ -147,23 +155,36 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
           cache: const Duration(days: 7),
         );
 
-        state = state.copyWith(
-          links: [
-            ...state.links,
-            LinkModel(
-              linkUrl: url,
-              metaTitle: metadata?.title ?? url,
-              metaDescription: metadata?.desc,
-              thumbnail: metadata?.image,
-            )
-          ],
-          showLinkInput: false,
+        final newLink = LinkModel(
+          linkUrl: url,
+          metaTitle: metadata?.title ?? url,
+          metaDescription: metadata?.desc,
+          thumbnail: metadata?.image,
         );
+
+        log("---> 생성된 newLink: ${newLink.toJson()}");
+
+        final newLinks = [...state.links, newLink];
+        log("---> 업데이트될 links 길이: ${newLinks.length}");
+
+        state = state.copyWith(
+          links: newLinks,
+          showLinkInput: true,
+          isExpanded: true,
+        );
+
+        log("---> 상태 업데이트 후 links 길이: ${state.links.length}");
       } catch (e) {
-        state = state.copyWith(
-          links: [...state.links, LinkModel(linkUrl: url, metaTitle: url)],
-          showLinkInput: false,
+        log("---> 메타데이터 fetch 실패: $e");
+        final newLink = LinkModel(linkUrl: url, metaTitle: url);
+
+        final newState = state.copyWith(
+          links: [...state.links, newLink], // spread operator로 새 리스트 생성
+          showLinkInput: true,
+          isExpanded: true,
         );
+
+        state = newState; // 상태 업데이트
       }
       state.linkController.clear();
     }
@@ -174,6 +195,13 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
     final updatedImages = List<String>.from(state.selectedImages);
     updatedImages.removeAt(index);
     state = state.copyWith(selectedImages: updatedImages);
+  }
+
+  /// 링크 삭제
+  void removeLink(int index) {
+    final updatedLinks = List<LinkModel>.from(state.links);
+    updatedLinks.removeAt(index);
+    state = state.copyWith(links: updatedLinks);
   }
 
   void toggle() {
@@ -194,10 +222,13 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      enableDrag: true, // 기본 드래그 활성화
+      enableDrag: true,
       useSafeArea: true,
       showDragHandle: true,
       backgroundColor: Theme.of(context).colorScheme.surface,
+      transitionAnimationController: AnimationController(
+        vsync: Navigator.of(context),
+      ),
       builder: (context) => const MemoWritingView(),
     );
   }

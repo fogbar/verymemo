@@ -11,6 +11,7 @@ class ListItem extends StatelessWidget {
   final String? leadingImageUrl;
   final String? leadingIconKey;
   final VoidCallback? onTap;
+  final VoidCallback? onTrailingIconTap;
   final CrossAxisAlignment? alignment;
 
   const ListItem({
@@ -22,6 +23,7 @@ class ListItem extends StatelessWidget {
     this.leadingImageUrl,
     this.leadingIconKey,
     this.onTap,
+    this.onTrailingIconTap,
   });
 
   @override
@@ -95,26 +97,31 @@ class ListItem extends StatelessWidget {
 
   /// ✅ 트레일링 아이템 빌드 (아이콘 버튼, 토글 등)
   Widget _buildTrailing(BuildContext context) {
-    Widget trailingWidget;
     switch (config.trailingType) {
       case ListItemType.icon:
-        trailingWidget = config.trailingIconKey != null
-            ? IconBtn(
-                iconKey: config.trailingIconKey!,
-                onTap: () {},
-                size: IconSize.medium,
-                color: config.trailingIconColor,
-              )
-            : const SizedBox();
-        break;
-      case ListItemType.toggle:
-        trailingWidget = _buildToggle();
-        break;
-      default:
-        trailingWidget = const SizedBox();
-    }
+        final double iconSize = IconConfig.getIconSize(config.trailingIconSize);
+        final String assetPath =
+            IconConfig.getIconPath(config.trailingIconKey ?? '');
 
-    return trailingWidget;
+        return GestureDetector(
+          onTap: onTrailingIconTap,
+          child: SizedBox(
+            width: iconSize,
+            height: iconSize,
+            child: ImageUtil.showImage(
+              assetPath,
+              size: Size(iconSize, iconSize),
+              colorFilter: config.trailingIconColor != null
+                  ? ColorFilter.mode(config.trailingIconColor!, BlendMode.srcIn)
+                  : null,
+            ),
+          ),
+        );
+      case ListItemType.toggle:
+        return _buildToggle();
+      default:
+        return const SizedBox();
+    }
   }
 
   /// ✅ 리딩 이미지 빌드 (클립된 썸네일)

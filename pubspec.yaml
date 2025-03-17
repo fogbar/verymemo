@@ -1,5 +1,5 @@
 name: verymemo
-description: 'A new Flutter project.'
+description: 'memo app tech'
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
@@ -89,7 +89,6 @@ dev_dependencies:
   go_router_builder: ^2.7.5
   sqflite_common_ffi: ^2.3.5
   flutter_launcher_icons: ^0.13.1
-
 
 flutter:
   # The following line ensures that the Material Icons font is

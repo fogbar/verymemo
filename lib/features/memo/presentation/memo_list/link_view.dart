@@ -6,11 +6,13 @@ import 'package:verymemo/common/barrel/button.dart';
 class LinkList extends StatelessWidget {
   final List<LinkModel> links;
   final Function(String url)? onLinkTap;
+  final Function(int index)? onDeleteTap;
 
   const LinkList({
     super.key,
     required this.links,
     this.onLinkTap,
+    this.onDeleteTap,
   });
 
   @override
@@ -33,10 +35,12 @@ class LinkList extends StatelessWidget {
             trailingType: ListItemType.icon,
             trailingIconKey: 'memo',
             trailingIconSize: IconSize.small,
+            trailingIconColor: Theme.of(context).colorScheme.onSurface,
             textConfig: TitleSubtitlePresets.listItem,
             itemSpacing: 12,
           ),
           onTap: () => onLinkTap?.call(link.linkUrl ?? ""),
+          onTrailingIconTap: () => onDeleteTap?.call(index - 1),
         );
       },
     );

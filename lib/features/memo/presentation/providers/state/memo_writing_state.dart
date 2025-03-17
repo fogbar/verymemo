@@ -9,6 +9,7 @@ class MemoWritingState {
   final TextEditingController textController;
   final TextEditingController linkController;
   final FocusNode focusNode;
+  final FocusNode linkFocusNode;
   final String debouncedText;
   final ButtonState buttonState;
   final bool autofocus;
@@ -17,19 +18,22 @@ class MemoWritingState {
 
   MemoWritingState({
     this.selectedImages = const [],
-    this.links = const [],
+    List<LinkModel> links = const [],
     this.visible = false,
     TextEditingController? textController,
     TextEditingController? linkController,
     FocusNode? focusNode,
+    FocusNode? linkFocusNode,
     this.debouncedText = "",
     this.buttonState = ButtonState.disabled,
     this.autofocus = true,
     this.showLinkInput = false,
     this.isExpanded = false,
-  })  : textController = textController ?? TextEditingController(),
+  })  : links = List<LinkModel>.from(links),
+        textController = textController ?? TextEditingController(),
         linkController = linkController ?? TextEditingController(),
-        focusNode = focusNode ?? FocusNode();
+        focusNode = focusNode ?? FocusNode(),
+        linkFocusNode = linkFocusNode ?? FocusNode();
 
   /// 상태 복제 메서드
   MemoWritingState copyWith({
@@ -39,6 +43,7 @@ class MemoWritingState {
     TextEditingController? textController,
     TextEditingController? linkController,
     FocusNode? focusNode,
+    FocusNode? linkFocusNode,
     String? debouncedText,
     ButtonState? buttonState,
     bool? autofocus,
@@ -46,12 +51,17 @@ class MemoWritingState {
     bool? isExpanded,
   }) {
     return MemoWritingState(
-      selectedImages: selectedImages ?? this.selectedImages,
-      links: links ?? this.links,
+      selectedImages: selectedImages != null
+          ? List<String>.from(selectedImages)
+          : this.selectedImages,
+      links: links != null
+          ? List<LinkModel>.from(links)
+          : List<LinkModel>.from(this.links),
       visible: visible ?? this.visible,
       textController: textController ?? this.textController,
       linkController: linkController ?? this.linkController,
       focusNode: focusNode ?? this.focusNode,
+      linkFocusNode: linkFocusNode ?? this.linkFocusNode,
       debouncedText: debouncedText ?? this.debouncedText,
       buttonState: buttonState ?? this.buttonState,
       autofocus: autofocus ?? this.autofocus,

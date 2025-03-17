@@ -22,6 +22,22 @@ class TitleSubtitleConfig {
     this.spacing,
   });
 
+  TitleSubtitleConfig copyWith({
+    TitleSize? titleSize,
+    TitleAlignment? alignment,
+    int? titleMaxLines,
+    int? subtitleMaxLines,
+    double? spacing,
+  }) {
+    return TitleSubtitleConfig(
+      titleSize: titleSize ?? this.titleSize,
+      alignment: alignment ?? this.alignment,
+      titleMaxLines: titleMaxLines ?? this.titleMaxLines,
+      subtitleMaxLines: subtitleMaxLines ?? this.subtitleMaxLines,
+      spacing: spacing ?? this.spacing,
+    );
+  }
+
   /// 📌 타이틀 스타일 반환
   TextStyle getTitleStyle(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -35,7 +51,7 @@ class TitleSubtitleConfig {
       TitleSize.medium => textTheme.titleMedium!.copyWith(
           color: Theme.of(context).colorScheme.onSurface,
         ),
-      TitleSize.small => textTheme.titleSmall!.copyWith(
+      TitleSize.small => textTheme.labelLarge!.copyWith(
           color: Theme.of(context).colorScheme.onSurface,
         ),
     };
@@ -122,6 +138,7 @@ class TitleSubtitlePresets {
     titleSize: TitleSize.small,
     titleMaxLines: 1,
     alignment: TitleAlignment.left,
+    subtitleMaxLines: 2,
   );
 
   /// 📌 멀티라인 타이틀용

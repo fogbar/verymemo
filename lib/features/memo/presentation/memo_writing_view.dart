@@ -12,6 +12,7 @@ class MemoWritingView extends ConsumerWidget {
     final viewModel = ref.read(memoWritingViewModelProvider.notifier);
     final screenHeight = MediaQuery.of(context).size.height;
     final maxHeight = screenHeight * 0.5;
+    final minHeight = screenHeight * 0.15;
 
     return PopScope(
       canPop: true,
@@ -41,10 +42,12 @@ class MemoWritingView extends ConsumerWidget {
                 ),
               ],
             ),
-            height: state.selectedImages.isNotEmpty || state.showLinkInput
-                ? maxHeight
-                : screenHeight * 0.25,
+            constraints: BoxConstraints(
+              minHeight: minHeight,
+              maxHeight: maxHeight,
+            ),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
                   width: 32,
@@ -58,164 +61,195 @@ class MemoWritingView extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
-                if (state.showLinkInput)
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    height: state.showLinkInput ? 48 : 0,
-                    child: SingleChildScrollView(
-                      child: Container(
-                        height: 48,
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .surfaceVariant
-                              .withOpacity(0.5),
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: TextField(
-                                controller: state.linkController,
-                                decoration: const InputDecoration(
-                                  hintText: "링크를 입력하세요...",
-                                  border: InputBorder.none,
-                                  contentPadding:
-                                      EdgeInsets.symmetric(horizontal: 12),
+                Flexible(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (state.showLinkInput)
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
+                            height: state.showLinkInput ? 40 : 0,
+                            child: SingleChildScrollView(
+                              child: Container(
+                                height: 40,
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 16),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .surfaceVariant
+                                      .withOpacity(0.5),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: TextField(
+                                        controller: state.linkController,
+                                        focusNode: state.linkFocusNode,
+                                        decoration: InputDecoration(
+                                          hintText: "https://",
+                                          border: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .outline,
+                                              width: 2.0,
+                                            ),
+                                          ),
+                                          filled: true,
+                                          fillColor: Colors.transparent,
+                                          contentPadding:
+                                              const EdgeInsets.symmetric(
+                                                  horizontal: 0, vertical: 0),
+                                        ),
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    GestureDetector(
+                                      onTap: state.linkController.text
+                                              .trim()
+                                              .isEmpty
+                                          ? null
+                                          : () => viewModel.addLink(context),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8),
+                                        child: Icon(
+                                          Icons.check,
+                                          color: state.linkController.text
+                                                  .trim()
+                                                  .isEmpty
+                                              ? Theme.of(context)
+                                                  .colorScheme
+                                                  .onSurface
+                                                  .withOpacity(0.38)
+                                              : Theme.of(context)
+                                                  .colorScheme
+                                                  .primary,
+                                          size: 24,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
-                            IconButton(
-                              onPressed:
-                                  state.linkController.text.trim().isEmpty
-                                      ? null
-                                      : () => viewModel.addLink(context),
-                              icon: Icon(
-                                Icons.check,
-                                color: state.linkController.text.trim().isEmpty
-                                    ? Theme.of(context)
-                                        .colorScheme
-                                        .onSurface
-                                        .withOpacity(0.38)
-                                    : Theme.of(context).colorScheme.primary,
-                              ),
+                          ),
+                        if (state.links.isNotEmpty)
+                          Visibility(
+                            visible: state.links.isNotEmpty,
+                            maintainState: true,
+                            maintainAnimation: true,
+                            maintainSize: false,
+                            child: LinkResult(
+                              links: state.links
+                                  .map((url) => LinkModel(
+                                        linkUrl: url.linkUrl,
+                                        metaTitle: url.metaTitle,
+                                        thumbnail: url.thumbnail,
+                                        metaDescription: url.metaDescription,
+                                      ))
+                                  .toList(),
+                              onDeleteTap: (index) =>
+                                  viewModel.removeLink(index),
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                if (state.links.isNotEmpty)
-                  SizedBox(
-                    height: 120,
-                    child: LinkList(
-                      links: state.links
-                          .map((url) => LinkModel(
-                                linkUrl: url.linkUrl,
-                                metaTitle: url.metaTitle,
-                                thumbnail: url.thumbnail,
-                                metaDescription: url.metaDescription,
-                              ))
-                          .toList(),
-                      onLinkTap: (url) {
-                        // URL 클릭 시 처리
-                      },
-                    ),
-                  ),
-                if (state.selectedImages.isNotEmpty)
-                  SizedBox(
-                    height: 80,
-                    child: ListView.separated(
-                      padding: const EdgeInsets.only(
-                        left: 16.0,
-                        right: 16.0,
-                        top: 16.0,
-                      ),
-                      scrollDirection: Axis.horizontal,
-                      itemCount: state.selectedImages.length,
-                      separatorBuilder: (_, __) => const SizedBox(width: 8),
-                      itemBuilder: (context, index) {
-                        return Stack(
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                showDialog(
-                                  context: context,
-                                  barrierColor: Theme.of(context)
-                                      .colorScheme
-                                      .surfaceContainerHighest,
-                                  builder: (context) => ImageDetailView(
-                                    imageUrl: state.selectedImages[index],
-                                    imageUrls: state.selectedImages,
-                                    currentIndex: index,
-                                    onClose: () => Navigator.pop(context),
-                                    isLocalFile: true,
-                                    showDelete: true,
-                                    showDownload: false,
-                                  ),
+                          ),
+                        if (state.selectedImages.isNotEmpty)
+                          Container(
+                            height: 80,
+                            padding: const EdgeInsets.only(
+                              left: 16.0,
+                              right: 16.0,
+                              top: 16.0,
+                            ),
+                            child: ListView.separated(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: state.selectedImages.length,
+                              separatorBuilder: (_, __) =>
+                                  const SizedBox(width: 8),
+                              itemBuilder: (context, index) {
+                                return Stack(
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        showDialog(
+                                          context: context,
+                                          barrierColor: Theme.of(context)
+                                              .colorScheme
+                                              .surfaceContainerHighest,
+                                          builder: (context) => ImageDetailView(
+                                            imageUrl:
+                                                state.selectedImages[index],
+                                            imageUrls: state.selectedImages,
+                                            currentIndex: index,
+                                            onClose: () =>
+                                                Navigator.pop(context),
+                                            isLocalFile: true,
+                                            showDelete: true,
+                                            showDownload: false,
+                                          ),
+                                        );
+                                      },
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: Image.file(
+                                          File(state.selectedImages[index]),
+                                          width: 64,
+                                          height: 64,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                    Positioned(
+                                      top: 4,
+                                      right: 4,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          viewModel.removeImage(index);
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.all(6),
+                                          decoration: BoxDecoration(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .surface,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Icon(
+                                            Icons.close,
+                                            size: 16,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurface,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 );
                               },
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: Image.file(
-                                  File(state.selectedImages[index]),
-                                  width: 64,
-                                  height: 64,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
                             ),
-                            Positioned(
-                              top: 4,
-                              right: 4,
-                              child: GestureDetector(
-                                onTap: () {
-                                  viewModel.removeImage(index);
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.all(6),
-                                  decoration: BoxDecoration(
-                                    color:
-                                        Theme.of(context).colorScheme.surface,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Icon(
-                                    Icons.close,
-                                    size: 16,
-                                    color:
-                                        Theme.of(context).colorScheme.onSurface,
-                                  ),
-                                ),
-                              ),
+                          ),
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Container(
+                            constraints: BoxConstraints(
+                              minHeight: minHeight * 0.2,
                             ),
-                          ],
-                        );
-                      },
-                    ),
-                  ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: state.textController,
-                            focusNode: state.focusNode,
-                            autofocus: true,
-                            showCursor: true,
-                            enableInteractiveSelection: true,
-                            expands: true,
-                            keyboardType: TextInputType.multiline,
-                            textAlignVertical: TextAlignVertical.top,
-                            maxLines: null,
-                            decoration: const InputDecoration(
-                              hintText: "내용을 입력하세요...",
-                              border: InputBorder.none,
-                              filled: false,
-                              fillColor: Colors.transparent,
-                              contentPadding: EdgeInsets.zero,
+                            child: TextField(
+                              controller: state.textController,
+                              focusNode: state.focusNode,
+                              autofocus: true,
+                              minLines: 1,
+                              maxLines: null,
+                              keyboardType: TextInputType.multiline,
+                              decoration: const InputDecoration(
+                                hintText: "내용을 입력하세요...",
+                                border: InputBorder.none,
+                                filled: false,
+                                fillColor: Colors.transparent,
+                                contentPadding: EdgeInsets.zero,
+                              ),
                             ),
                           ),
                         ),
