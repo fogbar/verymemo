@@ -67,7 +67,12 @@ class MemoList extends ConsumerWidget {
                       child: MemoContent(text: memo.content!),
                     ),
                   ],
-                  
+                  if (memo.links != null && memo.links!.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    LinkResult(
+                      links: memo.links!,
+                    ),
+                  ],
                   if (memo.images != null && memo.images!.isNotEmpty) ...[
                     const SizedBox(height: 4),
                     MemoImages(memo: memo),

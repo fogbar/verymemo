@@ -3,11 +3,11 @@ import 'package:verymemo/common/barrel/view_common.dart';
 import 'package:verymemo/common/barrel/list.dart';
 import 'package:verymemo/common/barrel/button.dart';
 
-class LinkResult extends StatelessWidget {
+class LinkPreview extends StatelessWidget {
   final List<LinkModel> links;
   final Function(int index)? onDeleteTap;
 
-  const LinkResult({
+  const LinkPreview({
     super.key,
     required this.links,
     this.onDeleteTap,

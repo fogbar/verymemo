@@ -130,9 +130,24 @@ class ListItem extends StatelessWidget {
       borderRadius: BorderRadius.circular(config.imageRadius),
       child: SizedBox.square(
         dimension: config.imageSize,
-        child: leadingImageUrl != null
-            ? Image.network(leadingImageUrl!, fit: BoxFit.cover)
-            : Container(color: Colors.grey[300]),
+        child: leadingImageUrl != null &&
+                (leadingImageUrl!.startsWith('http://') ||
+                    leadingImageUrl!.startsWith('https://'))
+            ? Image.network(
+                leadingImageUrl!,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  debugPrint('이미지 로드 에러: $error');
+                  return Container(
+                    color: Colors.grey[200],
+                    child: Icon(Icons.link, color: Colors.grey[400]),
+                  );
+                },
+              )
+            : Container(
+                color: Colors.grey[200],
+                child: Icon(Icons.link, color: Colors.grey[400]),
+              ),
       ),
     );
   }

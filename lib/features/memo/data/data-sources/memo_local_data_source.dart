@@ -52,19 +52,38 @@ class MemoLocalDataSource {
         // 🔄 links 테이블에 저장
         if (links.isNotEmpty) {
           final linkBatch = txn.batch();
+          log("\n=== 링크 저장 과정 상세 로그 ===");
+          log("전달받은 원본 LinkDTO 데이터:");
           for (var link in links) {
+            log("""
+원본 링크 데이터:
+- URL: ${link.linkUrl}
+- 썸네일: ${link.thumbnail}
+- 제목: ${link.metaTitle}
+- 설명: ${link.metaDescription}
+            """);
+
             if (link.linkUrl.isEmpty) {
               continue;
             }
-            linkBatch.insert(tableName[3], {
+            final linkData = {
               'memoId': memoId,
               'linkUrl': link.linkUrl,
               'thumbnail': link.thumbnail ?? '',
               'metaTitle': link.metaTitle ?? '',
               'metaDescription': link.metaDescription ?? '',
-            });
+            };
+            log("""
+DB에 저장할 데이터:
+- URL: ${linkData['linkUrl']}
+- 썸네일: ${linkData['thumbnail']}
+- 제목: ${linkData['metaTitle']}
+- 설명: ${linkData['metaDescription']}
+            """);
+            linkBatch.insert(tableName[3], linkData);
           }
           await linkBatch.commit(noResult: true);
+          log("=== 링크 저장 완료 ===\n");
         }
 
         // 🔄 tags 테이블에 저장
@@ -125,6 +144,31 @@ class MemoLocalDataSource {
           whereArgs: [memoId],
         );
 
+        log("\n=== 링크 데이터 변환 과정 ===");
+        log("1. DB에서 가져온 원본 데이터:");
+        for (var link in linkResults) {
+          log(link.toString());
+        }
+
+        final linkDTOs = linkResults.map((e) => LinkDTO.fromJson(e)).toList();
+        log("\n2. DTO로 변환된 데이터:");
+        for (var dto in linkDTOs) {
+          log("linkUrl: ${dto.linkUrl}");
+          log("thumbnail: ${dto.thumbnail}");
+          log("metaTitle: ${dto.metaTitle}");
+          log("metaDescription: ${dto.metaDescription}");
+        }
+
+        final linkModels = LinkMapper.toModel(linkDTOs);
+        log("\n3. Model로 변환된 데이터:");
+        for (var model in linkModels) {
+          log("linkUrl: ${model.linkUrl}");
+          log("thumbnail: ${model.thumbnail}");
+          log("metaTitle: ${model.metaTitle}");
+          log("metaDescription: ${model.metaDescription}");
+        }
+        log("=== 변환 과정 완료 ===\n");
+
         // 🔄 tags 불러오기 (N:M 관계 처리)
         final tagResults = await db.rawQuery('''
       SELECT t.* FROM tags t
@@ -137,7 +181,7 @@ class MemoLocalDataSource {
         memoModels.add(MemoMapper.toModel(
           memoDTO,
           images: imageResults.map((e) => ImageDTO.fromJson(e)).toList(),
-          links: linkResults.map((e) => LinkDTO.fromJson(e)).toList(),
+          links: linkDTOs,
           tags: tagResults.map((e) => TagDTO.fromJson(e)).toList(),
         ));
       }
@@ -174,7 +218,7 @@ class MemoLocalDataSource {
       where: 'memoId = ?',
       whereArgs: [memoId],
     );
-    final linkList = linkResults.map((e) => LinkDTO.fromJson(e)).toList();
+    final linkDTOs = linkResults.map((e) => LinkDTO.fromJson(e)).toList();
 
     // 🔄 tags 불러오기 (N:M 관계 처리)
     final tagResults = await db.rawQuery('''
@@ -189,7 +233,7 @@ class MemoLocalDataSource {
     final memoModel = MemoMapper.toModel(
       memoDTO,
       images: imageList,
-      links: linkList,
+      links: linkDTOs,
       tags: tagList,
     );
 
@@ -227,7 +271,7 @@ class MemoLocalDataSource {
       for (var link in links) {
         linkBatch.insert(tableName[3], {
           'memoId': memoId,
-          'url': link.linkUrl,
+          'linkUrl': link.linkUrl,
           'thumbnail': link.thumbnail ?? '',
           'metaTitle': link.metaTitle ?? '',
           'metaDescription': link.metaDescription ?? '',

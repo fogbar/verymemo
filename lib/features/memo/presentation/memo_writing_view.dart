@@ -141,7 +141,7 @@ class MemoWritingView extends ConsumerWidget {
                             maintainState: true,
                             maintainAnimation: true,
                             maintainSize: false,
-                            child: LinkResult(
+                            child: LinkPreview(
                               links: state.links
                                   .map((url) => LinkModel(
                                         linkUrl: url.linkUrl,

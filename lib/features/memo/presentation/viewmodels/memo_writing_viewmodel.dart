@@ -45,7 +45,9 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
   void _onTextChanged() {
     final text = state.textController.text.trim();
     state = state.copyWith(
-      buttonState: (text.isNotEmpty || state.selectedImages.isNotEmpty)
+      buttonState: (text.isNotEmpty ||
+              state.selectedImages.isNotEmpty ||
+              state.links.isNotEmpty)
           ? ButtonState.primary
           : ButtonState.disabled,
     );
@@ -141,11 +143,20 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
           cache: const Duration(days: 7),
         );
 
+        // 썸네일 URL 검증
+        String? thumbnailUrl = metadata?.image;
+        if (thumbnailUrl != null) {
+          if (!_isValidUrl(thumbnailUrl) ||
+              thumbnailUrl.startsWith('file://')) {
+            thumbnailUrl = null;
+          }
+        }
+
         final newLink = LinkModel(
           linkUrl: url,
           metaTitle: metadata?.title ?? url,
           metaDescription: metadata?.desc,
-          thumbnail: metadata?.image,
+          thumbnail: thumbnailUrl, // 검증된 썸네일 URL만 저장
         );
 
         log("---> 생성된 newLink: ${newLink.toJson()}");
@@ -157,6 +168,7 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
           links: newLinks,
           showLinkInput: true,
           isExpanded: true,
+          buttonState: ButtonState.primary,
         );
 
         log("---> 상태 업데이트 후 links 길이: ${state.links.length}");
@@ -168,6 +180,7 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
           links: [...state.links, newLink], // spread operator로 새 리스트 생성
           showLinkInput: true,
           isExpanded: true,
+          buttonState: ButtonState.primary,
         );
 
         state = newState; // 상태 업데이트
@@ -252,9 +265,19 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
       log("---> 메모 저장 시작");
       log("---> 텍스트: $text");
       log("---> 이미지: ${state.selectedImages}");
-      log("---> 링크: ${state.links}");
 
-      if (text.isNotEmpty || state.selectedImages.isNotEmpty) {
+      // 링크 데이터 상세 로깅
+      for (var link in state.links) {
+        log("---> 저장할 링크 정보:");
+        log("     URL: ${link.linkUrl}");
+        log("     썸네일: ${link.thumbnail}");
+        log("     제목: ${link.metaTitle}");
+        log("     설명: ${link.metaDescription}");
+      }
+
+      if (text.isNotEmpty ||
+          state.selectedImages.isNotEmpty ||
+          state.links.isNotEmpty) {
         final memoModel = MemoModel(
           userId: userId,
           content: text,
@@ -264,7 +287,7 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
                     description: 'internal_storage',
                   ))
               .toList(),
-          links: state.links,
+          links: state.links, // 링크 데이터는 그대로 전달
           tags: [],
           createdAt: DateTime.now(),
           updatedAt: null,
@@ -272,9 +295,18 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
           isBookMarked: false,
         );
 
-        log("---> MemoModel 생성 완료: $memoModel");
+        log("---> MemoModel 생성 완료");
+        // 저장된 링크 데이터 확인
+        for (var link in memoModel.links ?? []) {
+          log("---> 저장된 링크 정보:");
+          log("     URL: ${link.linkUrl}");
+          log("     썸네일: ${link.thumbnail}");
+          log("     제목: ${link.metaTitle}");
+          log("     설명: ${link.metaDescription}");
+        }
+
         await memoProvider.addMemo(memoModel);
-        log("---> 메모 저장 완료! ${memoModel.toJson()}");
+        log("---> 메모 저장 완료!");
       }
     } catch (e, stackTrace) {
       log("---> 메모 저장 실패: $e");

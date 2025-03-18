@@ -29,8 +29,12 @@ class MemoMapper {
               imageUrl: img.imageUrl, description: img.description ?? ""))
           .toList(),
       links: links
-          .map((lnk) =>
-              LinkModel(linkUrl: lnk.linkUrl, metaTitle: lnk.metaTitle))
+          .map((lnk) => LinkModel(
+                linkUrl: lnk.linkUrl,
+                metaTitle: lnk.metaTitle,
+                thumbnail: lnk.thumbnail,
+                metaDescription: lnk.metaDescription,
+              ))
           .toList(),
       tags: tags.map((tag) => TagModel(tagName: tag.tagName)).toList(),
       createdAt: _stringToDateTime(dto.createdAt),
