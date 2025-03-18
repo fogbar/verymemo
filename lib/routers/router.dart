@@ -26,6 +26,7 @@ import 'package:verymemo/features/settings/presentation/settings_view.dart';
 import 'package:verymemo/features/auth/presentation/profile/profile_setting_view.dart';
 import 'package:verymemo/features/splash/splash_view.dart';
 import 'package:verymemo/features/memo/presentation/select/align.dart';
+import 'package:verymemo/features/memo/domain/models/model.dart';
 
 part 'app_routes.dart';
 part 'app_router.dart';

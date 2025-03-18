@@ -32,8 +32,9 @@ class MemoDTO with _$MemoDTO {
   // 🔄 createdAt, updatedAt을 안전하게 변환하는 메서드 추가
   static String? _convertToString(dynamic value) {
     if (value == null) return null;
-    if (value is int)
+    if (value is int) {
       return DateTime.fromMillisecondsSinceEpoch(value).toIso8601String();
+    }
     if (value is String) return value;
     return null;
   }

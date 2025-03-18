@@ -133,7 +133,7 @@ class MemoLocalDataSource {
     ''', [memoId]);
         // 🔄 MemoDTO → MemoModel 변환 + 확장
         final memoDTO = MemoDTO.fromJson2(memo);
-        log("image: ${imageResults} \n link: $linkResults \n tag: $tagResults");
+        log("image: $imageResults \n link: $linkResults \n tag: $tagResults");
         memoModels.add(MemoMapper.toModel(
           memoDTO,
           images: imageResults.map((e) => ImageDTO.fromJson(e)).toList(),
@@ -144,7 +144,7 @@ class MemoLocalDataSource {
 
       return memoModels;
     } catch (e) {
-      log("---> getAllMemos Error: ${e}");
+      log("---> getAllMemos Error: $e");
       return null;
     }
   }

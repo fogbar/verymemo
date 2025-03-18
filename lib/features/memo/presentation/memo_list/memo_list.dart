@@ -4,6 +4,7 @@ import 'package:verymemo/features/memo/presentation/providers/memo_provider.dart
 import 'package:verymemo/features/memo/presentation/select/deep_click.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
+import 'package:go_router/go_router.dart';
 
 class MemoList extends ConsumerWidget {
   const MemoList({
@@ -23,6 +24,10 @@ class MemoList extends ConsumerWidget {
         itemBuilder: (context, index) {
           final memo = data[index];
           return GestureDetector(
+            onTap: () {
+              debugPrint('선택된 메모: ${memo.memoId}, ${memo.content}');
+              context.go('/detail', extra: memo);
+            },
             onLongPress: () async {
               try {
                 if (Platform.isIOS || Platform.isAndroid) {
@@ -62,6 +67,7 @@ class MemoList extends ConsumerWidget {
                       child: MemoContent(text: memo.content!),
                     ),
                   ],
+                  
                   if (memo.images != null && memo.images!.isNotEmpty) ...[
                     const SizedBox(height: 4),
                     MemoImages(memo: memo),

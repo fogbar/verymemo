@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:verymemo/features/memo/presentation/image_detail_view.dart';
 import 'package:verymemo/features/memo/presentation/providers/memo_provider.dart';
 import 'package:verymemo/features/memo/presentation/providers/state/memo_state.dart';
-import 'package:flutter/services.dart'; // HapticFeedback을 위해 추가
+// HapticFeedback을 위해 추가
 
 final memoHomeProvider =
     StateNotifierProvider<MemoHomeViewModel, MemoState>((ref) {
@@ -49,7 +49,6 @@ class MemoHomeViewModel extends StateNotifier<MemoState> {
 
   /// 🔄 [메모 길게 누를 때]
   void handleModalSelection(String value, MemoModel memo) async {
-
     switch (value) {
       case '수정':
         updateMemo(memo);

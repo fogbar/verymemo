@@ -81,24 +81,10 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
       );
 
       if (result != null && result.files.isNotEmpty) {
-        final appDir = await getApplicationDocumentsDirectory();
-        final imageDir = Directory('${appDir.path}/memo_images');
-        if (!await imageDir.exists()) {
-          await imageDir.create(recursive: true);
-        }
-
-        final newPaths = <String>[];
-        for (var file in result.files) {
-          if (file.path != null) {
-            final fileName =
-                '${DateTime.now().millisecondsSinceEpoch}_${path.basename(file.path!)}';
-            final newPath = '${imageDir.path}/$fileName';
-
-            // 이미지를 앱 전용 디렉토리로 복사
-            await File(file.path!).copy(newPath);
-            newPaths.add(newPath);
-          }
-        }
+        final newPaths = result.files
+            .where((file) => file.path != null)
+            .map((file) => file.path!)
+            .toList();
 
         state = state.copyWith(
           selectedImages: [...state.selectedImages, ...newPaths],
@@ -261,31 +247,35 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
   Future<void> saveMemo() async {
     try {
       final userId = userProvider.getUser()?.id ?? "1";
+      final text = state.textController.text.trim();
+
       log("---> 메모 저장 시작");
-      log("---> 텍스트: ${state.debouncedText}");
+      log("---> 텍스트: $text");
       log("---> 이미지: ${state.selectedImages}");
       log("---> 링크: ${state.links}");
 
-      final memoModel = MemoModel(
-        userId: userId,
-        content: state.debouncedText,
-        images: state.selectedImages
-            .map((e) => ImageModel(
-                  imageUrl: e,
-                  description: 'internal_storage',
-                ))
-            .toList(),
-        links: state.links,
-        tags: [],
-        createdAt: DateTime.now(),
-        updatedAt: null,
-        isLocalMemo: true,
-        isBookMarked: false,
-      );
+      if (text.isNotEmpty || state.selectedImages.isNotEmpty) {
+        final memoModel = MemoModel(
+          userId: userId,
+          content: text,
+          images: state.selectedImages
+              .map((e) => ImageModel(
+                    imageUrl: e,
+                    description: 'internal_storage',
+                  ))
+              .toList(),
+          links: state.links,
+          tags: [],
+          createdAt: DateTime.now(),
+          updatedAt: null,
+          isLocalMemo: true,
+          isBookMarked: false,
+        );
 
-      log("---> MemoModel 생성 완료: $memoModel");
-      await memoProvider.addMemo(memoModel);
-      log("---> 메모 저장 완료! ${memoModel.toJson()}");
+        log("---> MemoModel 생성 완료: $memoModel");
+        await memoProvider.addMemo(memoModel);
+        log("---> 메모 저장 완료! ${memoModel.toJson()}");
+      }
     } catch (e, stackTrace) {
       log("---> 메모 저장 실패: $e");
       log("---> 스택트레이스: $stackTrace");

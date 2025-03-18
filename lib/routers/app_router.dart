@@ -375,7 +375,14 @@ class DetailRoute extends Route {
   @override
   bool checkAuth(BuildContext context) => true;
 
-  const DetailRoute() : super(const MemoDetailView());
+  DetailRoute() : super(const SizedBox.shrink()); // 임시 위젯으로 초기화
+
+  @override
+  Widget buildPageWithState(BuildContext context, GoRouterState state) {
+    return MemoDetailView(
+      memo: state.extra as MemoModel,
+    );
+  }
 }
 
 // ✅ 피드 라우터

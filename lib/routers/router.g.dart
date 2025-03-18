@@ -270,7 +270,7 @@ extension $EditRouteExtension on EditRoute {
 }
 
 extension $DetailRouteExtension on DetailRoute {
-  static DetailRoute _fromState(GoRouterState state) => const DetailRoute();
+  static DetailRoute _fromState(GoRouterState state) => DetailRoute();
 
   String get location => GoRouteData.$location(
         '/detail',

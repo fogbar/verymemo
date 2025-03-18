@@ -1,6 +1,7 @@
 import 'package:verymemo/common/barrel/view_common.dart';
 import 'package:verymemo/features/memo/domain/models/model.dart';
 import 'package:verymemo/features/memo/presentation/viewmodels/memo_home_viewmodel.dart';
+import 'dart:io';
 
 //이미지 캐싱 추가함
 class MemoImages extends ConsumerWidget {
@@ -24,6 +25,7 @@ class MemoImages extends ConsumerWidget {
 class _CarouselView extends StatelessWidget {
   final MemoModel memo;
   final MemoHomeViewModel viewModel;
+  static final Map<String, Image> _imageCache = {}; // 메모리 캐시 추가
 
   const _CarouselView({
     required this.memo,
@@ -37,6 +39,7 @@ class _CarouselView extends StatelessWidget {
     const double horizontalPadding = 16.0;
 
     final imageUrls = memo.images ?? [];
+    debugPrint('이미지 URLs: ${imageUrls.map((e) => e.imageUrl).toList()}');
 
     return SizedBox(
       height: imageSize,
@@ -48,27 +51,46 @@ class _CarouselView extends StatelessWidget {
             const SizedBox(width: horizontalPadding),
             ...List.generate(
               imageUrls.length,
-              (index) => Padding(
-                padding: EdgeInsets.only(
-                  right: index == imageUrls.length - 1
-                      ? horizontalPadding
-                      : spacing,
-                ),
-                child: GestureDetector(
-                  onTap: () => viewModel.showImageDetail(context, memo, index),
-                  child: ClipRRect(
+              (index) {
+                debugPrint('이미지 URL $index: ${imageUrls[index].imageUrl}');
+                return Padding(
+                  padding: EdgeInsets.only(
+                    right: index == imageUrls.length - 1
+                        ? horizontalPadding
+                        : spacing,
+                  ),
+                  child: GestureDetector(
+                    onTap: () =>
+                        viewModel.showImageDetail(context, memo, index),
+                    child: ClipRRect(
                       borderRadius: BorderRadius.circular(8),
-                      child: ImageUtil.showImage(
-                        imageUrls[index].imageUrl!,
-                        size: Size(imageSize, imageSize),
-                      )),
-                ),
-              ),
+                      child: _buildCachedImage(
+                        imageUrls[index].imageUrl ?? '',
+                        imageSize,
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
           ],
         ),
       ),
     );
+  }
+
+  Widget _buildCachedImage(String imagePath, double size) {
+    if (!_imageCache.containsKey(imagePath)) {
+      _imageCache[imagePath] = Image.file(
+        File(imagePath),
+        width: size,
+        height: size,
+        fit: BoxFit.cover,
+        cacheWidth: (size * 2).toInt(), // 디바이스 픽셀 비율 고려
+        gaplessPlayback: true, // 깜빡임 방지
+      );
+    }
+    return _imageCache[imagePath]!;
   }
 }
 
@@ -99,18 +121,16 @@ class _GridView extends StatelessWidget {
             child: viewModel.shouldShowRemainingCount(imageUrls, index)
                 ? _RemainingCountOverlay(
                     memo: memo, url: url, viewModel: viewModel)
-                : Image.network(
-                    url,
+                : Image.file(
+                    File(url),
                     fit: BoxFit.cover,
-                    cacheWidth: 300,
-                    frameBuilder:
-                        (context, child, frame, wasSynchronouslyLoaded) {
-                      if (wasSynchronouslyLoaded) return child;
-                      return AnimatedOpacity(
-                        opacity: frame == null ? 0 : 1,
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.easeOut,
-                        child: child,
+                    errorBuilder: (context, error, stackTrace) {
+                      debugPrint('이미지 로드 에러: $error');
+                      return Container(
+                        width: 104,
+                        height: 104,
+                        color: Colors.grey[300],
+                        child: const Icon(Icons.error),
                       );
                     },
                   ),
@@ -157,17 +177,16 @@ class _RemainingCountOverlay extends StatelessWidget {
     return Stack(
       fit: StackFit.expand,
       children: [
-        Image.network(
-          url,
+        Image.file(
+          File(url),
           fit: BoxFit.cover,
-          cacheWidth: 300,
-          frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-            if (wasSynchronouslyLoaded) return child;
-            return AnimatedOpacity(
-              opacity: frame == null ? 0 : 1,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeOut,
-              child: child,
+          errorBuilder: (context, error, stackTrace) {
+            debugPrint('이미지 로드 에러: $error');
+            return Container(
+              width: 104,
+              height: 104,
+              color: Colors.grey[300],
+              child: const Icon(Icons.error),
             );
           },
         ),
