@@ -87,7 +87,7 @@ class HomeShell extends Shell {
     ),
     TypedStatefulShellBranch<DetailBranch>(
       routes: [
-        TypedGoRoute<DetailRoute>(path: AppRoute.detail),
+        TypedGoRoute<DetailRoute>(path: '${AppRoute.detail}/:id'),
       ],
     ),
     TypedStatefulShellBranch<DeleteBranch>(
@@ -371,11 +371,16 @@ class EditRoute extends Route {
 }
 
 // ✅ 상세 라우터
+@TypedGoRoute<DetailRoute>(
+  path: '${AppRoute.detail}/:id', // 동적 파라미터 정의
+)
 class DetailRoute extends Route {
   @override
   bool checkAuth(BuildContext context) => true;
 
-  const DetailRoute() : super(const MemoDetailView());
+  final String id;
+
+  DetailRoute({required this.id}) : super(MemoDetailView(id: id));
 }
 
 // ✅ 피드 라우터

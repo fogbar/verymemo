@@ -1,4 +1,9 @@
+build/
 **/dgph
+**/DerivedData
+**/XCBuildData
+**/Pods
+
 *.mode1v3
 *.mode2v3
 *.moved-aside

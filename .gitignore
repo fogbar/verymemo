@@ -44,8 +44,16 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
+# iOS
+ios/DerivedData/*
+ios/XCBuildData/*
+ios/.swiftpm/*
+
 # FVM Version Cache
 .fvm/
 .dart_tool/
 .fvmrc
 .vscode/
+
+# 빌드 파일들
+.metadata

@@ -11,6 +11,7 @@ List<RouteBase> get $appRoutes => [
       $homeShell,
       $detailShell,
       $emptyShell,
+      $detailRoute,
     ];
 
 RouteBase get $introShell => StatefulShellRouteData.$route(
@@ -224,7 +225,7 @@ RouteBase get $detailShell => StatefulShellRouteData.$route(
         StatefulShellBranchData.$branch(
           routes: [
             GoRouteData.$route(
-              path: '/detail',
+              path: '/detail/:id',
               factory: $DetailRouteExtension._fromState,
             ),
           ],
@@ -270,10 +271,12 @@ extension $EditRouteExtension on EditRoute {
 }
 
 extension $DetailRouteExtension on DetailRoute {
-  static DetailRoute _fromState(GoRouterState state) => const DetailRoute();
+  static DetailRoute _fromState(GoRouterState state) => DetailRoute(
+        id: state.pathParameters['id']!,
+      );
 
   String get location => GoRouteData.$location(
-        '/detail',
+        '/detail/${Uri.encodeComponent(id)}',
       );
 
   void go(BuildContext context) => context.go(location);
@@ -354,3 +357,8 @@ extension $SearchRouteExtension on SearchRoute {
 
   void replace(BuildContext context) => context.replace(location);
 }
+
+RouteBase get $detailRoute => GoRouteData.$route(
+      path: '/detail/:id',
+      factory: $DetailRouteExtension._fromState,
+    );
