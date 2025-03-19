@@ -68,7 +68,7 @@ class _HomeScaffoldState extends ConsumerState<HomeScaffold> {
                     0 => widget.navigationShell,
                     1 => widget.navigationShell,
                     2 => const GalleryView(),
-                    3 => const LinkList(links: []),
+                    3 => const LinkList(),
                     _ => widget.navigationShell,
                   },
                 ),

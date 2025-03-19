@@ -75,7 +75,10 @@ dependencies:
   smooth_page_indicator: ^1.2.0+3
   flutter_native_splash: ^2.4.4
   crypto: ^3.0.3
+
+  # 링크
   any_link_preview: ^3.0.3
+  url_launcher: ^6.2.5
 
   # 추가
   provider: ^6.1.1

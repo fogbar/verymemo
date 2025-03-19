@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:verymemo/common/ui/components/button/icon_btn.dart';
 import 'package:verymemo/common/ui/common/title_subtitle.dart';
 import 'package:verymemo/common/ui/components/list/list/config_list_item.dart';
@@ -133,16 +134,16 @@ class ListItem extends StatelessWidget {
         child: leadingImageUrl != null &&
                 (leadingImageUrl!.startsWith('http://') ||
                     leadingImageUrl!.startsWith('https://'))
-            ? Image.network(
-                leadingImageUrl!,
+            ? CachedNetworkImage(
+                imageUrl: leadingImageUrl!,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  debugPrint('이미지 로드 에러: $error');
-                  return Container(
-                    color: Colors.grey[200],
-                    child: Icon(Icons.link, color: Colors.grey[400]),
-                  );
-                },
+                placeholder: (context, url) => Container(
+                  color: Colors.grey[200],
+                ),
+                errorWidget: (context, url, error) => Container(
+                  color: Colors.grey[200],
+                  child: Icon(Icons.link, color: Colors.grey[400]),
+                ),
               )
             : Container(
                 color: Colors.grey[200],

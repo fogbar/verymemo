@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:verymemo/common/ui/components/button/icon_btn.dart';
 import 'package:verymemo/common/utils/image_util.dart';
+import 'package:intl/intl.dart';
 
 enum HeaderType { date, logo, content, searchBar, imageviewer }
 
@@ -75,6 +76,11 @@ class VariableHeader extends StatelessWidget {
     this.focusNode,
   });
 
+  String _getCurrentDate() {
+    final now = DateTime.now();
+    return DateFormat('yyyy.M.d').format(now);
+  }
+
   @override
   Widget build(BuildContext context) {
     final HeaderConfig config = HeaderConfig.styles[type]!;
@@ -89,7 +95,7 @@ class VariableHeader extends StatelessWidget {
     return SafeArea(
       bottom: false,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         height: 56,
         color: backgroundColor,
         alignment: Alignment.center,
@@ -119,9 +125,9 @@ class VariableHeader extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        const Text(
-          "2023.06",
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800),
+        Text(
+          _getCurrentDate(),
+          style: Theme.of(context).textTheme.titleLarge,
         ),
         Row(
           children: [
