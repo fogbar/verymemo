@@ -85,9 +85,19 @@ class HomeShell extends Shell {
         TypedGoRoute<EditRoute>(path: AppRoute.edit),
       ],
     ),
+    // TypedStatefulShellBranch<DetailBranch>(
+    //   routes: [
+    //     TypedGoRoute<DetailRoute>(path: AppRoute.detail),
+    //   ],
+    // ),
     TypedStatefulShellBranch<DetailBranch>(
       routes: [
-        TypedGoRoute<DetailRoute>(path: AppRoute.detail),
+        TypedGoRoute<DetailEntryRoute>(
+          path: AppRoute.detail,
+          routes: [
+            TypedGoRoute<DetailRoute>(path: ':id'), // ✅ 이제 이게 동작함
+          ],
+        ),
       ],
     ),
     TypedStatefulShellBranch<DeleteBranch>(
@@ -371,18 +381,36 @@ class EditRoute extends Route {
 }
 
 // ✅ 상세 라우터
+// class DetailRoute extends Route {
+//   @override
+//   bool checkAuth(BuildContext context) => true;
+
+//   DetailRoute() : super(const SizedBox.shrink()); // 임시 위젯으로 초기화
+
+//   @override
+//   Widget buildPageWithState(BuildContext context, GoRouterState state) {
+//     return MemoDetailView(
+//       memo: state.extra as MemoModel,
+//     );
+//   }
+// }
+class DetailEntryRoute extends Route {
+  const DetailEntryRoute() : super(const SizedBox.shrink());
+
+  @override
+  bool checkAuth(BuildContext context) => false;
+}
+
+// @TypedGoRoute<DetailRoute>(
+//   path: ':id',
+// )
 class DetailRoute extends Route {
+  final String id;
+
+  DetailRoute(this.id) : super(MemoDetailView(id: id));
+
   @override
   bool checkAuth(BuildContext context) => true;
-
-  DetailRoute() : super(const SizedBox.shrink()); // 임시 위젯으로 초기화
-
-  @override
-  Widget buildPageWithState(BuildContext context, GoRouterState state) {
-    return MemoDetailView(
-      memo: state.extra as MemoModel,
-    );
-  }
 }
 
 // ✅ 피드 라우터

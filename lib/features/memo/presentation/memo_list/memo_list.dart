@@ -26,7 +26,7 @@ class MemoList extends ConsumerWidget {
           return GestureDetector(
             onTap: () {
               debugPrint('선택된 메모: ${memo.memoId}, ${memo.content}');
-              context.go('/detail', extra: memo);
+              context.go('/detail/${memo.memoId}', extra: memo);
             },
             onLongPress: () async {
               try {

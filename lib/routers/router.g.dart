@@ -225,7 +225,13 @@ RouteBase get $detailShell => StatefulShellRouteData.$route(
           routes: [
             GoRouteData.$route(
               path: '/detail',
-              factory: $DetailRouteExtension._fromState,
+              factory: $DetailEntryRouteExtension._fromState,
+              routes: [
+                GoRouteData.$route(
+                  path: ':id',
+                  factory: $DetailRouteExtension._fromState,
+                ),
+              ],
             ),
           ],
         ),
@@ -269,11 +275,31 @@ extension $EditRouteExtension on EditRoute {
   void replace(BuildContext context) => context.replace(location);
 }
 
-extension $DetailRouteExtension on DetailRoute {
-  static DetailRoute _fromState(GoRouterState state) => DetailRoute();
+extension $DetailEntryRouteExtension on DetailEntryRoute {
+  static DetailEntryRoute _fromState(GoRouterState state) =>
+      const DetailEntryRoute();
 
   String get location => GoRouteData.$location(
         '/detail',
+      );
+
+  void go(BuildContext context) => context.go(location);
+
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  void replace(BuildContext context) => context.replace(location);
+}
+
+extension $DetailRouteExtension on DetailRoute {
+  static DetailRoute _fromState(GoRouterState state) => DetailRoute(
+        state.pathParameters['id']!,
+      );
+
+  String get location => GoRouteData.$location(
+        '/detail/${Uri.encodeComponent(id)}',
       );
 
   void go(BuildContext context) => context.go(location);
