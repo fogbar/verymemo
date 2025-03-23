@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:verymemo/externals/db/db_scheme.dart';
 import 'package:verymemo/externals/db/db_service.dart';
 import 'package:verymemo/features/memo/data/repositories/memo_repository_impl.dart';
 

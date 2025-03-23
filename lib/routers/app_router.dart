@@ -90,16 +90,7 @@ class HomeShell extends Shell {
     //     TypedGoRoute<DetailRoute>(path: AppRoute.detail),
     //   ],
     // ),
-    TypedStatefulShellBranch<DetailBranch>(
-      routes: [
-        TypedGoRoute<DetailEntryRoute>(
-          path: AppRoute.detail,
-          routes: [
-            TypedGoRoute<DetailRoute>(path: ':id'), // ✅ 이제 이게 동작함
-          ],
-        ),
-      ],
-    ),
+
     TypedStatefulShellBranch<DeleteBranch>(
       routes: [
         TypedGoRoute<DeleteRoute>(path: AppRoute.delete),
@@ -132,6 +123,16 @@ class DetailShell extends Shell {
     TypedStatefulShellBranch<SearchBranch>(
       routes: [
         TypedGoRoute<SearchRoute>(path: AppRoute.search),
+      ],
+    ),
+    TypedStatefulShellBranch<DetailBranch>(
+      routes: [
+        TypedGoRoute<DetailEntryRoute>(
+          path: AppRoute.detail,
+          routes: [
+            TypedGoRoute<DetailRoute>(path: ':id'), // ✅ 이제 이게 동작함
+          ],
+        ),
       ],
     ),
   ],

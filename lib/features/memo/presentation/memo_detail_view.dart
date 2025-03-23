@@ -1,6 +1,5 @@
 import 'package:verymemo/common/barrel/memo_writing.dart';
 import 'package:verymemo/common/barrel/model_common.dart';
-import 'package:go_router/go_router.dart';
 
 class MemoDetailView extends ConsumerWidget {
   // final MemoModel memo;
