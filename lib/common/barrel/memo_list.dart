@@ -10,3 +10,4 @@ export 'package:verymemo/features/memo/presentation/viewmodels/memo_home_viewmod
 export 'package:verymemo/features/memo/presentation/image_detail_view.dart';
 export 'package:verymemo/features/memo/presentation/memo_list/molicure/link_preview.dart';
 export 'package:verymemo/features/memo/presentation/memo_list/molicure/link_result.dart';
+export 'package:verymemo/features/memo/presentation/memo_list/molicure/link_largeview.dart';

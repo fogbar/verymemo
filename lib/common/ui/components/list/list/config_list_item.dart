@@ -9,6 +9,7 @@ enum ListItemType {
   toggle, // 토글
   text, // 텍스트 (카테고리, 숫자 등)
   none, // 아무것도 없음
+  large, // 라지 링크뷰 
 }
 
 class ListItemConfig {
@@ -90,6 +91,14 @@ class ListItemPresets {
   static const ListItemConfig checkboxListStyle = ListItemConfig(
     itemSpacing: 12,
     leadingType: ListItemType.checkbox,
+    textConfig: TitleSubtitlePresets.listItem,
+    padding: EdgeInsets.zero,
+  );
+
+  /// 라지 링크뷰 스타일
+  static const ListItemConfig largeLinkViewStyle = ListItemConfig(
+    itemSpacing: 12,
+    leadingType: ListItemType.large,
     textConfig: TitleSubtitlePresets.listItem,
     padding: EdgeInsets.zero,
   );

@@ -7,11 +7,20 @@ import 'package:url_launcher/url_launcher.dart';
 class LinkResult extends StatelessWidget {
   final List<LinkModel> links;
   final Function(int index)? onDeleteTap;
+  final ListItemConfig config;
 
   const LinkResult({
     super.key,
     required this.links,
     this.onDeleteTap,
+    this.config = const ListItemConfig(
+      leadingType: ListItemType.image,
+      imageSize: 60,
+      imageRadius: 8,
+      textConfig: TitleSubtitlePresets.listItem,
+      itemSpacing: 12,
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+    ),
   });
 
   Future<void> _launchUrl(String? url) async {
@@ -69,13 +78,7 @@ class LinkResult extends StatelessWidget {
                   leadingImageUrl: link.thumbnail,
                   title: link.metaTitle ?? link.linkUrl ?? "",
                   subtitle: link.metaDescription ?? '',
-                  config: ListItemConfig(
-                    leadingType: ListItemType.image,
-                    imageSize: 60,
-                    imageRadius: 8,
-                    textConfig: TitleSubtitlePresets.listItem,
-                    itemSpacing: 12,
-                  ),
+                  config: config,
                 ),
               );
             },
