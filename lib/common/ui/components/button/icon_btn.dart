@@ -50,6 +50,7 @@ class IconConfig {
     "check": "assets/icons/check.svg",
     "user": "assets/icons/user.svg",
     "withdrawal": "assets/icons/withdrawal.svg",
+    "share": "assets/icons/share.svg",
   };
 
   /// 📌 아이콘 크기 가져오기 (기본값 medium)
