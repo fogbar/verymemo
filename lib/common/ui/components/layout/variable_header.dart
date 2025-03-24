@@ -3,7 +3,7 @@ import 'package:verymemo/common/ui/components/button/icon_btn.dart';
 import 'package:verymemo/common/utils/image_util.dart';
 import 'package:intl/intl.dart';
 
-enum HeaderType { date, logo, content, searchBar, imageviewer }
+enum HeaderType { date, logo, content, searchBar, imageviewer, memoDetail }
 
 class HeaderConfig {
   final bool showBackArrow;
@@ -14,6 +14,7 @@ class HeaderConfig {
   final bool showDownload;
   final bool showClose;
   final bool showDeleteAllButton;
+  final bool showShare;
   final VoidCallback? onDeleteAllPressed;
 
   const HeaderConfig({
@@ -26,6 +27,7 @@ class HeaderConfig {
     this.showClose = false,
     this.showDeleteAllButton = false,
     this.onDeleteAllPressed,
+    this.showShare = false,
   });
 
   static const Map<HeaderType, HeaderConfig> styles = {
@@ -42,6 +44,11 @@ class HeaderConfig {
       showDelete: false,
       showClose: true,
     ),
+    HeaderType.memoDetail: HeaderConfig(
+      showBackArrow: true,
+      showDelete: true,
+      showShare: true,
+    ),
   };
 }
 
@@ -56,6 +63,7 @@ class VariableHeader extends StatelessWidget {
   final VoidCallback? onMore;
   final VoidCallback? onDelete;
   final VoidCallback? onDownload;
+  final VoidCallback? onShare;
   final bool showDelete;
   final bool showDownload;
   final FocusNode? focusNode;
@@ -71,6 +79,7 @@ class VariableHeader extends StatelessWidget {
     this.onMore,
     this.onDelete,
     this.onDownload,
+    this.onShare,
     this.showDelete = true,
     this.showDownload = true,
     this.focusNode,
@@ -117,6 +126,8 @@ class VariableHeader extends StatelessWidget {
         return _searchBarHeader(config, context, iconColor);
       case HeaderType.imageviewer:
         return _imageViewerHeader(config, context, iconColor);
+      case HeaderType.memoDetail:
+        return _memoDetailHeader(config, context, iconColor);
     }
   }
 
@@ -241,6 +252,25 @@ class VariableHeader extends StatelessWidget {
               IconBtn(iconKey: "delete", onTap: onDelete, color: iconColor),
             if (config.showClose)
               IconBtn(iconKey: "close", onTap: onBack, color: iconColor),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _memoDetailHeader(
+      HeaderConfig config, BuildContext context, Color iconColor) {
+    return Row(
+      children: [
+        if (config.showBackArrow)
+          IconBtn(iconKey: "back", onTap: onBack, color: iconColor),
+        const Spacer(),
+        Row(
+          children: [
+            if (config.showDelete)
+              IconBtn(iconKey: "delete", onTap: onDelete, color: iconColor),
+            if (config.showShare)
+              IconBtn(iconKey: "share", onTap: onShare, color: iconColor),
           ],
         ),
       ],

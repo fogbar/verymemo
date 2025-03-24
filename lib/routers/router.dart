@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -8,7 +9,6 @@ import 'package:verymemo/common/const/app_const.dart';
 import 'package:verymemo/common/extensions/widget_extension.dart';
 import 'package:verymemo/common/ui/components/layout/variable_header.dart';
 import 'package:verymemo/common/ui/components/layout/variable_nevbar.dart';
-import 'package:verymemo/features/memo/presentation/memo_list/gallery_view.dart';
 import 'package:verymemo/common/ui/components/tab/tab_menu.dart';
 import 'package:verymemo/common/utils/image_util.dart';
 import 'package:verymemo/externals/storage/storage_service.dart';
