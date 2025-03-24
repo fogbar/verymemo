@@ -48,6 +48,8 @@ class MemoDetailView extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
+                        MemoFooter(createdAt: currentMemo.createdAt),
+                        const SizedBox(height: 8),
                         if (currentMemo.content != null)
                           Text(
                             currentMemo.content!,
@@ -59,7 +61,7 @@ class MemoDetailView extends ConsumerWidget {
                           ),
                         if (currentMemo.images != null &&
                             currentMemo.images!.isNotEmpty) ...[
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 8),
                           ListView.separated(
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
