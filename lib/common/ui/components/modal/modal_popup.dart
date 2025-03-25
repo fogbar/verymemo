@@ -44,7 +44,7 @@ class ModalPopup extends StatelessWidget {
               TitleSubtitleWidget(
                 title: title,
                 subtitle: subtitle,
-                spacing: 8,
+                spacing: 4,
                 config: TitleSubtitlePresets.modalPopup,
                 textAlign: TextAlign.center,
               ),

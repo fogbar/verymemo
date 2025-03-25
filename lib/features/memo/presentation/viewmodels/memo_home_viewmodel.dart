@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:verymemo/features/memo/presentation/image_detail_view.dart';
 import 'package:verymemo/features/memo/presentation/providers/memo_provider.dart';
 import 'package:verymemo/features/memo/presentation/providers/state/memo_state.dart';
+import 'package:verymemo/features/memo/presentation/components/modal/popup/delete.dart';
 // HapticFeedback을 위해 추가
 
 final memoHomeProvider =
@@ -38,17 +39,50 @@ class MemoHomeViewModel extends StateNotifier<MemoState> {
   }
 
   /// 🔄 [메모 삭제]
-  ///
-  Future<void> deleteMemo(dynamic memoId) async {
-    final List<int> idsToDelete =
-        memoId is int ? [memoId] : List<int>.from(memoId);
+  Future<void> deleteMemo(BuildContext context, dynamic memoId) async {
+    debugPrint('deleteMemo called with memoId: $memoId');
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          debugPrint('DeleteMemoPopup builder called');
+          return DeleteMemoPopup(
+            onConfirm: () {
+              debugPrint('Delete confirmed');
+              Navigator.of(context).pop();
 
-    await _ref.read(memoProvider.notifier).deleteMemo(idsToDelete);
-    await _loadMemos(); // 🔄 목록 갱신
+              final List<int> idsToDelete =
+                  memoId is int ? [memoId] : List<int>.from(memoId);
+              debugPrint('idsToDelete: $idsToDelete');
+
+              _ref
+                  .read(memoProvider.notifier)
+                  .deleteMemo(idsToDelete)
+                  .then((_) {
+                _loadMemos();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('메모가 삭제되었어요'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+              });
+            },
+            onCancel: () {
+              debugPrint('Delete cancelled');
+              Navigator.of(context).pop();
+            },
+          );
+        },
+      );
+    });
   }
 
   /// 🔄 [메모 길게 누를 때]
-  void handleModalSelection(String value, MemoModel memo) async {
+  void handleModalSelection(
+      String value, MemoModel memo, BuildContext context) {
+    debugPrint('handleModalSelection called with value: $value');
     switch (value) {
       case '수정':
         updateMemo(memo);
@@ -63,7 +97,8 @@ class MemoHomeViewModel extends StateNotifier<MemoState> {
         _togglePublicMemo(memo);
         break;
       case '삭제':
-        deleteMemo(memo.memoId!);
+        debugPrint('Delete case triggered');
+        deleteMemo(context, memo.memoId!);
         break;
     }
   }

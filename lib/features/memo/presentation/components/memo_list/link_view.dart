@@ -6,6 +6,7 @@ import 'package:verymemo/common/barrel/button.dart';
 import 'package:verymemo/features/memo/presentation/providers/memo_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter/material.dart';
 
 class LinkList extends ConsumerWidget {
   final Function(String url)? onLinkTap;
@@ -92,7 +93,10 @@ class LinkList extends ConsumerWidget {
               itemSpacing: 12,
             ),
             onTrailingIconTap: linkData.hasContent && linkData.memoId != null
-                ? () => context.go('/detail', extra: linkData.memoId)
+                ? () {
+                    debugPrint('선택된 메모: ${linkData.memoId}');
+                    context.go('/detail/${linkData.memoId}');
+                  }
                 : null,
           ),
         );
