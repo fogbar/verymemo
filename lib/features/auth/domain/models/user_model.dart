@@ -8,7 +8,9 @@ part 'user_model.g.dart';
 enum AuthProvider {
   google,
   apple,
-  unknown,
+  unknown;
+
+  String get name => toString().split('.').last;
 }
 
 @freezed

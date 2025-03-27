@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,16 +24,17 @@ import 'package:verymemo/features/permission/providers/permission_provider.dart'
 import 'package:verymemo/features/settings/presentation/settings_view.dart';
 import 'package:verymemo/features/auth/presentation/profile/profile_setting_view.dart';
 import 'package:verymemo/features/splash/splash_view.dart';
-import 'package:verymemo/features/memo/presentation/select/align.dart';
 import 'package:verymemo/common/barrel/memo_list.dart';
+import 'package:verymemo/features/memo/presentation/components/modal/select/align.dart';
+import 'dart:developer' as developer;
 
 part 'app_routes.dart';
 part 'app_router.dart';
 part 'app_router_provider.dart';
-// part 'app_router_interceptor.dart';
 part 'shell/home_scaffold.dart';
 part 'shell/intro_scaffold.dart';
 part 'shell/detail_scaffold.dart';
 part 'shell/empty_scaffold.dart';
-
 part 'router.g.dart';
+
+final selectedMemoIdProvider = StateProvider<String?>((ref) => null);

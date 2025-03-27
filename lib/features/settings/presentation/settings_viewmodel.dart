@@ -1,4 +1,5 @@
 import 'package:verymemo/common/barrel/view_common.dart';
+import 'package:verymemo/features/auth/presentation/providers/auth_provider.dart';
 import 'package:verymemo/features/settings/providers/theme_providers.dart';
 import 'package:verymemo/features/settings/presentation/modals/withdrawal_modal.dart';
 import 'package:verymemo/features/settings/presentation/modals/sync_modal.dart';
@@ -84,7 +85,18 @@ class SettingsViewModel extends StateNotifier<SettingsState> {
       useSafeArea: true,
       builder: (context) => Theme(
         data: Theme.of(context),
-        child: const WithdrawalModal(),
+        child: WithdrawalModal(
+          onConfirm: () {
+            debugPrint('Delete confirmed');
+
+            ref.read(authStateNotifierProvider.notifier).signOut();
+
+            // Navigator.of(context).pop();
+          },
+          onCancel: () {
+            Navigator.of(context).pop();
+          },
+        ),
       ),
     );
   }

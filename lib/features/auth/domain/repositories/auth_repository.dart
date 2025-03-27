@@ -3,7 +3,8 @@ import 'package:verymemo/features/auth/domain/models/user_model.dart';
 abstract class AuthRepository {
   Future<UserModel?> signInWithGoogle();
   Future<UserModel?> signInWithApple();
-  Future<void> signOut();
+  Future<void> signOutWithGoogle();
+  Future<void> signOutWithApple();
   Stream<UserModel?> authStateChanges();
   UserModel? getCurrentUser();
 }

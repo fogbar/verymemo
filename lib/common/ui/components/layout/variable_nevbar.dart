@@ -76,12 +76,35 @@ class VariableNavigationBar extends StatelessWidget {
     ];
   }
 
-  /// ✅ 콘텐츠 네비게이션 바 (아이콘 4개, 터치해도 색상 변경 없음)
+  /// ✅ 콘텐츠 네비게이션 바 (아이콘 4개)
   List<Widget> _buildContentNav(BuildContext context) {
-    return List.generate(
-      NavigationBarConfig.contentIcons.length,
-      (index) =>
-          _navItem(NavigationBarConfig.contentIcons[index], index, context),
+    return [
+      _contentNavItem("copy", context),
+      _contentNavItem("bookmark", context),
+      _contentNavItem("upload", context),
+      _contentNavItem("edit", context),
+    ];
+  }
+
+  /// ✅ 콘텐츠 네비게이션 아이콘 (터치해도 색상 변경 없음)
+  Widget _contentNavItem(String iconKey, BuildContext context) {
+    return Expanded(
+      child: IconBtn(
+        iconKey: iconKey,
+        size: IconSize.large,
+        color: Theme.of(context).colorScheme.onSurface,
+        onTap: () async {
+          try {
+            if (Platform.isIOS || Platform.isAndroid) {
+              await HapticFeedback.lightImpact();
+            }
+          } catch (e) {
+            debugPrint('Haptic feedback failed: $e');
+          }
+          onItemSelected
+              ?.call(NavigationBarConfig.contentIcons.indexOf(iconKey));
+        },
+      ),
     );
   }
 

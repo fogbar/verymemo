@@ -85,10 +85,12 @@ class FirebaseService {
       final oauthCredential = OAuthProvider("apple.com").credential(
         idToken: appleCredential.identityToken,
         rawNonce: rawNonce,
+        accessToken: appleCredential.authorizationCode,
       );
 
-      final userCredential = await _auth.signInWithCredential(oauthCredential);
-      final user = userCredential.user;
+      UserCredential credential =
+          await _auth.signInWithCredential(oauthCredential);
+      final user = credential.user;
 
       if (appleCredential.givenName != null && user != null) {
         await user.updateDisplayName(
@@ -98,11 +100,9 @@ class FirebaseService {
       }
 
       // 최종 사용자 정보 반환
-      if (user != null) {
-        return UserModel.fromFBUser(user);
-      }
+      if (user == null) return null;
 
-      return null;
+      return UserModel.fromFBUser(user);
     } on SignInWithAppleAuthorizationException catch (e) {
       if (e.code == AuthorizationErrorCode.canceled) {
         throw Exception("사용자가 Apple 로그인을 취소했습니다.");
@@ -113,11 +113,19 @@ class FirebaseService {
     }
   }
 
-  Future<void> signOut() async {
+  Future<void> signOutWithGoogle() async {
     await Future.wait(
       [
         _auth.signOut(),
         _googleSignIn.signOut(),
+      ],
+    );
+  }
+
+  Future<void> signOutWithApple() async {
+    await Future.wait(
+      [
+        _auth.signOut(),
       ],
     );
   }

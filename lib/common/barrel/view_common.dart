@@ -1,4 +1,5 @@
 export 'package:flutter/material.dart';
+export 'dart:io';
 export 'package:flutter_riverpod/flutter_riverpod.dart';
 export 'package:verymemo/common/ui/common/app_theme.dart';
 export 'package:verymemo/common/ui/common/config/config_box_style.dart';

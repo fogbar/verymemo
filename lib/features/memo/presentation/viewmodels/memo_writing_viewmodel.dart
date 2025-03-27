@@ -27,6 +27,13 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
   ) : super(MemoWritingState()) {
     state.textController.addListener(_onTextChanged);
     state.linkController.addListener(_onLinkChanged);
+    // 초기화 시 즉시 상태 설정
+    state = state.copyWith(
+      visible: true,
+      isExpanded: true,
+    );
+    // 즉시 포커스 설정
+    state.focusNode.requestFocus();
   }
 
   @override

@@ -1,7 +1,7 @@
 import 'package:verymemo/common/barrel/memo_list.dart';
 import 'package:verymemo/common/barrel/view_common.dart';
 import 'package:verymemo/features/memo/presentation/providers/memo_provider.dart';
-import 'package:verymemo/features/memo/presentation/select/deep_click.dart';
+import 'package:verymemo/features/memo/presentation/components/modal/select/deep_click.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:go_router/go_router.dart';
@@ -41,7 +41,7 @@ class MemoList extends ConsumerWidget {
               DeepClickSelect.show(
                 context,
                 memo,
-                (value, memo) => viewModel.handleModalSelection(value, memo),
+                (value, memo) => viewModel.handleModalSelection(value, memo, context),
               );
             },
             child: Container(
