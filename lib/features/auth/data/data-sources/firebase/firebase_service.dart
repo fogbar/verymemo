@@ -113,11 +113,19 @@ class FirebaseService {
     }
   }
 
-  Future<void> signOut() async {
+  Future<void> signOutWithGoogle() async {
     await Future.wait(
       [
         _auth.signOut(),
         _googleSignIn.signOut(),
+      ],
+    );
+  }
+
+  Future<void> signOutWithApple() async {
+    await Future.wait(
+      [
+        _auth.signOut(),
       ],
     );
   }

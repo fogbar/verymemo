@@ -150,13 +150,13 @@ class _LoginButton extends ConsumerWidget {
         onPressed: channel.isUser
             ? () {
                 if (channel.title == "동기화를 위한 가입") {
-                  ref
-                      .read(authStateNotifierProvider.notifier)
-                      .signIn(AuthProvider.google);
+                  ref.read(authStateNotifierProvider.notifier).signIn(
+                        "google",
+                      );
                 } else {
-                  ref
-                      .read(authStateNotifierProvider.notifier)
-                      .signIn(AuthProvider.apple);
+                  ref.read(authStateNotifierProvider.notifier).signIn(
+                        "apple",
+                      );
                 }
               }
             : () => context.go(AppRoute.home),
