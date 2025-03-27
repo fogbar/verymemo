@@ -1,82 +1,207 @@
 part of 'router.dart';
 
 final appRouterProvider = Provider<AppRouter>((ref) {
-  // final interceptor = ref.watch(appRouterInterceptorProvider);
   return AppRouter(ref);
 });
 
 class AppRouter {
-  // final AppRouterInterceptor interceptor;
   final Ref ref;
 
   AppRouter(this.ref);
   late final config = GoRouter(
+    initialLocation: AppRoute.splash,
     navigatorKey: NavigatorKey.routerKey,
     debugLogDiagnostics: true,
-    routes: $appRoutes,
     refreshListenable: GoRouterRefreshStream(
         ref.watch(permissionNotifierProvider.notifier).stream),
-    redirect: (context, state) async {
-      final storageService = ref.watch(storageProvider);
-      final isNew = await storageService.get(key: deviceId) != null;
-      final permissionState = ref.read(permissionNotifierProvider);
-      final allPermissionsGranted = permissionState.allGranted;
-
-      // 🔥 모든 권한이 허용된 경우 → 로그인 페이지로 리다이렉트
-      // if (allPermissionsGranted) {
-      //   if (!state.matchedLocation.contains(AppRoute.home)) {
-      //     return AppRoute.signup;
-      //   }
-      // }
-      // if (context.mounted) {
-      //   // 1. 처음은 아닌데 인증이 필요한 라우트인 경우: 로그인으로 리다이렉트
-      //   if (!isNew &&
-      //       _findRouteByPath(state.matchedLocation)!.checkAuth(context)) {
-      //     return AppRoute.login;
-      //   }
-
-      //   // 2. 처음은 아니면서, 인증이 필요없는 라우트인 경우: 홈으로 리다이렉트
-      //   if (!isNew &&
-      //       !_findRouteByPath(state.matchedLocation)!.checkAuth(context)) {
-      //     return AppRoute.home;
-      //   }
-
-      //   // 3. 처음인 경우: 인트로로 리다이렉트
-      //   if (isNew) {
-      //     return AppRoute.intro;
-      //   }
-      // }
-      return null;
-    },
-    initialLocation: AppRoute.splash,
+    routes: [
+      // ✅ 인트로 쉘
+      StatefulShellRoute(
+        // parentNavigatorKey: NavigatorKey.introShellKey,
+        builder: (context, state, navigationShell) {
+          return IntroScaffold(
+            navigationShell: navigationShell,
+            state: state,
+          );
+        },
+        navigatorContainerBuilder: (context, navigationShell, children) =>
+            children[navigationShell.currentIndex],
+        branches: [
+          StatefulShellBranch(
+            navigatorKey: NavigatorKey.splashBranchKey,
+            routes: [
+              // ✅ 스플래시 화면
+              GoRoute(
+                path: AppRoute.splash,
+                builder: (context, state) => const SplashView(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            navigatorKey: NavigatorKey.introBranchKey,
+            routes: [
+              // ✅ 소개 화면
+              GoRoute(
+                path: AppRoute.intro,
+                builder: (context, state) => const PermissionView(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            navigatorKey: NavigatorKey.permissionCheckBranchKey,
+            routes: [
+              // ✅ 권한 확인 화면
+              GoRoute(
+                path: AppRoute.permissionCheck,
+                builder: (context, state) => const IntroView(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            navigatorKey: NavigatorKey.loginBranchKey,
+            routes: [
+              // ✅ 로그인 화면
+              GoRoute(
+                path: AppRoute.signup,
+                builder: (context, state) => const AuthView(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            navigatorKey: NavigatorKey.profileSettingBranchKey,
+            routes: [
+              // ✅ 프로필 설정 화면
+              GoRoute(
+                path: AppRoute.profileSetting,
+                builder: (context, state) => const ProfileSettingView(),
+              ),
+            ],
+          ),
+        ],
+      ),
+      // ✅ 홈 쉘
+      StatefulShellRoute(
+        // parentNavigatorKey: NavigatorKey.homeShellKey,
+        builder: (context, state, navigationShell) {
+          return HomeScaffold(
+            navigationShell: navigationShell,
+            state: state,
+          );
+        },
+        navigatorContainerBuilder: (context, navigationShell, children) =>
+            children[navigationShell.currentIndex],
+        branches: [
+          StatefulShellBranch(
+            navigatorKey: NavigatorKey.homeBranchKey,
+            routes: [
+              // ✅ 메모 홈 화면
+              GoRoute(
+                path: AppRoute.home,
+                builder: (context, state) => const MemoHomeView(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            navigatorKey: NavigatorKey.feedBranchKey,
+            routes: [
+              // ✅ 소개 화면
+              GoRoute(
+                path: AppRoute.feed,
+                builder: (context, state) => const FeedView(),
+              ),
+            ],
+          ),
+        ],
+      ),
+      // ✅ 디테일 쉘
+      StatefulShellRoute(
+        // parentNavigatorKey: NavigatorKey.detailShellKey,
+        builder: (context, state, navigationShell) {
+          return DetailScaffold(
+            navigationShell: navigationShell,
+            state: state,
+          );
+        },
+        navigatorContainerBuilder: (context, navigationShell, children) =>
+            children[navigationShell.currentIndex],
+        branches: [
+          StatefulShellBranch(
+            navigatorKey: NavigatorKey.editBranchKey,
+            routes: [
+              // ✅ 수정 화면
+              GoRoute(
+                path: AppRoute.edit,
+                builder: (context, state) => const MemoEditView(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            navigatorKey: NavigatorKey.deleteBranchKey,
+            routes: [
+              // ✅ 삭제 화면
+              GoRoute(
+                path: AppRoute.delete,
+                builder: (context, state) => const MemoDeleteView(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            navigatorKey: NavigatorKey.settingsBranchKey,
+            routes: [
+              // ✅ 설정 화면
+              GoRoute(
+                path: AppRoute.settings,
+                builder: (context, state) => const SettingsView(),
+              ),
+            ],
+          ),
+        ],
+      ),
+      // ✅ 빈 쉘
+      StatefulShellRoute(
+        // parentNavigatorKey: NavigatorKey.emptyShellKey,
+        builder: (context, state, navigationShell) {
+          return EmptyScaffold(
+            navigationShell: navigationShell,
+            state: state,
+          );
+        },
+        navigatorContainerBuilder: (context, navigationShell, children) =>
+            children[navigationShell.currentIndex],
+        branches: [
+          StatefulShellBranch(
+            navigatorKey: NavigatorKey.searchBranchKey,
+            routes: [
+              // ✅ 찾기 화면
+              GoRoute(
+                path: AppRoute.search,
+                builder: (context, state) => const SearchView(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            navigatorKey: NavigatorKey.detailBranchKey,
+            routes: [
+              // ✅ 디테일 화면
+              GoRoute(
+                path: AppRoute.detail,
+                builder: (context, state) => const SizedBox.shrink(),
+                routes: [
+                  GoRoute(
+                    path: ':id',
+                    builder: (context, state) {
+                      final id = state.pathParameters['id']!;
+                      return MemoDetailView(id: id);
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    ],
   );
-
-  static Route? _findRouteByPath(String path) {
-    switch (path) {
-      case AppRoute.intro:
-        return const IntroRoute();
-      case AppRoute.permissionCheck:
-        return const PermissionCheckRoute();
-      case AppRoute.signup:
-        return const LoginRoute();
-      case AppRoute.profileSetting:
-        return const ProfileSettingRoute();
-      case AppRoute.home:
-        return HomeRoute();
-      case AppRoute.edit:
-        return const EditRoute();
-      case AppRoute.feed:
-        return const FeedRoute();
-      case AppRoute.delete:
-        return const DeleteRoute();
-      case AppRoute.search:
-        return const SearchRoute();
-      case AppRoute.settings:
-        return const SettingsRoute();
-      default:
-        return null;
-    }
-  }
 }
 
 class GoRouterRefreshStream extends ChangeNotifier {
