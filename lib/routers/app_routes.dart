@@ -126,44 +126,24 @@ abstract class Route extends GoRouteData {
   bool checkAuth(BuildContext context);
 
   @override
-  // Widget build(BuildContext context, GoRouterState state) => child;
-  @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
-    return CustomTransitionPage(
+    if (Platform.isIOS) {
+      return CupertinoPage(
+        key: state.pageKey,
+        child: child,
+        maintainState: true,
+        fullscreenDialog: false,
+      );
+    }
+
+    return MaterialPage(
       key: state.pageKey,
-      child: child,
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        // 뒤로가기 확인
-        final isPopping = secondaryAnimation.status == AnimationStatus.forward;
-
-        if (isPopping) {
-          // 뒤로가기 애니메이션
-          const begin = Offset.zero;
-          const end = Offset(-1.0, 0.0);
-          const curve = Curves.easeInOut;
-
-          var tween =
-              Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
-          return SlideTransition(
-            position: animation.drive(tween),
-            child: child,
-          );
-        } else {
-          // 앞으로 가기 애니메이션
-          const begin = Offset(1.0, 0.0);
-          const end = Offset.zero;
-          const curve = Curves.easeInOut;
-
-          var tween =
-              Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
-          return SlideTransition(
-            position: animation.drive(tween),
-            child: child,
-          );
-        }
-      },
+      child: Container(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        child: child,
+      ),
+      maintainState: true,
+      fullscreenDialog: false,
     );
   }
 }

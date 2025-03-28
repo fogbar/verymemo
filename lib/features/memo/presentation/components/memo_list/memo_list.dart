@@ -26,7 +26,7 @@ class MemoList extends ConsumerWidget {
           return GestureDetector(
             onTap: () {
               debugPrint('선택된 메모: ${memo.memoId}, ${memo.content}');
-              context.go('/detail/${memo.memoId}', extra: memo);
+              context.push('/detail/${memo.memoId}', extra: memo);
             },
             onLongPress: () async {
               try {
@@ -41,7 +41,8 @@ class MemoList extends ConsumerWidget {
               DeepClickSelect.show(
                 context,
                 memo,
-                (value, memo) => viewModel.handleModalSelection(value, memo, context),
+                (value, memo) =>
+                    viewModel.handleModalSelection(value, memo, context),
               );
             },
             child: Container(
