@@ -2,7 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:verymemo/common/ui/components/modal/modal_popup.dart';
 
 class WithdrawalModal extends StatelessWidget {
-  const WithdrawalModal({super.key});
+  final VoidCallback onConfirm;
+  final VoidCallback onCancel;
+
+  const WithdrawalModal({
+    super.key,
+    required this.onConfirm,
+    required this.onCancel,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -13,11 +20,8 @@ class WithdrawalModal extends StatelessWidget {
       iconKey: "withdrwal",
       confirmText: "삭제 동의하고 탈퇴하기",
       cancelText: "취소",
-      onConfirm: () {
-        // TODO: 회원 탈퇴 로직 구현
-        Navigator.of(context).pop();
-      },
-      onCancel: () => Navigator.of(context).pop(),
+      onConfirm: onConfirm,
+      onCancel: onCancel,
     );
   }
 }
