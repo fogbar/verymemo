@@ -44,6 +44,7 @@ class SearchViewModel extends _$SearchViewModel {
   }
 
   void onBack(BuildContext context) {
-    context.go(AppRoute.home);
+    // context.go(AppRoute.home);
+    context.pop();
   }
 }

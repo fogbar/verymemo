@@ -8,146 +8,159 @@ class AppRouter {
   final Ref ref;
   AppRouter(this.ref);
 
-  static final _rootNavigatorKey = GlobalKey<NavigatorState>();
+  // Helper function to create GoRoute
+  GoRoute _buildGoRoute(String path) {
+    return GoRoute(
+      path: path,
+      pageBuilder: (context, state) => AppRoute.getBuildPage(path, state),
+    );
+  }
+
+  // Helper function to create StatefulShellBranch
+  StatefulShellBranch _buildShellBranch({
+    required GlobalKey<NavigatorState> navigatorKey,
+    required List<String> paths,
+  }) {
+    return StatefulShellBranch(
+      navigatorKey: navigatorKey,
+      routes: paths.map((path) => _buildGoRoute(path)).toList(),
+    );
+  }
+
+  // StatefulShellRoute 생성 헬퍼
+  // / parentNavigatorKey 매개변수의 경우 최상위 화면 컨트롤 하는 부분에서는 필요 없기에
+  // / 초기값 null 로 할당
+  StatefulShellRoute _buildStatefulShellRoute({
+    required GlobalKey<NavigatorState>? parentNavigatorKey,
+    required Widget Function(
+      BuildContext context,
+      GoRouterState state,
+      StatefulNavigationShell navigationShell,
+    ) shellBuilder,
+    required List<StatefulShellBranch> branches,
+  }) {
+    return StatefulShellRoute(
+      parentNavigatorKey: parentNavigatorKey,
+      builder: shellBuilder,
+      navigatorContainerBuilder: (context, navigationShell, children) =>
+          children[navigationShell.currentIndex],
+      branches: branches,
+    );
+  }
 
   late final config = GoRouter(
-    // initialLocation: AppRoute.splash,
-    initialLocation: AppRoute.signup,
-    navigatorKey: _rootNavigatorKey,
+    initialLocation: AppRoute.splash,
+    navigatorKey: NavigatorKey.routerKey,
     debugLogDiagnostics: true,
     refreshListenable: GoRouterRefreshStream(
       ref.watch(permissionNotifierProvider.notifier).stream,
     ),
     routes: [
       // ✅ 인트로 관련 (Shell 구조)
-      StatefulShellRoute(
-        parentNavigatorKey: _rootNavigatorKey, // ✅ 루트 스택에 포함되도록
-        pageBuilder: (context, state, navigationShell) => CupertinoPage(
-          key: state.pageKey,
-          child: IntroScaffold(
+      _buildStatefulShellRoute(
+        parentNavigatorKey: null,
+        shellBuilder: (context, state, navigationShell) {
+          return IntroScaffold(
             navigationShell: navigationShell,
             state: state,
-          ),
-        ),
-        navigatorContainerBuilder: (context, navigationShell, children) =>
-            children[navigationShell.currentIndex],
+          );
+        },
         branches: [
-          StatefulShellBranch(
+          _buildShellBranch(
             navigatorKey: NavigatorKey.splashBranchKey,
-            routes: [
-              GoRoute(
-                path: AppRoute.splash,
-                pageBuilder: (context, state) => CupertinoPage(
-                  key: state.pageKey,
-                  child: const SplashView(),
-                ),
-              ),
-            ],
+            paths: [AppRoute.splash],
           ),
-          StatefulShellBranch(
+          _buildShellBranch(
             navigatorKey: NavigatorKey.introBranchKey,
-            routes: [
-              GoRoute(
-                path: AppRoute.intro,
-                pageBuilder: (context, state) => CupertinoPage(
-                  key: state.pageKey,
-                  child: const PermissionView(),
-                ),
-              ),
-            ],
+            paths: [AppRoute.intro],
           ),
-          StatefulShellBranch(
+          _buildShellBranch(
             navigatorKey: NavigatorKey.permissionCheckBranchKey,
-            routes: [
-              GoRoute(
-                path: AppRoute.permissionCheck,
-                pageBuilder: (context, state) => CupertinoPage(
-                  key: state.pageKey,
-                  child: const IntroView(),
-                ),
-              ),
-            ],
+            paths: [AppRoute.permissionCheck],
           ),
-          StatefulShellBranch(
+          _buildShellBranch(
             navigatorKey: NavigatorKey.loginBranchKey,
-            routes: [
-              GoRoute(
-                path: AppRoute.signup,
-                pageBuilder: (context, state) => CupertinoPage(
-                  key: state.pageKey,
-                  child: const AuthView(),
-                ),
-              ),
-            ],
+            paths: [AppRoute.signup],
           ),
-          StatefulShellBranch(
+          _buildShellBranch(
             navigatorKey: NavigatorKey.profileSettingBranchKey,
-            routes: [
-              GoRoute(
-                path: AppRoute.profileSetting,
-                pageBuilder: (context, state) => CupertinoPage(
-                  key: state.pageKey,
-                  child: const ProfileSettingView(),
-                ),
-              ),
-            ],
+            paths: [AppRoute.profileSetting],
           ),
         ],
       ),
 
-      // ✅ 앱 메인 라우트들 (rootNavigator로 push)
-      GoRoute(
-        path: AppRoute.home,
-        pageBuilder: (context, state) => CupertinoPage(
-          key: state.pageKey,
-          child: const MemoHomeView(),
-        ),
-      ),
-      GoRoute(
-        path: AppRoute.feed,
-        pageBuilder: (context, state) => CupertinoPage(
-          key: state.pageKey,
-          child: const FeedView(),
-        ),
-      ),
-      GoRoute(
-        path: AppRoute.search,
-        pageBuilder: (context, state) => CupertinoPage(
-          key: state.pageKey,
-          child: const SearchView(),
-        ),
-      ),
-      GoRoute(
-        path: AppRoute.edit,
-        pageBuilder: (context, state) => CupertinoPage(
-          key: state.pageKey,
-          child: const MemoEditView(),
-        ),
-      ),
-      GoRoute(
-        path: AppRoute.delete,
-        pageBuilder: (context, state) => CupertinoPage(
-          key: state.pageKey,
-          child: const MemoDeleteView(),
-        ),
-      ),
-      GoRoute(
-        path: '/detail/:id',
-        parentNavigatorKey: _rootNavigatorKey, // ✅ 루트에서 push됨 → 제스처 OK
-        pageBuilder: (context, state) {
-          final id = state.pathParameters['id']!;
-          return CupertinoPage(
-            key: state.pageKey,
-            child: MemoDetailView(id: id),
+      // ✅ 홈 쉘
+      _buildStatefulShellRoute(
+        parentNavigatorKey: null,
+        shellBuilder: (context, state, navigationShell) {
+          return HomeScaffold(
+            navigationShell: navigationShell,
+            state: state,
           );
         },
+        branches: [
+          // ✅ 메모 홈 화면
+          _buildShellBranch(
+            navigatorKey: NavigatorKey.homeBranchKey,
+            paths: [AppRoute.home],
+          ),
+          // ✅ 소개 화면
+          _buildShellBranch(
+            navigatorKey: NavigatorKey.feedBranchKey,
+            paths: [AppRoute.feed],
+          ),
+        ],
       ),
-      GoRoute(
-        path: AppRoute.settings,
-        pageBuilder: (context, state) => CupertinoPage(
-          key: state.pageKey,
-          child: const SettingsView(),
-        ),
+
+      // ✅ 디테일 쉘
+      _buildStatefulShellRoute(
+        parentNavigatorKey: null,
+        shellBuilder: (context, state, navigationShell) {
+          return DetailScaffold(
+            navigationShell: navigationShell,
+            state: state,
+          );
+        },
+        branches: [
+          // ✅ 수정 화면
+          _buildShellBranch(
+            navigatorKey: NavigatorKey.editBranchKey,
+            paths: [AppRoute.edit],
+          ),
+          // ✅ 삭제 화면
+          _buildShellBranch(
+            navigatorKey: NavigatorKey.deleteBranchKey,
+            paths: [AppRoute.delete],
+          ),
+          // ✅ 설정 화면
+          _buildShellBranch(
+            navigatorKey: NavigatorKey.settingsBranchKey,
+            paths: [AppRoute.settings],
+          ),
+        ],
+      ),
+
+      // ✅ 빈 쉘
+      _buildStatefulShellRoute(
+        parentNavigatorKey: null,
+        shellBuilder: (context, state, navigationShell) {
+          return EmptyScaffold(
+            navigationShell: navigationShell,
+            state: state,
+          );
+        },
+        branches: [
+          // ✅ 찾기 화면
+          _buildShellBranch(
+            navigatorKey: NavigatorKey.searchBranchKey,
+            paths: [AppRoute.search],
+          ),
+          // ✅ 디테일 화면
+          _buildShellBranch(
+            navigatorKey: NavigatorKey.detailBranchKey,
+            paths: [AppRoute.detail, AppRoute.detailId],
+          ),
+        ],
       ),
     ],
   );

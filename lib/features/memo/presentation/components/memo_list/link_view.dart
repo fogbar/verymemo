@@ -93,7 +93,7 @@ class LinkList extends ConsumerWidget {
             onTrailingIconTap: linkData.hasContent && linkData.memoId != null
                 ? () {
                     debugPrint('선택된 메모: ${linkData.memoId}');
-                    context.go('/detail/${linkData.memoId}');
+                    context.push('/detail/${linkData.memoId}');
                   }
                 : null,
           ),

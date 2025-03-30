@@ -15,9 +15,9 @@ class SplashView extends ConsumerWidget {
     ref.listen<SplashState>(splashViewModelProvider, (previous, next) {
       next.when(
         loading: () => {},
-        home: () => navigationService.push(AppRoute.home),
-        intro: () => navigationService.push(AppRoute.intro),
-        signup: () => navigationService.push(AppRoute.signup),
+        home: () => navigationService.pushAndRemoveUntil(AppRoute.home),
+        intro: () => navigationService.pushAndRemoveUntil(AppRoute.intro),
+        signup: () => navigationService.pushAndRemoveUntil(AppRoute.signup),
       );
     });
     return Container();

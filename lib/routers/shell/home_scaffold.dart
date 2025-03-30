@@ -45,9 +45,9 @@ class _HomeScaffoldState extends ConsumerState<HomeScaffold> {
                         ? HeaderType.date
                         : HeaderType.logo,
                     onSort: () => AlignSelect.show(context, ref),
-                    onSearch: () => context.go(AppRoute.search),
-                    onMore: () => context.go(AppRoute.settings),
-                    onBack: () => debugPrint("뒤로 가기 클릭"),
+                    onSearch: () => context.push(AppRoute.search),
+                    onMore: () => context.push(AppRoute.settings),
+                    // onBack: () => context.pop(),
                   ),
                 ),
                 if (widget.navigationShell.currentIndex == 0) ...[
@@ -65,8 +65,9 @@ class _HomeScaffoldState extends ConsumerState<HomeScaffold> {
                 const SliverToBoxAdapter(child: Divider(height: 1)),
                 SliverFillRemaining(
                   child: switch (_currentTabIndex) {
-                    0 => widget.navigationShell,
-                    1 => widget.navigationShell,
+                    0 => const FeedView(),
+                    1 =>
+                      const FeedView(), // 향후 북마크 화면이 생기면 화면 수정하기. view를 안넣어놓으면 배경색이 이상해서 일단 넣어놓음.
                     2 => const GalleryView(),
                     3 => const LinkList(),
                     _ => widget.navigationShell,

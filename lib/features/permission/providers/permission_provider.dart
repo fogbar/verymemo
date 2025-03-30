@@ -97,7 +97,7 @@ class PermissionNotifier extends StateNotifier<PermissionState> {
     state = state.copyWith(allGranted: isAllGranted);
 
     // 로그인 페이지
-    _navigationService.go(AppRoute.signup);
+    _navigationService.pushAndRemoveUntil(AppRoute.signup);
     // requestAllPermissions();
   }
 

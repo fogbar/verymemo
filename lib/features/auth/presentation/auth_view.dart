@@ -158,7 +158,7 @@ class _LoginButton extends ConsumerWidget {
                       );
                 }
               }
-            : () => context.go(AppRoute.home),
+            : () => context.replace(AppRoute.home),
         state: channel.isUser ? ButtonState.white : ButtonState.transparent,
         isExpanded: true,
       ),

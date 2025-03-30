@@ -10,10 +10,70 @@ abstract class AppRoute {
   static const home = "/home";
   static const edit = "/edit";
   static const detail = "/detail";
+  static const detailId = "/detail/:id";
   static const feed = "/feed";
   static const delete = "/delete";
   static const search = "/search";
   static const settings = "/settings";
+
+  static getBuildPage(String path, GoRouterState state) {
+    final child = _getWidgetForPath(path, state);
+
+    if (Platform.isIOS) {
+      return CupertinoPage(
+        key: state.pageKey,
+        child: child,
+        maintainState: true,
+        fullscreenDialog: false,
+      );
+    }
+
+    return MaterialPage(
+      key: state.pageKey,
+      child: Container(
+        // color: Theme.of(context).scaffoldBackgroundColor,
+        child: child,
+      ),
+      maintainState: true,
+      fullscreenDialog: false,
+    );
+  }
+
+  /// 각 선택지에 따른 widget 리턴해주는 메소드
+  static Widget _getWidgetForPath(String path, GoRouterState state) {
+    switch (path) {
+      case splash:
+        return const SplashView();
+      case intro:
+        return const PermissionView();
+      case permissionCheck:
+        return const IntroView();
+      case signup:
+        return const AuthView();
+      case profileSetting:
+        return const ProfileSettingView();
+      case home:
+        return const MemoHomeView();
+      case feed:
+        return const FeedView();
+      case search:
+        return const SearchView();
+      case edit:
+        return const MemoEditView();
+      case delete:
+        return const MemoDeleteView();
+      case detail:
+        return const SizedBox.shrink();
+      case detailId:
+        // id가 ! 되어 있어서 state 가 반드시 넘어오는 것으로 생각하고 우선 처리.
+        final id = state.pathParameters['id']!;
+        return MemoDetailView(id: id);
+      case settings:
+        return const SettingsView();
+      default:
+        throw Exception('Unknown path: $path');
+    }
+  }
 }
 
 // ✅ Navigator Key
