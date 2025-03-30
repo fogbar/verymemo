@@ -3,7 +3,6 @@ import 'package:verymemo/features/auth/presentation/providers/auth_provider.dart
 import 'package:verymemo/features/settings/providers/theme_providers.dart';
 import 'package:verymemo/features/settings/presentation/modals/withdrawal_modal.dart';
 import 'package:verymemo/features/settings/presentation/modals/sync_modal.dart';
-import 'package:go_router/go_router.dart';
 import 'package:verymemo/routers/router.dart';
 
 final settingsViewModelProvider =

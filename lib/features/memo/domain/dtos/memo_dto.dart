@@ -9,6 +9,7 @@ class MemoDTO with _$MemoDTO {
     String? content,
     String? createdAt,
     String? updatedAt,
+    String? lastViewedAt,
     // @Default([]) List<ImageDTO>? images, // 💡 images 테이블과 연결
     // @Default([]) List<LinkDTO>? links, // 💡 links 테이블과 연결
     // @Default([]) List<TagDTO>? tags, // 💡 tags 테이블과 연결 (N:M 관계)
@@ -24,6 +25,7 @@ class MemoDTO with _$MemoDTO {
       content: json['content'] as String?,
       createdAt: _convertToString(json['createdAt']), // 🔄 createdAt 변환 추가
       updatedAt: _convertToString(json['updatedAt']),
+      lastViewedAt: _convertToString(json['lastViewedAt']),
       isLocalMemo: json['isLocalMemo'] as int?,
       isBookMarked: json['isBookMarked'] as int?,
     );

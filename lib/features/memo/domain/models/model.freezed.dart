@@ -28,6 +28,7 @@ mixin _$MemoModel {
   List<TagModel>? get tags => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
   DateTime? get updatedAt => throw _privateConstructorUsedError;
+  DateTime? get lastViewedAt => throw _privateConstructorUsedError;
   bool get isLocalMemo => throw _privateConstructorUsedError;
   bool get isBookMarked => throw _privateConstructorUsedError;
 
@@ -58,6 +59,7 @@ abstract class $MemoModelCopyWith<$Res> {
       List<TagModel>? tags,
       DateTime createdAt,
       DateTime? updatedAt,
+      DateTime? lastViewedAt,
       bool isLocalMemo,
       bool isBookMarked});
 
@@ -90,6 +92,7 @@ class _$MemoModelCopyWithImpl<$Res, $Val extends MemoModel>
     Object? tags = freezed,
     Object? createdAt = null,
     Object? updatedAt = freezed,
+    Object? lastViewedAt = freezed,
     Object? isLocalMemo = null,
     Object? isBookMarked = null,
   }) {
@@ -138,6 +141,10 @@ class _$MemoModelCopyWithImpl<$Res, $Val extends MemoModel>
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      lastViewedAt: freezed == lastViewedAt
+          ? _value.lastViewedAt
+          : lastViewedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
       isLocalMemo: null == isLocalMemo
           ? _value.isLocalMemo
           : isLocalMemo // ignore: cast_nullable_to_non_nullable
@@ -184,6 +191,7 @@ abstract class _$$MemoModelImplCopyWith<$Res>
       List<TagModel>? tags,
       DateTime createdAt,
       DateTime? updatedAt,
+      DateTime? lastViewedAt,
       bool isLocalMemo,
       bool isBookMarked});
 
@@ -215,6 +223,7 @@ class __$$MemoModelImplCopyWithImpl<$Res>
     Object? tags = freezed,
     Object? createdAt = null,
     Object? updatedAt = freezed,
+    Object? lastViewedAt = freezed,
     Object? isLocalMemo = null,
     Object? isBookMarked = null,
   }) {
@@ -263,6 +272,10 @@ class __$$MemoModelImplCopyWithImpl<$Res>
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      lastViewedAt: freezed == lastViewedAt
+          ? _value.lastViewedAt
+          : lastViewedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
       isLocalMemo: null == isLocalMemo
           ? _value.isLocalMemo
           : isLocalMemo // ignore: cast_nullable_to_non_nullable
@@ -290,6 +303,7 @@ class _$MemoModelImpl implements _MemoModel {
       final List<TagModel>? tags,
       required this.createdAt,
       this.updatedAt,
+      this.lastViewedAt,
       this.isLocalMemo = false,
       this.isBookMarked = false})
       : _images = images,
@@ -344,6 +358,8 @@ class _$MemoModelImpl implements _MemoModel {
   @override
   final DateTime? updatedAt;
   @override
+  final DateTime? lastViewedAt;
+  @override
   @JsonKey()
   final bool isLocalMemo;
   @override
@@ -352,7 +368,7 @@ class _$MemoModelImpl implements _MemoModel {
 
   @override
   String toString() {
-    return 'MemoModel(memoId: $memoId, user: $user, profileImageUrl: $profileImageUrl, userId: $userId, userName: $userName, content: $content, images: $images, links: $links, tags: $tags, createdAt: $createdAt, updatedAt: $updatedAt, isLocalMemo: $isLocalMemo, isBookMarked: $isBookMarked)';
+    return 'MemoModel(memoId: $memoId, user: $user, profileImageUrl: $profileImageUrl, userId: $userId, userName: $userName, content: $content, images: $images, links: $links, tags: $tags, createdAt: $createdAt, updatedAt: $updatedAt, lastViewedAt: $lastViewedAt, isLocalMemo: $isLocalMemo, isBookMarked: $isBookMarked)';
   }
 
   @override
@@ -375,6 +391,8 @@ class _$MemoModelImpl implements _MemoModel {
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
                 other.updatedAt == updatedAt) &&
+            (identical(other.lastViewedAt, lastViewedAt) ||
+                other.lastViewedAt == lastViewedAt) &&
             (identical(other.isLocalMemo, isLocalMemo) ||
                 other.isLocalMemo == isLocalMemo) &&
             (identical(other.isBookMarked, isBookMarked) ||
@@ -396,6 +414,7 @@ class _$MemoModelImpl implements _MemoModel {
       const DeepCollectionEquality().hash(_tags),
       createdAt,
       updatedAt,
+      lastViewedAt,
       isLocalMemo,
       isBookMarked);
 
@@ -428,6 +447,7 @@ abstract class _MemoModel implements MemoModel {
       final List<TagModel>? tags,
       required final DateTime createdAt,
       final DateTime? updatedAt,
+      final DateTime? lastViewedAt,
       final bool isLocalMemo,
       final bool isBookMarked}) = _$MemoModelImpl;
 
@@ -454,6 +474,8 @@ abstract class _MemoModel implements MemoModel {
   DateTime get createdAt;
   @override
   DateTime? get updatedAt;
+  @override
+  DateTime? get lastViewedAt;
   @override
   bool get isLocalMemo;
   @override

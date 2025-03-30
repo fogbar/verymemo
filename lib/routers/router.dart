@@ -5,13 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:verymemo/common/barrel/memo_writing.dart';
-import 'package:verymemo/common/const/app_const.dart';
 import 'package:verymemo/common/extensions/widget_extension.dart';
 import 'package:verymemo/common/ui/components/layout/variable_header.dart';
 import 'package:verymemo/common/ui/components/layout/variable_nevbar.dart';
 import 'package:verymemo/common/ui/components/tab/tab_menu.dart';
 import 'package:verymemo/common/utils/image_util.dart';
-import 'package:verymemo/externals/storage/storage_service.dart';
 import 'package:verymemo/features/auth/presentation/auth_view.dart';
 import 'package:verymemo/features/feed/presentation/feed_view.dart';
 import 'package:verymemo/features/memo/presentation/memo_delete_view.dart';
@@ -27,7 +25,6 @@ import 'package:verymemo/features/auth/presentation/profile/profile_setting_view
 import 'package:verymemo/features/splash/splash_view.dart';
 import 'package:verymemo/common/barrel/memo_list.dart';
 import 'package:verymemo/features/memo/presentation/components/modal/select/align.dart';
-import 'dart:developer' as developer;
 
 part 'app_routes.dart';
 part 'app_router.dart';

@@ -2,9 +2,7 @@ import 'package:verymemo/common/barrel/view_common.dart';
 import 'package:verymemo/common/barrel/list.dart';
 import 'package:verymemo/common/barrel/button.dart';
 import 'package:verymemo/features/settings/presentation/settings_viewmodel.dart';
-import 'package:go_router/go_router.dart';
 import 'package:verymemo/routers/router.dart';
-import 'package:verymemo/common/ui/components/layout/variable_header.dart';
 
 class SettingsView extends ConsumerWidget {
   const SettingsView({super.key});

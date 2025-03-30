@@ -1,6 +1,5 @@
 import 'dart:developer';
 import 'package:verymemo/common/barrel/view_common.dart';
-import 'package:go_router/go_router.dart';
 import 'package:verymemo/common/ui/common/config/login_channel_config.dart';
 import 'package:verymemo/common/ui/common/config/login_channel.dart';
 import 'package:verymemo/common/ui/components/button/button_state.dart';

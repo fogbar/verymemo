@@ -1,7 +1,6 @@
 import 'package:verymemo/common/barrel/memo_writing.dart';
 import 'package:verymemo/common/barrel/memo_list.dart';
 import 'package:verymemo/common/barrel/model_common.dart';
-import 'package:verymemo/common/barrel/router.dart';
 import 'package:verymemo/common/ui/components/layout/variable_header.dart';
 import 'package:verymemo/common/ui/components/layout/variable_nevbar.dart';
 import 'package:verymemo/features/memo/presentation/viewmodels/memo_detail_viewmodel.dart';

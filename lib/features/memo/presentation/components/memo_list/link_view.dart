@@ -5,8 +5,6 @@ import 'package:verymemo/common/barrel/list.dart';
 import 'package:verymemo/common/barrel/button.dart';
 import 'package:verymemo/features/memo/presentation/providers/memo_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:go_router/go_router.dart';
-import 'package:flutter/material.dart';
 
 class LinkList extends ConsumerWidget {
   final Function(String url)? onLinkTap;

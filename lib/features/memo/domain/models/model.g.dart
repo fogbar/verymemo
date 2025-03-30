@@ -25,6 +25,9 @@ MemoModel _$MemoModelFromJson(Map<String, dynamic> json) => MemoModel(
       updatedAt: json['updatedAt'] == null
           ? null
           : DateTime.parse(json['updatedAt'] as String),
+      lastViewedAt: json['lastViewedAt'] == null
+          ? null
+          : DateTime.parse(json['lastViewedAt'] as String),
       isLocalMemo: json['isLocalMemo'] as bool,
       isBookMarked: json['isBookMarked'] as bool,
     );
@@ -40,6 +43,7 @@ Map<String, dynamic> _$MemoModelToJson(MemoModel instance) => <String, dynamic>{
       'tags': instance.tags,
       'createdAt': instance.createdAt.toIso8601String(),
       'updatedAt': instance.updatedAt?.toIso8601String(),
+      'lastViewedAt': instance.lastViewedAt?.toIso8601String(),
       'isLocalMemo': instance.isLocalMemo,
       'isBookMarked': instance.isBookMarked,
     };
@@ -85,6 +89,7 @@ Map<String, dynamic> _$$MemoModelImplToJson(_$MemoModelImpl instance) =>
       'tags': instance.tags,
       'createdAt': instance.createdAt.toIso8601String(),
       'updatedAt': instance.updatedAt?.toIso8601String(),
+      'lastViewedAt': instance.lastViewedAt?.toIso8601String(),
       'isLocalMemo': instance.isLocalMemo,
       'isBookMarked': instance.isBookMarked,
     };
