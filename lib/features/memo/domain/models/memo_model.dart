@@ -15,6 +15,7 @@ class MemoModel with _$MemoModel {
     List<TagModel>? tags,
     required DateTime createdAt,
     DateTime? updatedAt,
+    DateTime? lastViewedAt,
     @Default(false) bool isLocalMemo,
     @Default(false) bool isBookMarked,
   }) = _MemoModel;

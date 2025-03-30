@@ -145,7 +145,7 @@ class SettingsView extends ConsumerWidget {
                   leadingIconColor: Theme.of(context).colorScheme.primary,
                 ),
                 title: '회원 가입 / 가입 안된 유저는 가입 노출',
-                onTap: () => context.go(AppRoute.signup),
+                onTap: () => {settingsVM.moveToSignUp()},
               ),
             ),
             SizedBox(

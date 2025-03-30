@@ -3,12 +3,13 @@ import 'package:verymemo/features/auth/presentation/providers/auth_provider.dart
 import 'package:verymemo/features/settings/providers/theme_providers.dart';
 import 'package:verymemo/features/settings/presentation/modals/withdrawal_modal.dart';
 import 'package:verymemo/features/settings/presentation/modals/sync_modal.dart';
-import 'package:go_router/go_router.dart';
+import 'package:verymemo/routers/navigation_service.dart';
 import 'package:verymemo/routers/router.dart';
 
 final settingsViewModelProvider =
     StateNotifierProvider<SettingsViewModel, SettingsState>((ref) {
-  return SettingsViewModel(ref);
+  final navigationService = ref.watch(navigationServiceProvider);
+  return SettingsViewModel(ref, navigationService);
 });
 
 class SettingsState {
@@ -34,8 +35,9 @@ class SettingsState {
 
 class SettingsViewModel extends StateNotifier<SettingsState> {
   final Ref ref;
+  final NavigationService _navigationService;
 
-  SettingsViewModel(this.ref) : super(SettingsState());
+  SettingsViewModel(this.ref, this._navigationService) : super(SettingsState());
 
   void toggleKeypad(bool value) {
     state = state.copyWith(isKeypadEnabled: value);
@@ -60,7 +62,7 @@ class SettingsViewModel extends StateNotifier<SettingsState> {
   }
 
   void onDeletedMemosTap(BuildContext context) {
-    context.go(AppRoute.delete);
+    context.push(AppRoute.delete);
   }
 
   // void onAppReviewTap() {
@@ -99,5 +101,11 @@ class SettingsViewModel extends StateNotifier<SettingsState> {
         ),
       ),
     );
+  }
+
+  void moveToSignUp() {
+    debugPrint('settings_viewmodel moveToSignUp');
+
+    _navigationService.pushAndRemoveUntil(AppRoute.signup);
   }
 }

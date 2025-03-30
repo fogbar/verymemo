@@ -20,7 +20,8 @@ mixin _$MemoDTO {
   String? get userId => throw _privateConstructorUsedError;
   String? get content => throw _privateConstructorUsedError;
   String? get createdAt => throw _privateConstructorUsedError;
-  String? get updatedAt =>
+  String? get updatedAt => throw _privateConstructorUsedError;
+  String? get lastViewedAt =>
       throw _privateConstructorUsedError; // @Default([]) List<ImageDTO>? images, // 💡 images 테이블과 연결
 // @Default([]) List<LinkDTO>? links, // 💡 links 테이블과 연결
 // @Default([]) List<TagDTO>? tags, // 💡 tags 테이블과 연결 (N:M 관계)
@@ -47,6 +48,7 @@ abstract class $MemoDTOCopyWith<$Res> {
       String? content,
       String? createdAt,
       String? updatedAt,
+      String? lastViewedAt,
       int? isLocalMemo,
       int? isBookMarked});
 }
@@ -71,6 +73,7 @@ class _$MemoDTOCopyWithImpl<$Res, $Val extends MemoDTO>
     Object? content = freezed,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
+    Object? lastViewedAt = freezed,
     Object? isLocalMemo = freezed,
     Object? isBookMarked = freezed,
   }) {
@@ -94,6 +97,10 @@ class _$MemoDTOCopyWithImpl<$Res, $Val extends MemoDTO>
       updatedAt: freezed == updatedAt
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
+              as String?,
+      lastViewedAt: freezed == lastViewedAt
+          ? _value.lastViewedAt
+          : lastViewedAt // ignore: cast_nullable_to_non_nullable
               as String?,
       isLocalMemo: freezed == isLocalMemo
           ? _value.isLocalMemo
@@ -120,6 +127,7 @@ abstract class _$$MemoDTOImplCopyWith<$Res> implements $MemoDTOCopyWith<$Res> {
       String? content,
       String? createdAt,
       String? updatedAt,
+      String? lastViewedAt,
       int? isLocalMemo,
       int? isBookMarked});
 }
@@ -142,6 +150,7 @@ class __$$MemoDTOImplCopyWithImpl<$Res>
     Object? content = freezed,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
+    Object? lastViewedAt = freezed,
     Object? isLocalMemo = freezed,
     Object? isBookMarked = freezed,
   }) {
@@ -166,6 +175,10 @@ class __$$MemoDTOImplCopyWithImpl<$Res>
           ? _value.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
               as String?,
+      lastViewedAt: freezed == lastViewedAt
+          ? _value.lastViewedAt
+          : lastViewedAt // ignore: cast_nullable_to_non_nullable
+              as String?,
       isLocalMemo: freezed == isLocalMemo
           ? _value.isLocalMemo
           : isLocalMemo // ignore: cast_nullable_to_non_nullable
@@ -187,6 +200,7 @@ class _$MemoDTOImpl implements _MemoDTO {
       this.content,
       this.createdAt,
       this.updatedAt,
+      this.lastViewedAt,
       this.isLocalMemo,
       this.isBookMarked});
 
@@ -200,6 +214,8 @@ class _$MemoDTOImpl implements _MemoDTO {
   final String? createdAt;
   @override
   final String? updatedAt;
+  @override
+  final String? lastViewedAt;
 // @Default([]) List<ImageDTO>? images, // 💡 images 테이블과 연결
 // @Default([]) List<LinkDTO>? links, // 💡 links 테이블과 연결
 // @Default([]) List<TagDTO>? tags, // 💡 tags 테이블과 연결 (N:M 관계)
@@ -211,7 +227,7 @@ class _$MemoDTOImpl implements _MemoDTO {
 
   @override
   String toString() {
-    return 'MemoDTO(id: $id, userId: $userId, content: $content, createdAt: $createdAt, updatedAt: $updatedAt, isLocalMemo: $isLocalMemo, isBookMarked: $isBookMarked)';
+    return 'MemoDTO(id: $id, userId: $userId, content: $content, createdAt: $createdAt, updatedAt: $updatedAt, lastViewedAt: $lastViewedAt, isLocalMemo: $isLocalMemo, isBookMarked: $isBookMarked)';
   }
 
   @override
@@ -226,6 +242,8 @@ class _$MemoDTOImpl implements _MemoDTO {
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
                 other.updatedAt == updatedAt) &&
+            (identical(other.lastViewedAt, lastViewedAt) ||
+                other.lastViewedAt == lastViewedAt) &&
             (identical(other.isLocalMemo, isLocalMemo) ||
                 other.isLocalMemo == isLocalMemo) &&
             (identical(other.isBookMarked, isBookMarked) ||
@@ -235,7 +253,7 @@ class _$MemoDTOImpl implements _MemoDTO {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, userId, content, createdAt,
-      updatedAt, isLocalMemo, isBookMarked);
+      updatedAt, lastViewedAt, isLocalMemo, isBookMarked);
 
   /// Create a copy of MemoDTO
   /// with the given fields replaced by the non-null parameter values.
@@ -260,6 +278,7 @@ abstract class _MemoDTO implements MemoDTO {
       final String? content,
       final String? createdAt,
       final String? updatedAt,
+      final String? lastViewedAt,
       final int? isLocalMemo,
       final int? isBookMarked}) = _$MemoDTOImpl;
 
@@ -272,8 +291,10 @@ abstract class _MemoDTO implements MemoDTO {
   @override
   String? get createdAt;
   @override
+  String? get updatedAt;
+  @override
   String?
-      get updatedAt; // @Default([]) List<ImageDTO>? images, // 💡 images 테이블과 연결
+      get lastViewedAt; // @Default([]) List<ImageDTO>? images, // 💡 images 테이블과 연결
 // @Default([]) List<LinkDTO>? links, // 💡 links 테이블과 연결
 // @Default([]) List<TagDTO>? tags, // 💡 tags 테이블과 연결 (N:M 관계)
   @override

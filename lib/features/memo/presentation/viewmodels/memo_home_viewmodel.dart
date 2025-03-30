@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:verymemo/common/barrel/view_common.dart';
 import 'package:verymemo/features/memo/domain/caches/memo_cache.dart';
 import 'package:verymemo/features/memo/domain/models/model.dart';

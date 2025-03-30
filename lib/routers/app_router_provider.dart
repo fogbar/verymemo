@@ -1,82 +1,169 @@
 part of 'router.dart';
 
 final appRouterProvider = Provider<AppRouter>((ref) {
-  // final interceptor = ref.watch(appRouterInterceptorProvider);
   return AppRouter(ref);
 });
 
 class AppRouter {
-  // final AppRouterInterceptor interceptor;
   final Ref ref;
-
   AppRouter(this.ref);
+
+  // Helper function to create GoRoute
+  GoRoute _buildGoRoute(String path) {
+    return GoRoute(
+      path: path,
+      pageBuilder: (context, state) => AppRoute.getBuildPage(path, state),
+    );
+  }
+
+  // Helper function to create StatefulShellBranch
+  StatefulShellBranch _buildShellBranch({
+    required GlobalKey<NavigatorState> navigatorKey,
+    required List<String> paths,
+  }) {
+    return StatefulShellBranch(
+      navigatorKey: navigatorKey,
+      routes: paths.map((path) => _buildGoRoute(path)).toList(),
+    );
+  }
+
+  // StatefulShellRoute 생성 헬퍼
+  // / parentNavigatorKey 매개변수의 경우 최상위 화면 컨트롤 하는 부분에서는 필요 없기에
+  // / 초기값 null 로 할당
+  StatefulShellRoute _buildStatefulShellRoute({
+    required GlobalKey<NavigatorState>? parentNavigatorKey,
+    required Widget Function(
+      BuildContext context,
+      GoRouterState state,
+      StatefulNavigationShell navigationShell,
+    ) shellBuilder,
+    required List<StatefulShellBranch> branches,
+  }) {
+    return StatefulShellRoute(
+      parentNavigatorKey: parentNavigatorKey,
+      builder: shellBuilder,
+      navigatorContainerBuilder: (context, navigationShell, children) =>
+          children[navigationShell.currentIndex],
+      branches: branches,
+    );
+  }
+
   late final config = GoRouter(
+    initialLocation: AppRoute.splash,
     navigatorKey: NavigatorKey.routerKey,
     debugLogDiagnostics: true,
-    routes: $appRoutes,
     refreshListenable: GoRouterRefreshStream(
-        ref.watch(permissionNotifierProvider.notifier).stream),
-    redirect: (context, state) async {
-      final storageService = ref.watch(storageProvider);
-      final isNew = await storageService.get(key: deviceId) != null;
-      final permissionState = ref.read(permissionNotifierProvider);
-      final allPermissionsGranted = permissionState.allGranted;
+      ref.watch(permissionNotifierProvider.notifier).stream,
+    ),
+    routes: [
+      // ✅ 인트로 관련 (Shell 구조)
+      _buildStatefulShellRoute(
+        parentNavigatorKey: null,
+        shellBuilder: (context, state, navigationShell) {
+          return IntroScaffold(
+            navigationShell: navigationShell,
+            state: state,
+          );
+        },
+        branches: [
+          _buildShellBranch(
+            navigatorKey: NavigatorKey.splashBranchKey,
+            paths: [AppRoute.splash],
+          ),
+          _buildShellBranch(
+            navigatorKey: NavigatorKey.introBranchKey,
+            paths: [AppRoute.intro],
+          ),
+          _buildShellBranch(
+            navigatorKey: NavigatorKey.permissionCheckBranchKey,
+            paths: [AppRoute.permissionCheck],
+          ),
+          _buildShellBranch(
+            navigatorKey: NavigatorKey.loginBranchKey,
+            paths: [AppRoute.signup],
+          ),
+          _buildShellBranch(
+            navigatorKey: NavigatorKey.profileSettingBranchKey,
+            paths: [AppRoute.profileSetting],
+          ),
+        ],
+      ),
 
-      // 🔥 모든 권한이 허용된 경우 → 로그인 페이지로 리다이렉트
-      // if (allPermissionsGranted) {
-      //   if (!state.matchedLocation.contains(AppRoute.home)) {
-      //     return AppRoute.signup;
-      //   }
-      // }
-      // if (context.mounted) {
-      //   // 1. 처음은 아닌데 인증이 필요한 라우트인 경우: 로그인으로 리다이렉트
-      //   if (!isNew &&
-      //       _findRouteByPath(state.matchedLocation)!.checkAuth(context)) {
-      //     return AppRoute.login;
-      //   }
+      // ✅ 홈 쉘
+      _buildStatefulShellRoute(
+        parentNavigatorKey: null,
+        shellBuilder: (context, state, navigationShell) {
+          return HomeScaffold(
+            navigationShell: navigationShell,
+            state: state,
+          );
+        },
+        branches: [
+          // ✅ 메모 홈 화면
+          _buildShellBranch(
+            navigatorKey: NavigatorKey.homeBranchKey,
+            paths: [AppRoute.home],
+          ),
+          // ✅ 소개 화면
+          _buildShellBranch(
+            navigatorKey: NavigatorKey.feedBranchKey,
+            paths: [AppRoute.feed],
+          ),
+        ],
+      ),
 
-      //   // 2. 처음은 아니면서, 인증이 필요없는 라우트인 경우: 홈으로 리다이렉트
-      //   if (!isNew &&
-      //       !_findRouteByPath(state.matchedLocation)!.checkAuth(context)) {
-      //     return AppRoute.home;
-      //   }
+      // ✅ 디테일 쉘
+      _buildStatefulShellRoute(
+        parentNavigatorKey: null,
+        shellBuilder: (context, state, navigationShell) {
+          return DetailScaffold(
+            navigationShell: navigationShell,
+            state: state,
+          );
+        },
+        branches: [
+          // ✅ 수정 화면
+          _buildShellBranch(
+            navigatorKey: NavigatorKey.editBranchKey,
+            paths: [AppRoute.edit],
+          ),
+          // ✅ 삭제 화면
+          _buildShellBranch(
+            navigatorKey: NavigatorKey.deleteBranchKey,
+            paths: [AppRoute.delete],
+          ),
+          // ✅ 설정 화면
+          _buildShellBranch(
+            navigatorKey: NavigatorKey.settingsBranchKey,
+            paths: [AppRoute.settings],
+          ),
+        ],
+      ),
 
-      //   // 3. 처음인 경우: 인트로로 리다이렉트
-      //   if (isNew) {
-      //     return AppRoute.intro;
-      //   }
-      // }
-      return null;
-    },
-    initialLocation: AppRoute.splash,
+      // ✅ 빈 쉘
+      _buildStatefulShellRoute(
+        parentNavigatorKey: null,
+        shellBuilder: (context, state, navigationShell) {
+          return EmptyScaffold(
+            navigationShell: navigationShell,
+            state: state,
+          );
+        },
+        branches: [
+          // ✅ 찾기 화면
+          _buildShellBranch(
+            navigatorKey: NavigatorKey.searchBranchKey,
+            paths: [AppRoute.search],
+          ),
+          // ✅ 디테일 화면
+          _buildShellBranch(
+            navigatorKey: NavigatorKey.detailBranchKey,
+            paths: [AppRoute.detail, AppRoute.detailId],
+          ),
+        ],
+      ),
+    ],
   );
-
-  static Route? _findRouteByPath(String path) {
-    switch (path) {
-      case AppRoute.intro:
-        return const IntroRoute();
-      case AppRoute.permissionCheck:
-        return const PermissionCheckRoute();
-      case AppRoute.signup:
-        return const LoginRoute();
-      case AppRoute.profileSetting:
-        return const ProfileSettingRoute();
-      case AppRoute.home:
-        return HomeRoute();
-      case AppRoute.edit:
-        return const EditRoute();
-      case AppRoute.feed:
-        return const FeedRoute();
-      case AppRoute.delete:
-        return const DeleteRoute();
-      case AppRoute.search:
-        return const SearchRoute();
-      case AppRoute.settings:
-        return const SettingsRoute();
-      default:
-        return null;
-    }
-  }
 }
 
 class GoRouterRefreshStream extends ChangeNotifier {

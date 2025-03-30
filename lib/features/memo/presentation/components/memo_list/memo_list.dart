@@ -3,8 +3,6 @@ import 'package:verymemo/common/barrel/view_common.dart';
 import 'package:verymemo/features/memo/presentation/providers/memo_provider.dart';
 import 'package:verymemo/features/memo/presentation/components/modal/select/deep_click.dart';
 import 'package:flutter/services.dart';
-import 'dart:io';
-import 'package:go_router/go_router.dart';
 
 class MemoList extends ConsumerWidget {
   const MemoList({
@@ -26,7 +24,7 @@ class MemoList extends ConsumerWidget {
           return GestureDetector(
             onTap: () {
               debugPrint('선택된 메모: ${memo.memoId}, ${memo.content}');
-              context.go('/detail/${memo.memoId}', extra: memo);
+              context.push('/detail/${memo.memoId}', extra: memo);
             },
             onLongPress: () async {
               try {
@@ -41,7 +39,8 @@ class MemoList extends ConsumerWidget {
               DeepClickSelect.show(
                 context,
                 memo,
-                (value, memo) => viewModel.handleModalSelection(value, memo, context),
+                (value, memo) =>
+                    viewModel.handleModalSelection(value, memo, context),
               );
             },
             child: Container(

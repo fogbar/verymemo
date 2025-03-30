@@ -2,33 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 extension ContextExtension on BuildContext {
-  /// 1. [Navigation / Route]
-  void pushNamed(
-    String routeName, {
-    Map<String, String>? pathParameters,
-    Map<String, String>? queryParameters,
-  }) {
-    // Navigator.pushNamed(this, routeName, arguments: arguments);
-    GoRouter.of(this).pushNamed(
-      routeName,
-      pathParameters: pathParameters ?? const <String, String>{},
-      queryParameters: queryParameters ?? const <String, String>{},
-    );
-  }
-
-  void pushReplacementNamed(
-    String routeName, {
-    Map<String, String>? pathParameters,
-    Map<String, String>? queryParameters,
-  }) {
-    // Navigator.pushReplacementNamed(this, routeName, arguments: arguments);
-    GoRouter.of(this).pushReplacementNamed(
-      routeName,
-      pathParameters: pathParameters ?? const <String, String>{},
-      queryParameters: queryParameters ?? const <String, String>{},
-    );
-  }
-
   void poped([bool? result]) {
     if (GoRouter.of(this).canPop()) {
       GoRouter.of(this).pop(result ?? true);

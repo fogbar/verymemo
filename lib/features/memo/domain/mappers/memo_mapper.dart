@@ -8,6 +8,7 @@ class MemoMapper {
       content: model.content,
       createdAt: _dateTimeToString(model.createdAt),
       updatedAt: _dateTimeToString(model.updatedAt),
+      lastViewedAt: _dateTimeToString(model.lastViewedAt),
       isLocalMemo: model.isLocalMemo ? 1 : 0,
       isBookMarked: model.isBookMarked ? 1 : 0,
     );
@@ -39,6 +40,7 @@ class MemoMapper {
       tags: tags.map((tag) => TagModel(tagName: tag.tagName)).toList(),
       createdAt: _stringToDateTime(dto.createdAt),
       updatedAt: _stringToDateTime(dto.updatedAt),
+      lastViewedAt: _stringToDateTime(dto.lastViewedAt),
       isLocalMemo: dto.isLocalMemo == 1,
       isBookMarked: dto.isBookMarked == 1,
     );

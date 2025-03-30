@@ -39,7 +39,7 @@ class DbService {
 
   Future<Database> _openDB(
     String dbName, {
-    int version = 1,
+    int version = 2,
     required List<String> tableSchemas,
   }) async {
     final dbPath = await getDatabasesPath();
@@ -69,6 +69,12 @@ class DbService {
         }
 
         // await db.execute('DROP TABLE links');
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        // 버전 1에서 2로 업그레이드하는 경우
+        if (oldVersion == 1 && newVersion == 2) {
+          await db.execute('ALTER TABLE memos ADD COLUMN lastViewedAt TEXT;');
+        }
       },
     );
   }

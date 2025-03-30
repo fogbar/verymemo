@@ -12,6 +12,7 @@ MemoDTO _$MemoDTOFromJson(Map<String, dynamic> json) => MemoDTO(
       content: json['content'] as String?,
       createdAt: json['createdAt'] as String?,
       updatedAt: json['updatedAt'] as String?,
+      lastViewedAt: json['lastViewedAt'] as String?,
       isLocalMemo: (json['isLocalMemo'] as num?)?.toInt(),
       isBookMarked: (json['isBookMarked'] as num?)?.toInt(),
     );
@@ -22,6 +23,7 @@ Map<String, dynamic> _$MemoDTOToJson(MemoDTO instance) => <String, dynamic>{
       'content': instance.content,
       'createdAt': instance.createdAt,
       'updatedAt': instance.updatedAt,
+      'lastViewedAt': instance.lastViewedAt,
       'isLocalMemo': instance.isLocalMemo,
       'isBookMarked': instance.isBookMarked,
     };
@@ -75,6 +77,7 @@ Map<String, dynamic> _$$MemoDTOImplToJson(_$MemoDTOImpl instance) =>
       'content': instance.content,
       'createdAt': instance.createdAt,
       'updatedAt': instance.updatedAt,
+      'lastViewedAt': instance.lastViewedAt,
       'isLocalMemo': instance.isLocalMemo,
       'isBookMarked': instance.isBookMarked,
     };

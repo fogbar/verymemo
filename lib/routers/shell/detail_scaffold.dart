@@ -28,7 +28,7 @@ class _DetailScaffoldState extends State<DetailScaffold> {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(56),
         child: VariableHeader(
-            type: HeaderType.content, onBack: () => context.go(AppRoute.home)),
+            type: HeaderType.content, onBack: () => context.pop()),
       ),
       body: SafeArea(
         child: widget.navigationShell,

@@ -53,7 +53,7 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
       if (user != null) {
         state = AuthState.authenticated(user);
         await _storageService.set(key: userKey, data: user.toJson());
-        _navigationService.go(AppRoute.home);
+        _navigationService.pushAndRemoveUntil(AppRoute.home);
       } else {
         state = const AuthState.unauthenticated();
       }
@@ -86,7 +86,7 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
 
         if (isRemoved) {
           // 회원가입 화면으로 라우팅
-          _navigationService.go(AppRoute.signup);
+          _navigationService.pushAndRemoveUntil(AppRoute.signup);
         } else {
           state = AuthState.error("회원 탈퇴에 실패하였습니다.");
         }
