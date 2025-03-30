@@ -1,137 +1,47 @@
-import 'package:verymemo/routers/router.dart';
-import 'package:verymemo/common/barrel/memo_list.dart';
-import 'package:verymemo/common/barrel/memo_writing.dart';
-import 'package:verymemo/common/barrel/view_common.dart';
-import 'package:verymemo/features/memo/presentation/components/modal/select/align.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:verymemo/features/memo/presentation/components/memo_list/memo_list.dart';
+import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
+import 'package:verymemo/features/memo/presentation/viewmodels/memo_writing_viewmodel.dart';
 
-class MemoHomeView extends ConsumerStatefulWidget {
+class MemoHomeView extends ConsumerWidget {
   const MemoHomeView({super.key});
 
   @override
-  ConsumerState<MemoHomeView> createState() => _MemoHomeViewState();
-}
-
-class _MemoHomeViewState extends ConsumerState<MemoHomeView> {
-  final NavigationBarType _currentNavBar = NavigationBarType.home;
-  int _selectedIndex = 0;
-  int _currentTabIndex = 0;
-
-  @override
-  Widget build(BuildContext context) {
-    final state = ref.watch(memoWritingViewModelProvider);
-
-    return Stack(
-      children: [
-        Scaffold(
-          resizeToAvoidBottomInset: true,
-          body: SafeArea(
-            child: CustomScrollView(
-              slivers: [
-                SliverAppBar(
-                  floating: true,
-                  snap: true,
-                  pinned: false,
-                  flexibleSpace: VariableHeader(
-                    type:
-                        _selectedIndex == 0 ? HeaderType.date : HeaderType.logo,
-                    onSort: () => AlignSelect.show(context, ref),
-                    onSearch: () => context.push(AppRoute.search),
-                    onMore: () => context.push(AppRoute.settings),
-                    // onBack: () => debugPrint("뒤로 가기 클릭"),
-                  ),
-                ),
-                if (_selectedIndex == 0) ...[
-                  SliverPersistentHeader(
-                    pinned: true,
-                    delegate: _TabMenuDelegate(
-                      onTabChanged: (index) {
-                        setState(() {
-                          _currentTabIndex = index;
-                        });
-                      },
+  Widget build(BuildContext context, WidgetRef ref) {
+    return CustomRefreshIndicator(
+      onRefresh: () async {
+        ref.read(memoWritingViewModelProvider.notifier).toggle();
+      },
+      builder: (context, child, controller) {
+        return AnimatedBuilder(
+          animation: controller,
+          builder: (context, _) {
+            return Stack(
+              children: [
+                child,
+                if (controller.isLoading)
+                  Center(
+                    child: RotationTransition(
+                      turns: AlwaysStoppedAnimation(controller.value),
+                      child: Icon(
+                        Icons.add_box,
+                        size: 24,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                     ),
                   ),
-                ],
-                const SliverToBoxAdapter(child: Divider(height: 1)),
-                SliverFillRemaining(
-                  child: switch (_currentTabIndex) {
-                    0 => const MemoList(),
-                    1 => const MemoList(),
-                    2 => const GalleryView(),
-                    3 => const LinkList(),
-                    _ => const MemoList(),
-                  },
-                ),
               ],
-            ),
-          ),
-          bottomNavigationBar: SafeArea(
-            top: false,
-            child: VariableNavigationBar(
-              type: _currentNavBar,
-              selectedIndex: _selectedIndex,
-              onItemSelected: (index) {
-                setState(() {
-                  _selectedIndex = index;
-                });
-              },
-              onFloatingButtonTap: () {
-                ref.read(memoWritingViewModelProvider.notifier).toggle();
-              },
-            ),
-          ),
+            );
+          },
+        );
+      },
+      child: Padding(
+        padding: EdgeInsets.only(
+          bottom: 0,
         ),
-        AnimatedPositioned(
-          duration: const Duration(milliseconds: 400),
-          curve: Curves.easeOutExpo,
-          left: 0,
-          right: 0,
-          bottom: state.visible
-              ? MediaQuery.of(context).viewInsets.bottom
-              : -MediaQuery.of(context).size.height,
-          child: Visibility(
-            visible: state.visible,
-            child: GestureDetector(
-              onVerticalDragEnd: (details) {
-                if (details.primaryVelocity! > 100) {
-                  ref.read(memoWritingViewModelProvider.notifier).toggle();
-                }
-              },
-              behavior: HitTestBehavior.translucent,
-              child: const MemoWritingView(),
-            ),
-          ),
-        )
-      ],
+        child: MemoList(),
+      ),
     );
   }
-}
-
-class _TabMenuDelegate extends SliverPersistentHeaderDelegate {
-  final Function(int)? onTabChanged;
-
-  _TabMenuDelegate({this.onTabChanged});
-
-  @override
-  double get minExtent => 40;
-  @override
-  double get maxExtent => 40;
-
-  @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) {
-    return Container(
-      height: maxExtent,
-      color: Theme.of(context).colorScheme.surface,
-      alignment: Alignment.center,
-      child: TabMenu(onTabChanged: onTabChanged),
-    );
-  }
-
-  @override
-  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
-      false;
 }
