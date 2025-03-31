@@ -25,33 +25,35 @@ class WritingMenuBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 8,
-      ), // ✅ 전체 패딩
-      decoration: BoxDecoration(color: Theme.of(context).colorScheme.surface),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          /// ✅ 왼쪽 아이콘 그룹 (Expanded 적용)
-          Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: WritingMenuBarConfig.leadingIcons
-                  .map((icon) => _buildLeadingIcon(icon, context))
+    return SafeArea(
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 8,
+        ), // ✅ 전체 패딩
+        decoration: BoxDecoration(color: Theme.of(context).colorScheme.surface),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            /// ✅ 왼쪽 아이콘 그룹 (Expanded 적용)
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: WritingMenuBarConfig.leadingIcons
+                    .map((icon) => _buildLeadingIcon(icon, context))
+                    .toList(),
+              ),
+            ),
+
+            /// ✅ 오른쪽 아이콘 그룹
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: WritingMenuBarConfig.trailingIcons
+                  .map((icon) => _buildTrailingIcon(icon, context, ref))
                   .toList(),
             ),
-          ),
-
-          /// ✅ 오른쪽 아이콘 그룹
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: WritingMenuBarConfig.trailingIcons
-                .map((icon) => _buildTrailingIcon(icon, context, ref))
-                .toList(),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -117,3 +119,4 @@ class WritingMenuBar extends ConsumerWidget {
     );
   }
 }
+

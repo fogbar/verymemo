@@ -16,6 +16,7 @@ final memoWritingViewModelProvider =
 });
 
 class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
+  static bool _isFirstLaunch = true; // 최초 실행 여부를 체크하는 static 변수
   final MemoNotifier memoProvider;
   final UserNotifier userProvider;
   Timer? _debounce;
@@ -27,13 +28,21 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
   ) : super(MemoWritingState()) {
     state.textController.addListener(_onTextChanged);
     state.linkController.addListener(_onLinkChanged);
-    // 초기화 시 즉시 상태 설정
-    state = state.copyWith(
-      visible: true,
-      isExpanded: true,
-    );
-    // 즉시 포커스 설정
-    state.focusNode.requestFocus();
+
+    // 최초 실행시에만 라이팅 뷰 열기
+    if (_isFirstLaunch) {
+      state = state.copyWith(
+        visible: true,
+        isExpanded: true,
+      );
+      state.focusNode.requestFocus();
+      _isFirstLaunch = false; // 다음부터는 자동으로 열리지 않도록 설정
+    } else {
+      state = state.copyWith(
+        visible: false,
+        isExpanded: false,
+      );
+    }
   }
 
   @override

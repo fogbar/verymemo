@@ -138,7 +138,7 @@ class VariableHeader extends StatelessWidget {
       children: [
         Text(
           _getCurrentDate(),
-          style: Theme.of(context).textTheme.titleLarge,
+          style: Theme.of(context).textTheme.headlineSmall,
         ),
         Row(
           children: [

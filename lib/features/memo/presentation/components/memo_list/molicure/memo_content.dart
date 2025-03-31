@@ -23,7 +23,9 @@ class _MemoContentState extends State<MemoContent> {
         final tp = TextPainter(
           text: TextSpan(
             text: widget.text,
-            style: Theme.of(context).textTheme.bodyLarge,
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
           ),
           textDirection: TextDirection.ltr,
           maxLines: maxLines,
@@ -66,3 +68,4 @@ class _MemoContentState extends State<MemoContent> {
     );
   }
 }
+
