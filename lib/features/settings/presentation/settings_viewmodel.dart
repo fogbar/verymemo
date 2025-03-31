@@ -5,39 +5,53 @@ import 'package:verymemo/features/settings/presentation/modals/withdrawal_modal.
 import 'package:verymemo/features/settings/presentation/modals/sync_modal.dart';
 import 'package:verymemo/routers/navigation_service.dart';
 import 'package:verymemo/routers/router.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:verymemo/features/auth/data/data-sources/firebase/firebase_service.dart';
+import 'package:verymemo/features/auth/domain/models/user_model.dart';
 
 final settingsViewModelProvider =
     StateNotifierProvider<SettingsViewModel, SettingsState>((ref) {
   final navigationService = ref.watch(navigationServiceProvider);
-  return SettingsViewModel(ref, navigationService);
+  final firebaseService = ref.watch(firebaseServiceProvider);
+  return SettingsViewModel(firebaseService, navigationService, ref);
 });
 
 class SettingsState {
   final bool isKeypadEnabled;
   final bool isDarkMode;
+  final UserModel user;
   // 필요한 다른 설정들...
 
   SettingsState({
     this.isKeypadEnabled = false,
     this.isDarkMode = false,
+    required this.user,
   });
 
   SettingsState copyWith({
     bool? isKeypadEnabled,
     bool? isDarkMode,
+    UserModel? user,
   }) {
     return SettingsState(
       isKeypadEnabled: isKeypadEnabled ?? this.isKeypadEnabled,
       isDarkMode: isDarkMode ?? this.isDarkMode,
+      user: user ?? this.user,
     );
   }
 }
 
 class SettingsViewModel extends StateNotifier<SettingsState> {
-  final Ref ref;
+  final FirebaseService _firebaseService;
   final NavigationService _navigationService;
+  final Ref ref;
 
-  SettingsViewModel(this.ref, this._navigationService) : super(SettingsState());
+  SettingsViewModel(this._firebaseService, this._navigationService, this.ref)
+      : super(SettingsState(
+          isDarkMode: false,
+          user: _firebaseService.getCurrentUser() ?? UserModel.empty(),
+        ));
 
   void toggleKeypad(bool value) {
     state = state.copyWith(isKeypadEnabled: value);
@@ -70,10 +84,12 @@ class SettingsViewModel extends StateNotifier<SettingsState> {
   //   debugPrint("앱 리뷰 페이지 열기");
   // }
 
-  // void onOpenChatTap() {
-  //   // TODO: 오픈 카톡 링크 열기
-  //   debugPrint("오픈 카톡 링크 열기");
-  // }
+  void onOpenChatTap() async {
+    final Uri url = Uri.parse('https://open.kakao.com/o/gNe0qKLg');
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    }
+  }
 
   void onVersionInfoTap() {
     // TODO: 버전 정보 다이얼로그 표시
