@@ -168,4 +168,27 @@ class MemoNotifier extends StateNotifier<MemoState> {
       orElse: () => [],
     );
   }
+
+  /// [메모 검색]
+  Future<void> searchMemos(String query) async {
+    if (query.isEmpty) {
+      await getAllMemos();
+      return;
+    }
+
+    state = const MemoState.loading();
+    try {
+      final searchResults = await memoRepository.searchMemos(query);
+      if (searchResults != null) {
+        // 검색 결과도 정렬 적용
+        final sortedResults = _sortMemos(searchResults);
+        state = MemoState.successed(sortedResults);
+      } else {
+        state = const MemoState.successed([]);
+      }
+    } catch (e) {
+      log("❌ Error searching memos: $e");
+      state = MemoState.error('검색 중 오류가 발생했습니다.');
+    }
+  }
 }

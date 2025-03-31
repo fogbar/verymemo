@@ -237,6 +237,14 @@ DB에 저장할 데이터:
       tags: tagList,
     );
 
+    // 조회 시간 업데이트
+    await db.update(
+      tableName[0],
+      {'lastViewedAt': DateTime.now().toIso8601String()},
+      where: 'id = ?',
+      whereArgs: [memoId],
+    );
+
     return memoModel;
   }
 
@@ -313,5 +321,63 @@ DB에 저장할 데이터:
       }
       return count; // 🔄 삭제된 개수 반환
     });
+  }
+
+  /// [Search Memo]
+  Future<List<MemoModel>?> searchMemos(String query) async {
+    final db = await dbService.database;
+    try {
+      if (!db.isOpen) return null;
+
+      // 메모 내용, 태그로 검색
+      final searchResults = await db.rawQuery('''
+        SELECT DISTINCT m.* FROM memos m
+        LEFT JOIN memo_tags mt ON m.id = mt.memoId
+        LEFT JOIN tags t ON mt.tagId = t.id
+        WHERE m.content LIKE ? 
+        OR t.tagName LIKE ?
+      ''', ['%$query%', '%$query%']);
+
+      // 검색된 메모들의 관련 데이터(이미지, 링크, 태그) 가져오기
+      List<MemoModel> memoModels = [];
+      for (var memo in searchResults) {
+        final memoId = memo['id'] as int;
+
+        // 이미지 가져오기
+        final imageResults = await db.query(
+          tableName[2],
+          where: 'memoId = ?',
+          whereArgs: [memoId],
+        );
+
+        // 링크 가져오기
+        final linkResults = await db.query(
+          tableName[3],
+          where: 'memoId = ?',
+          whereArgs: [memoId],
+        );
+
+        // 태그 가져오기
+        final tagResults = await db.rawQuery('''
+          SELECT t.* FROM tags t
+          INNER JOIN memo_tags mt ON t.id = mt.tagId
+          WHERE mt.memoId = ?
+        ''', [memoId]);
+
+        // MemoModel 생성
+        final memoDTO = MemoDTO.fromJson2(memo);
+        memoModels.add(MemoMapper.toModel(
+          memoDTO,
+          images: imageResults.map((e) => ImageDTO.fromJson(e)).toList(),
+          links: linkResults.map((e) => LinkDTO.fromJson(e)).toList(),
+          tags: tagResults.map((e) => TagDTO.fromJson(e)).toList(),
+        ));
+      }
+
+      return memoModels;
+    } catch (e) {
+      log("❌ searchMemos Error: $e");
+      return null;
+    }
   }
 }

@@ -1,26 +1,31 @@
 import 'package:verymemo/common/barrel/view_common.dart';
-
-final alignStateProvider = StateProvider<String>((ref) => '최근 본 메모');
+import 'package:verymemo/features/memo/presentation/providers/memo_sort_provider.dart';
 
 class AlignSelect {
-  static const List<String> options = [
-    '최근 본 메모',
-    '최신 작성일',
-    '오래된 작성일',
-  ];
+  static Future<void> show(BuildContext context, WidgetRef ref) {
+    final currentSortType = ref.read(memoSortProvider);
 
-  static void show(BuildContext context, WidgetRef ref) {
-    final currentAlign = ref.read(alignStateProvider);
-    final highlightedIndices =
-        options.map((option) => option == currentAlign).toList();
+    // MemoSortType을 String 리스트로 변환
+    final options = MemoSortType.values.map((type) => type.label).toList();
 
-    ModalSelect.show(
+    // 현재 선택된 정렬 타입의 인덱스 찾기
+    final currentIndex =
+        MemoSortType.values.indexWhere((type) => type == currentSortType);
+
+    return ModalSelect.show(
       context: context,
       options: options,
-      isHighlighted: highlightedIndices,
+      isHighlighted: List.generate(
+        options.length,
+        (index) => index == currentIndex,
+      ),
       onSelect: (selected) {
-        ref.read(alignStateProvider.notifier).state = selected;
-        // ref.read(memoHomeViewModelProvider.notifier).sortMemos(selected);
+        // 선택된 라벨에 해당하는 MemoSortType 찾기
+        final selectedType =
+            MemoSortType.values.firstWhere((type) => type.label == selected);
+
+        // 정렬 타입 변경
+        ref.read(memoSortProvider.notifier).changeSortType(selectedType);
       },
     );
   }
