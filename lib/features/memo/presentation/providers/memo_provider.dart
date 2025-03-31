@@ -5,16 +5,20 @@ import 'package:verymemo/features/memo/data/repositories/memo_repository_impl.da
 import 'package:verymemo/features/memo/domain/caches/memo_cache.dart';
 import 'package:verymemo/features/memo/domain/models/model.dart';
 import 'package:verymemo/features/memo/domain/repositories/memo_repository.dart';
+import 'package:verymemo/features/memo/presentation/providers/memo_sort_provider.dart';
 import 'package:verymemo/features/memo/presentation/providers/state/memo_state.dart';
 
 final memoProvider = StateNotifierProvider<MemoNotifier, MemoState>((ref) {
   final memoRepository = ref.watch(memoRepositoryProvider);
-  return MemoNotifier(memoRepository);
+  final sortType = ref.watch(memoSortProvider);
+  return MemoNotifier(memoRepository, sortType);
 });
 
 class MemoNotifier extends StateNotifier<MemoState> {
   final MemoRepository memoRepository;
-  MemoNotifier(this.memoRepository) : super(const MemoState.initial()) {
+  final MemoSortType sortType;
+  MemoNotifier(this.memoRepository, this.sortType)
+      : super(const MemoState.initial()) {
     _initialize();
   }
 
@@ -31,16 +35,32 @@ class MemoNotifier extends StateNotifier<MemoState> {
       final memoModels = await memoRepository.getAllMemos();
       final memos = memoModels?.whereType<MemoModel>().toList() ?? [];
 
-      // 작성일 기준 내림차순 정렬 (최신순)
-      memos.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      // 정렬 적용
+      final sortedMemos = _sortMemos(memos);
 
       log("---> memos: $memos");
-      MemoCache().addMemos(memos);
-      state = MemoState.successed(memos);
+      MemoCache().addMemos(sortedMemos);
+      state = MemoState.successed(sortedMemos);
     } catch (e) {
       log("❌ Error fetching memos: $e");
       state = MemoState.error('메모를 불러오지 못했습니다.');
     }
+  }
+
+  /// [메모 정렬]
+  List<MemoModel> _sortMemos(List<MemoModel> memos) {
+    switch (sortType) {
+      case MemoSortType.lastViewed:
+        memos.sort((a, b) => b.lastViewedAt!.compareTo(a.lastViewedAt!));
+        break;
+      case MemoSortType.latest:
+        memos.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+        break;
+      case MemoSortType.oldest:
+        memos.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+        break;
+    }
+    return memos;
   }
 
   /// [특정 메모 가져오기]
