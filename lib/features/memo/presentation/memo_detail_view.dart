@@ -65,7 +65,10 @@ class MemoDetailView extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        MemoFooter(createdAt: currentMemo.createdAt),
+                        MemoFooter(
+                          createdAt: currentMemo.createdAt,
+                          updatedAt: currentMemo.updatedAt,
+                        ),
                         const SizedBox(height: 8),
                         if (currentMemo.content != null)
                           Text(

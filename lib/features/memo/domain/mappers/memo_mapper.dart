@@ -3,7 +3,10 @@ part of 'mapper.dart';
 class MemoMapper {
   // 🔄 Model → DTO 변환
   static MemoDTO toDTO(MemoModel model) {
-    return MemoDTO(
+    log("---> MemoMapper.toDTO 호출");
+    log("---> model.updatedAt: ${model.updatedAt}");
+
+    final dto = MemoDTO(
       id: model.memoId,
       userId: model.user?.id ?? model.userId ?? "",
       content: model.content,
@@ -13,6 +16,9 @@ class MemoMapper {
       isLocalMemo: model.isLocalMemo ? 1 : 0,
       isBookMarked: model.isBookMarked ? 1 : 0,
     );
+
+    log("---> 생성된 DTO의 updatedAt: ${dto.updatedAt}");
+    return dto;
   }
 
 // 🔄 DTO → Model 변환

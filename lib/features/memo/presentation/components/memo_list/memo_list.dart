@@ -79,7 +79,10 @@ class MemoList extends ConsumerWidget {
                   const SizedBox(height: 4),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: MemoFooter(createdAt: memo.createdAt),
+                    child: MemoFooter(
+                      createdAt: memo.createdAt,
+                      updatedAt: memo.updatedAt,
+                    ),
                   ),
                   const SizedBox(height: 4),
                   const Padding(

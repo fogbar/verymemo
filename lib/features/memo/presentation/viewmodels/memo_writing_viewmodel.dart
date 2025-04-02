@@ -57,6 +57,13 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
 
   /// 텍스트 변경 감지 - 버튼 상태용
   void _onTextChanged() {
+    if (!state.textController.text.isNotEmpty) {
+      state = state.copyWith(
+        buttonState: ButtonState.disabled,
+      );
+      return;
+    }
+
     final text = state.textController.text.trim();
     log("---> _onTextChanged 호출됨");
     log("---> 현재 텍스트: $text");

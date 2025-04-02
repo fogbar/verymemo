@@ -59,6 +59,13 @@ class MemoEditViewModel extends StateNotifier<MemoWritingState> {
 
   /// 텍스트 변경 감지 - 버튼 상태용
   void _onTextChanged() {
+    if (!state.textController.text.isNotEmpty) {
+      state = state.copyWith(
+        buttonState: ButtonState.disabled,
+      );
+      return;
+    }
+
     final text = state.textController.text.trim();
     log("---> _onTextChanged 호출됨");
     log("---> 현재 텍스트: $text");
@@ -326,6 +333,9 @@ class MemoEditViewModel extends StateNotifier<MemoWritingState> {
       final memoId = originalMemo.memoId.toString();
       log("---> 메모 ID를 문자열로 변환: $memoId");
 
+      final currentTime = DateTime.now();
+      log("---> 현재 시간: $currentTime");
+
       final updatedMemo = MemoModel(
         memoId: int.parse(memoId), // 문자열을 다시 정수로 변환
         userId: originalMemo.userId,
@@ -339,7 +349,7 @@ class MemoEditViewModel extends StateNotifier<MemoWritingState> {
         links: state.links,
         tags: originalMemo.tags,
         createdAt: originalMemo.createdAt,
-        updatedAt: DateTime.now(),
+        updatedAt: currentTime, // 현재 시간으로 명시적으로 설정
         isLocalMemo: originalMemo.isLocalMemo,
         isBookMarked: originalMemo.isBookMarked,
         lastViewedAt: originalMemo.lastViewedAt,
@@ -350,6 +360,7 @@ class MemoEditViewModel extends StateNotifier<MemoWritingState> {
       log("---> 업데이트된 메모 내용: ${updatedMemo.content}");
       log("---> 업데이트된 이미지 수: ${updatedMemo.images?.length ?? 0}");
       log("---> 업데이트된 링크 수: ${updatedMemo.links?.length ?? 0}");
+      log("---> 업데이트된 메모의 updatedAt: ${updatedMemo.updatedAt}");
 
       log("---> memoProvider.updateMemo 호출 전");
       await memoProvider.updateMemo(updatedMemo);

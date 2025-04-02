@@ -2,25 +2,27 @@ import 'package:flutter/material.dart';
 
 class MemoFooter extends StatelessWidget {
   final DateTime createdAt;
+  final DateTime? updatedAt;
 
   const MemoFooter({
     super.key,
     required this.createdAt,
+    this.updatedAt,
   });
 
   @override
   Widget build(BuildContext context) {
+    final displayDate = updatedAt ?? createdAt;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          _formatDate(createdAt),
+          _formatDate(displayDate),
           style: Theme.of(context).textTheme.labelSmall?.copyWith(
                 color: Theme.of(context).colorScheme.onTertiaryContainer,
               ),
         ),
-
-        // 아이콘 추가 필요
       ],
     );
   }

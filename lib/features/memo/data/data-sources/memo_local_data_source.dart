@@ -293,7 +293,15 @@ DB에 저장할 데이터:
       log("---> 트랜잭션 시작");
 
       log("---> 메모 테이블 업데이트 시작");
-      final updateResult = await txn.update(tableName[0], dto.toJson(),
+      final currentTime = DateTime.now();
+      final updateData = {
+        ...dto.toJson(),
+        'updatedAt': currentTime.toIso8601String(),
+      };
+      log("---> 업데이트할 데이터: $updateData");
+      log("---> updatedAt 필드 값: ${updateData['updatedAt']}");
+
+      final updateResult = await txn.update(tableName[0], updateData,
           where: 'id = ?', whereArgs: [memoId]);
       log("---> 메모 테이블 업데이트 결과: $updateResult");
 
@@ -301,6 +309,15 @@ DB에 저장할 데이터:
         log("---> 메모 업데이트 실패");
         throw Exception("메모 업데이트에 실패했습니다.");
       }
+
+      // 업데이트된 메모 확인
+      final updatedMemo = await txn.query(
+        tableName[0],
+        where: 'id = ?',
+        whereArgs: [memoId],
+      );
+      log("---> 업데이트된 메모 데이터: ${updatedMemo.first}");
+      log("---> 업데이트된 메모의 updatedAt: ${updatedMemo.first['updatedAt']}");
 
       log("---> 이미지 테이블 삭제 시작");
       await txn.delete(tableName[2], where: 'memoId = ?', whereArgs: [memoId]);

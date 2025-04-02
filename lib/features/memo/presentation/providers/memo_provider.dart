@@ -54,10 +54,18 @@ class MemoNotifier extends StateNotifier<MemoState> {
         memos.sort((a, b) => b.lastViewedAt!.compareTo(a.lastViewedAt!));
         break;
       case MemoSortType.latest:
-        memos.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+        memos.sort((a, b) {
+          final aDate = a.updatedAt ?? a.createdAt;
+          final bDate = b.updatedAt ?? b.createdAt;
+          return bDate.compareTo(aDate);
+        });
         break;
       case MemoSortType.oldest:
-        memos.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+        memos.sort((a, b) {
+          final aDate = a.updatedAt ?? a.createdAt;
+          final bDate = b.updatedAt ?? b.createdAt;
+          return aDate.compareTo(bDate);
+        });
         break;
     }
     return memos;
