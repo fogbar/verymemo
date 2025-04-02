@@ -26,7 +26,7 @@ class MemoDetailView extends ConsumerWidget {
           VariableHeader(
             type: HeaderType.memoDetail,
             onBack: () {
-              Navigator.of(context).maybePop();
+              Navigator.of(context).pop();
             },
             onDelete: () => viewModel.handleDelete(id),
             onShare: () => viewModel.handleShare(id),

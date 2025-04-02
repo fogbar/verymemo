@@ -70,6 +70,7 @@ class MemoWritingView extends ConsumerWidget {
                           AnimatedContainer(
                             duration: const Duration(milliseconds: 200),
                             height: state.showLinkInput ? 40 : 0,
+                            margin: const EdgeInsets.only(top: 24),
                             child: SingleChildScrollView(
                               child: Container(
                                 height: 40,
@@ -105,7 +106,7 @@ class MemoWritingView extends ConsumerWidget {
                                         ),
                                       ),
                                     ),
-                                    const Spacer(),
+                                    const SizedBox(width: 8),
                                     GestureDetector(
                                       onTap: state.linkController.text
                                               .trim()

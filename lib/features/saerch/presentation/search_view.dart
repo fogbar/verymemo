@@ -1,7 +1,5 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:verymemo/common/barrel/view_common.dart';
 import 'package:verymemo/common/barrel/memo_list.dart';
-import 'package:verymemo/features/memo/presentation/providers/memo_provider.dart';
 import 'package:verymemo/features/saerch/presentation/search_viewmodel.dart';
 
 class SearchView extends ConsumerWidget {

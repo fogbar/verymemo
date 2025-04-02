@@ -40,7 +40,7 @@ class WritingMenuBar extends ConsumerWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: WritingMenuBarConfig.leadingIcons
-                    .map((icon) => _buildLeadingIcon(icon, context))
+                    .map((icon) => _buildLeadingIcon(icon, context, ref))
                     .toList(),
               ),
             ),
@@ -59,12 +59,15 @@ class WritingMenuBar extends ConsumerWidget {
   }
 
   /// ✅ 리딩 아이콘 빌드 (카메라, 갤러리, 링크, 비공개)
-  Widget _buildLeadingIcon(LeadingIcon icon, BuildContext context) {
+  Widget _buildLeadingIcon(
+      LeadingIcon icon, BuildContext context, WidgetRef ref) {
     switch (icon) {
       case LeadingIcon.camera:
         return IconBtn(
           iconKey: "camera",
-          onTap: onCameraTap,
+          onTap: () => ref
+              .read(memoWritingViewModelProvider.notifier)
+              .takePicture(context),
           size: WritingMenuBarConfig.iconSize,
         );
       case LeadingIcon.gallery:
@@ -119,4 +122,3 @@ class WritingMenuBar extends ConsumerWidget {
     );
   }
 }
-

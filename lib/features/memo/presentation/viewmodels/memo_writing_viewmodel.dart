@@ -7,6 +7,7 @@ import 'package:verymemo/common/barrel/memo_writing.dart';
 import 'package:verymemo/common/ui/components/button/button_state.dart';
 import 'package:verymemo/features/auth/presentation/providers/user_provider.dart';
 import 'package:any_link_preview/any_link_preview.dart';
+import 'package:image_picker/image_picker.dart';
 
 final memoWritingViewModelProvider =
     StateNotifierProvider<MemoWritingViewModel, MemoWritingState>((ref) {
@@ -325,6 +326,34 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
       log("---> 메모 저장 실패: $e");
       log("---> 스택트레이스: $stackTrace");
       rethrow;
+    }
+  }
+
+  /// 카메라로 사진 촬영
+  Future<void> takePicture(BuildContext context) async {
+    try {
+      final ImagePicker picker = ImagePicker();
+      final XFile? image = await picker.pickImage(
+        source: ImageSource.camera,
+        imageQuality: 80,
+      );
+
+      if (image != null) {
+        state = state.copyWith(
+          selectedImages: [...state.selectedImages, image.path],
+          buttonState: ButtonState.primary,
+        );
+      }
+    } catch (e) {
+      debugPrint('Error taking picture: $e');
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('사진 촬영 중 오류가 발생했습니다.'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
     }
   }
 }

@@ -56,7 +56,7 @@ dependencies:
   flutter_file_dialog: ^3.0.1
   image: ^4.0.17 
   path_provider: ^2.1.1
-
+  image_picker: ^1.0.7
 
   # 토스트 메시지
   fluttertoast: ^8.2.12
