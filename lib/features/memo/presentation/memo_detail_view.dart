@@ -127,6 +127,7 @@ class MemoDetailView extends ConsumerWidget {
         ],
       ),
       bottomNavigationBar: VariableNavigationBar(
+        ref: ref,
         type: NavigationBarType.content,
         selectedIndex: 0,
         onItemSelected: (index) {
@@ -143,7 +144,7 @@ class MemoDetailView extends ConsumerWidget {
             viewModel.handleUpload(id);
           }
           if (iconKey == 'edit') {
-            viewModel.handleEdit(id);
+            viewModel.handleEdit(id, context);
           }
         },
       ),

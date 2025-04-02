@@ -79,6 +79,7 @@ class _HomeScaffoldState extends ConsumerState<HomeScaffold> {
           bottomNavigationBar: SafeArea(
             top: false,
             child: VariableNavigationBar(
+              ref: ref,
               type: _currentNavBar,
               selectedIndex: widget.navigationShell.currentIndex,
               onItemSelected: (index) {

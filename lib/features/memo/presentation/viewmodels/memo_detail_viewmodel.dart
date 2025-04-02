@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:verymemo/features/memo/presentation/providers/state/memo_state.dart';
 import 'package:flutter/services.dart';
 import 'package:verymemo/features/memo/presentation/providers/memo_provider.dart';
+import 'package:go_router/go_router.dart';
 
 final memoDetailProvider =
     StateNotifierProvider<MemoDetailViewModel, void>((ref) {
@@ -56,8 +57,17 @@ class MemoDetailViewModel extends StateNotifier<MemoState> {
     debugPrint('메모 업로드: $id');
   }
 
-  void handleEdit(String id) {
-    // TODO: 메모 편집 기능 구현
-    debugPrint('메모 편집: $id');
+  void handleEdit(String id, BuildContext context) {
+    final memoState = _ref.read(memoProvider);
+    memoState.maybeWhen(
+      successed: (memos) {
+        final memoIdInt = int.tryParse(id);
+        if (memoIdInt != null) {
+          final memo = memos.firstWhere((m) => m.memoId == memoIdInt);
+          context.go('/edit', extra: memo);
+        }
+      },
+      orElse: () {},
+    );
   }
 }

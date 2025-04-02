@@ -59,7 +59,8 @@ abstract class AppRoute {
       case search:
         return const SearchView();
       case edit:
-        return const MemoEditView();
+        final memo = state.extra as MemoModel;
+        return MemoEditView(memo: memo);
       case delete:
         return const MemoDeleteView();
       case detail:

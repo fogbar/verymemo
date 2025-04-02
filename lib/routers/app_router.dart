@@ -373,10 +373,12 @@ class HomeRoute extends Route {
 // ✅ 수정 라우터
 @TypedGoRoute<EditRoute>(path: AppRoute.edit)
 class EditRoute extends Route {
+  final MemoModel memo;
+
   @override
   bool checkAuth(BuildContext context) => true;
 
-  const EditRoute() : super(const MemoEditView());
+  EditRoute({required this.memo}) : super(MemoEditView(memo: memo));
 }
 
 // ✅ 상세 라우터

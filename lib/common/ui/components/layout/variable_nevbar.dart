@@ -3,6 +3,10 @@ import 'package:verymemo/common/ui/components/button/button_state.dart';
 import 'package:verymemo/common/ui/components/button/icon_btn.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:verymemo/features/memo/presentation/providers/memo_provider.dart';
+import 'package:verymemo/routers/router.dart';
+import 'package:go_router/go_router.dart';
 
 enum NavigationBarType { home, content }
 
@@ -29,6 +33,7 @@ class VariableNavigationBar extends StatelessWidget {
   final int selectedIndex;
   final ValueChanged<int>? onItemSelected;
   final VoidCallback? onFloatingButtonTap;
+  final WidgetRef ref;
 
   const VariableNavigationBar({
     super.key,
@@ -36,6 +41,7 @@ class VariableNavigationBar extends StatelessWidget {
     required this.selectedIndex,
     this.onItemSelected,
     this.onFloatingButtonTap,
+    required this.ref,
   });
 
   @override
@@ -100,6 +106,20 @@ class VariableNavigationBar extends StatelessWidget {
             }
           } catch (e) {
             debugPrint('Haptic feedback failed: $e');
+          }
+          if (iconKey == "edit") {
+            final memoState = ref.read(memoProvider);
+            memoState.maybeWhen(
+              successed: (memos) {
+                final selectedMemo = ref.read(selectedMemoIdProvider);
+                if (selectedMemo != null) {
+                  final memo = memos
+                      .firstWhere((m) => m.memoId.toString() == selectedMemo);
+                  context.go('/edit', extra: memo);
+                }
+              },
+              orElse: () {},
+            );
           }
           onItemSelected
               ?.call(NavigationBarConfig.contentIcons.indexOf(iconKey));
