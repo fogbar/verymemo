@@ -12,6 +12,7 @@ class WritingMenuBar extends ConsumerWidget {
   final VoidCallback? onPrivacyTap;
   final VoidCallback? onTagTap;
   final VoidCallback? onUploadTap;
+  final ButtonState buttonState;
 
   const WritingMenuBar({
     super.key,
@@ -21,6 +22,7 @@ class WritingMenuBar extends ConsumerWidget {
     this.onPrivacyTap,
     this.onTagTap,
     this.onUploadTap,
+    this.buttonState = ButtonState.disabled,
   });
 
   @override
@@ -97,10 +99,9 @@ class WritingMenuBar extends ConsumerWidget {
           size: WritingMenuBarConfig.iconSize,
         );
       case TrailingIcon.upload:
-        final buttonState = ref.watch(memoWritingViewModelProvider).buttonState;
         return IconCircleBtn(
           iconKey: "arrow-up",
-          onTap: buttonState == ButtonState.disabled ? null : onUploadTap,
+          onTap: onUploadTap,
           state: buttonState,
           circleSize: CircleButtonSize.small,
         );

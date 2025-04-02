@@ -264,6 +264,7 @@ class MemoWritingView extends ConsumerWidget {
                   onUploadTap: () async {
                     await viewModel.onUploadTab(context);
                   },
+                  buttonState: state.buttonState,
                 ),
               ],
             ),

@@ -4,6 +4,7 @@ class MemoMapper {
   // 🔄 Model → DTO 변환
   static MemoDTO toDTO(MemoModel model) {
     return MemoDTO(
+      id: model.memoId,
       userId: model.user?.id ?? model.userId ?? "",
       content: model.content,
       createdAt: _dateTimeToString(model.createdAt),

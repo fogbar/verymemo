@@ -64,7 +64,7 @@ class MemoDetailViewModel extends StateNotifier<MemoState> {
         final memoIdInt = int.tryParse(id);
         if (memoIdInt != null) {
           final memo = memos.firstWhere((m) => m.memoId == memoIdInt);
-          context.go('/edit', extra: memo);
+          context.push('/edit', extra: memo);
         }
       },
       orElse: () {},

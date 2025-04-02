@@ -10,24 +10,27 @@ import 'package:any_link_preview/any_link_preview.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 final memoEditViewModelProvider = StateNotifierProvider.family<
     MemoEditViewModel, MemoWritingState, MemoModel>((ref, memo) {
   final memoNotifier = ref.watch(memoProvider.notifier);
   final userNotifier = ref.watch(userProvider.notifier);
-  return MemoEditViewModel(memoNotifier, userNotifier, memo);
+  return MemoEditViewModel(memoNotifier, userNotifier, memo, ref);
 });
 
 class MemoEditViewModel extends StateNotifier<MemoWritingState> {
   final MemoNotifier memoProvider;
   final UserNotifier userProvider;
   final MemoModel originalMemo;
+  final StateNotifierProviderRef ref;
   Timer? _debounce;
 
   MemoEditViewModel(
     this.memoProvider,
     this.userProvider,
     this.originalMemo,
+    this.ref,
   ) : super(MemoWritingState()) {
     // 초기 상태 설정
     state.textController.text = originalMemo.content ?? '';
@@ -35,8 +38,10 @@ class MemoEditViewModel extends StateNotifier<MemoWritingState> {
         originalMemo.images?.map((e) => e.imageUrl ?? '').toList() ?? [];
     state.links = originalMemo.links ?? [];
 
-    // 버튼 상태 업데이트
-    _updateButtonState();
+    // 초기 버튼 상태를 비활성화로 설정
+    state = state.copyWith(
+      buttonState: ButtonState.disabled,
+    );
 
     // 리스너 등록
     state.textController.addListener(_onTextChanged);
@@ -55,11 +60,28 @@ class MemoEditViewModel extends StateNotifier<MemoWritingState> {
   /// 텍스트 변경 감지 - 버튼 상태용
   void _onTextChanged() {
     final text = state.textController.text.trim();
-    _updateButtonState();
+    log("---> _onTextChanged 호출됨");
+    log("---> 현재 텍스트: $text");
+    log("---> 현재 이미지 수: ${state.selectedImages.length}");
+    log("---> 현재 링크 수: ${state.links.length}");
+    log("---> 현재 버튼 상태: ${state.buttonState}");
 
+    // 즉시 버튼 상태 업데이트
+    final hasContent = text.isNotEmpty ||
+        state.selectedImages.isNotEmpty ||
+        state.links.isNotEmpty;
+
+    log("---> hasContent: $hasContent");
+    log("---> 새로운 버튼 상태: ${hasContent ? ButtonState.primary : ButtonState.disabled}");
+
+    state = state.copyWith(
+      buttonState: hasContent ? ButtonState.primary : ButtonState.disabled,
+    );
+
+    // 디바운스는 텍스트 저장에만 사용
     if (_debounce?.isActive ?? false) _debounce!.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () {
-      log("---> onTextChanged: $text");
+      log("---> 디바운스 후 텍스트 저장: $text");
       state = state.copyWith(
         debouncedText: text,
       );
@@ -69,9 +91,46 @@ class MemoEditViewModel extends StateNotifier<MemoWritingState> {
   /// 버튼 상태 업데이트
   void _updateButtonState() {
     final text = state.textController.text.trim();
-    final hasChanges = text != (originalMemo.content ?? '') ||
-        state.selectedImages.length != (originalMemo.images?.length ?? 0) ||
+    final hasTextChanged = text != originalMemo.content;
+    final hasImagesChanged =
+        state.selectedImages.length != (originalMemo.images?.length ?? 0);
+    final hasLinksChanged =
         state.links.length != (originalMemo.links?.length ?? 0);
+
+    // 이미지 URL 비교
+    bool hasImageUrlsChanged = false;
+    if (state.selectedImages.length == (originalMemo.images?.length ?? 0)) {
+      for (int i = 0; i < state.selectedImages.length; i++) {
+        if (state.selectedImages[i] != originalMemo.images?[i].imageUrl) {
+          hasImageUrlsChanged = true;
+          break;
+        }
+      }
+    } else {
+      hasImageUrlsChanged = true;
+    }
+
+    // 링크 내용 비교
+    bool hasLinkContentsChanged = false;
+    if (state.links.length == (originalMemo.links?.length ?? 0)) {
+      for (int i = 0; i < state.links.length; i++) {
+        if (state.links[i].linkUrl != originalMemo.links?[i].linkUrl ||
+            state.links[i].metaTitle != originalMemo.links?[i].metaTitle ||
+            state.links[i].metaDescription !=
+                originalMemo.links?[i].metaDescription) {
+          hasLinkContentsChanged = true;
+          break;
+        }
+      }
+    } else {
+      hasLinkContentsChanged = true;
+    }
+
+    final hasChanges = hasTextChanged ||
+        hasImagesChanged ||
+        hasImageUrlsChanged ||
+        hasLinksChanged ||
+        hasLinkContentsChanged;
 
     state = state.copyWith(
       buttonState: hasChanges ? ButtonState.primary : ButtonState.disabled,
@@ -246,6 +305,13 @@ class MemoEditViewModel extends StateNotifier<MemoWritingState> {
       log("---> 메모 업데이트 시작");
       log("---> 텍스트: $text");
       log("---> 이미지: ${state.selectedImages}");
+      log("---> 원본 메모 ID: ${originalMemo.memoId}");
+
+      // 원본 메모의 ID가 null인지 확인
+      if (originalMemo.memoId == null) {
+        log("---> 원본 메모 ID가 null입니다!");
+        throw Exception("메모 ID가 존재하지 않습니다.");
+      }
 
       // 링크 데이터 상세 로깅
       for (var link in state.links) {
@@ -256,7 +322,13 @@ class MemoEditViewModel extends StateNotifier<MemoWritingState> {
         log("     설명: ${link.metaDescription}");
       }
 
-      final updatedMemo = originalMemo.copyWith(
+      // 메모 ID를 문자열로 변환하여 저장
+      final memoId = originalMemo.memoId.toString();
+      log("---> 메모 ID를 문자열로 변환: $memoId");
+
+      final updatedMemo = MemoModel(
+        memoId: int.parse(memoId), // 문자열을 다시 정수로 변환
+        userId: originalMemo.userId,
         content: text,
         images: state.selectedImages
             .map((e) => ImageModel(
@@ -265,16 +337,47 @@ class MemoEditViewModel extends StateNotifier<MemoWritingState> {
                 ))
             .toList(),
         links: state.links,
+        tags: originalMemo.tags,
+        createdAt: originalMemo.createdAt,
         updatedAt: DateTime.now(),
+        isLocalMemo: originalMemo.isLocalMemo,
+        isBookMarked: originalMemo.isBookMarked,
+        lastViewedAt: originalMemo.lastViewedAt,
       );
 
       log("---> MemoModel 업데이트 완료");
+      log("---> 업데이트된 메모 ID: ${updatedMemo.memoId}");
+      log("---> 업데이트된 메모 내용: ${updatedMemo.content}");
+      log("---> 업데이트된 이미지 수: ${updatedMemo.images?.length ?? 0}");
+      log("---> 업데이트된 링크 수: ${updatedMemo.links?.length ?? 0}");
 
+      log("---> memoProvider.updateMemo 호출 전");
       await memoProvider.updateMemo(updatedMemo);
+      log("---> memoProvider.updateMemo 호출 완료");
+
+      // 메모 목록 새로고침
+      log("---> memoProvider.getAllMemos 호출 전");
+      await memoProvider.getAllMemos();
+      log("---> memoProvider.getAllMemos 호출 완료");
+
       log("---> 메모 업데이트 완료!");
 
       if (context.mounted) {
-        Navigator.of(context).pop();
+        // 메모 상세 화면으로 이동
+        log("---> 상세 화면으로 이동: /detail/${updatedMemo.memoId}");
+        Navigator.pop(context); // 수정 화면만 닫기
+
+        // 약간의 딜레이 후 스낵바 표시
+        Future.delayed(const Duration(milliseconds: 300), () {
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('메모가 업데이트되었습니다.'),
+                duration: Duration(seconds: 2),
+              ),
+            );
+          }
+        });
       }
     } catch (e, stackTrace) {
       log("---> 메모 업데이트 실패: $e");

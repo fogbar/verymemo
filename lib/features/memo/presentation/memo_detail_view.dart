@@ -5,6 +5,8 @@ import 'package:verymemo/common/ui/components/layout/variable_header.dart';
 import 'package:verymemo/common/ui/components/layout/variable_nevbar.dart';
 import 'package:verymemo/features/memo/presentation/viewmodels/memo_detail_viewmodel.dart';
 import 'dart:io';
+import 'dart:developer';
+import 'package:go_router/go_router.dart';
 
 class MemoDetailView extends ConsumerWidget {
   // final MemoModel memo;
@@ -26,7 +28,11 @@ class MemoDetailView extends ConsumerWidget {
           VariableHeader(
             type: HeaderType.memoDetail,
             onBack: () {
-              Navigator.of(context).pop();
+              if (Navigator.canPop(context)) {
+                Navigator.pop(context);
+              } else {
+                context.go('/home');
+              }
             },
             onDelete: () => viewModel.handleDelete(id),
             onShare: () => viewModel.handleShare(id),
@@ -37,10 +43,20 @@ class MemoDetailView extends ConsumerWidget {
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (error) => Center(child: Text('에러: $error')),
               successed: (memos) {
-                final memoIdInt = int.tryParse(id);
+                log("---> 메모 목록에서 메모 찾기 시작");
+                log("---> 찾을 메모 ID: $id");
+                log("---> 전체 메모 수: ${memos.length}");
+
                 final currentMemo = memos.firstWhere(
-                  (m) => m.memoId == memoIdInt,
+                  (m) => m.memoId.toString() == id,
+                  orElse: () {
+                    log("---> 메모를 찾을 수 없습니다. ID: $id");
+                    throw Exception("메모를 찾을 수 없습니다.");
+                  },
                 );
+
+                log("---> 찾은 메모 ID: ${currentMemo.memoId}");
+                log("---> 찾은 메모 내용: ${currentMemo.content}");
 
                 return SingleChildScrollView(
                   child: Container(

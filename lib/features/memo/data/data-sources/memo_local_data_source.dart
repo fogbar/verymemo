@@ -249,21 +249,64 @@ DB에 저장할 데이터:
   }
 
   /// [Update Memo]
-  /// [Update Memo]
   Future<int> updateMemo({
     required MemoDTO dto,
     List<ImageDTO> images = const [],
     List<LinkDTO> links = const [],
     List<TagDTO> tags = const [],
   }) async {
+    log("---> MemoLocalDataSource.updateMemo 시작");
+    log("---> 업데이트할 메모 ID: ${dto.id}");
+    log("---> 업데이트할 메모 내용: ${dto.content}");
+    log("---> 업데이트할 이미지 수: ${images.length}");
+    log("---> 업데이트할 링크 수: ${links.length}");
+    log("---> 업데이트할 태그 수: ${tags.length}");
+
+    // 메모 ID 검증
+    if (dto.id == null) {
+      log("---> 메모 ID가 null입니다!");
+      throw Exception("메모 ID가 존재하지 않습니다.");
+    }
+
+    // 메모 ID를 문자열로 변환
+    final memoId = dto.id.toString();
+    log("---> 메모 ID를 문자열로 변환: $memoId");
+
+    // 메모가 존재하는지 확인
     final db = await dbService.database;
+    log("---> DB 연결 성공");
+
+    final existingMemo = await db.query(
+      tableName[0],
+      where: 'id = ?',
+      whereArgs: [memoId],
+    );
+
+    if (existingMemo.isEmpty) {
+      log("---> 메모가 존재하지 않습니다. ID: $memoId");
+      throw Exception("메모가 존재하지 않습니다.");
+    }
+
+    log("---> 메모 존재 확인 완료");
 
     return await db.transaction((txn) async {
-      await txn.update(tableName[0], dto.toJson(),
-          where: 'id = ?', whereArgs: [dto.id]);
-      final memoId = dto.id ?? (throw Exception("메모 ID가 존재하지 않습니다."));
+      log("---> 트랜잭션 시작");
 
+      log("---> 메모 테이블 업데이트 시작");
+      final updateResult = await txn.update(tableName[0], dto.toJson(),
+          where: 'id = ?', whereArgs: [memoId]);
+      log("---> 메모 테이블 업데이트 결과: $updateResult");
+
+      if (updateResult <= 0) {
+        log("---> 메모 업데이트 실패");
+        throw Exception("메모 업데이트에 실패했습니다.");
+      }
+
+      log("---> 이미지 테이블 삭제 시작");
       await txn.delete(tableName[2], where: 'memoId = ?', whereArgs: [memoId]);
+      log("---> 이미지 테이블 삭제 완료");
+
+      log("---> 이미지 테이블 업데이트 시작");
       final imageBatch = txn.batch();
       for (var image in images) {
         imageBatch.insert(tableName[2], {
@@ -273,8 +316,13 @@ DB에 저장할 데이터:
         });
       }
       await imageBatch.commit(noResult: true);
+      log("---> 이미지 테이블 업데이트 완료: ${images.length}개");
 
+      log("---> 링크 테이블 삭제 시작");
       await txn.delete(tableName[3], where: 'memoId = ?', whereArgs: [memoId]);
+      log("---> 링크 테이블 삭제 완료");
+
+      log("---> 링크 테이블 업데이트 시작");
       final linkBatch = txn.batch();
       for (var link in links) {
         linkBatch.insert(tableName[3], {
@@ -286,8 +334,13 @@ DB에 저장할 데이터:
         });
       }
       await linkBatch.commit(noResult: true);
+      log("---> 링크 테이블 업데이트 완료: ${links.length}개");
 
+      log("---> 태그 테이블 삭제 시작");
       await txn.delete('memo_tags', where: 'memoId = ?', whereArgs: [memoId]);
+      log("---> 태그 테이블 삭제 완료");
+
+      log("---> 태그 테이블 업데이트 시작");
       final tagBatch = txn.batch();
       for (var tag in tags) {
         final tagResult = await txn
@@ -299,8 +352,10 @@ DB에 저장할 데이터:
         tagBatch.insert('memo_tags', {'memoId': memoId, 'tagId': tagId});
       }
       await tagBatch.commit(noResult: true);
+      log("---> 태그 테이블 업데이트 완료: ${tags.length}개");
 
-      return memoId;
+      log("---> 트랜잭션 완료");
+      return int.parse(memoId);
     });
   }
 

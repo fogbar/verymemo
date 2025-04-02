@@ -210,6 +210,7 @@ class MemoEditView extends ConsumerWidget {
             onGalleryTap: () => viewModel.pickImages(context),
             onLinkTap: () => viewModel.setLinks(context),
             onUploadTap: () => viewModel.updateMemo(context),
+            buttonState: state.buttonState,
           ),
         ],
       ),
