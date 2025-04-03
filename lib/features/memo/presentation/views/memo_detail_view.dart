@@ -35,7 +35,7 @@ class MemoDetailView extends ConsumerWidget {
                 context.go('/home');
               }
             },
-            onDelete: () => viewModel.handleDelete(id),
+            onDelete: () => viewModel.handleDelete(id, context),
             onShare: () => viewModel.handleShare(id),
           ),
           Expanded(

@@ -6,6 +6,11 @@ import 'package:verymemo/features/memo/presentation/views/image_detail_view.dart
 import 'package:verymemo/features/memo/presentation/providers/memo_provider.dart';
 import 'package:verymemo/features/memo/presentation/providers/state/memo_state.dart';
 import 'package:verymemo/features/memo/presentation/components/modal/popup/delete.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:verymemo/routers/router.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 // HapticFeedback을 위해 추가
 
 final memoHomeProvider =
@@ -60,12 +65,19 @@ class MemoHomeViewModel extends StateNotifier<MemoState> {
                   .deleteMemo(idsToDelete)
                   .then((_) {
                 _loadMemos();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('메모가 삭제되었어요'),
-                    duration: Duration(seconds: 2),
-                  ),
-                );
+                context.go('/home');
+                // 홈 화면의 context를 사용하여 스낵바를 표시합니다
+                Future.delayed(const Duration(milliseconds: 500), () {
+                  final homeContext = NavigatorKey.routerKey.currentContext;
+                  if (homeContext != null) {
+                    ScaffoldMessenger.of(homeContext).showSnackBar(
+                      const SnackBar(
+                        content: Text('메모가 삭제되었어요'),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  }
+                });
               });
             },
             onCancel: () {
@@ -78,26 +90,70 @@ class MemoHomeViewModel extends StateNotifier<MemoState> {
     });
   }
 
+  void _copyMemo(MemoModel memo, BuildContext context) async {
+    if (memo.content != null) {
+      await Clipboard.setData(ClipboardData(text: memo.content!));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('복사되었습니다'),
+          duration: Duration(seconds: 1),
+        ),
+      );
+    }
+  }
+
   /// 🔄 [메모 길게 누를 때]
-  void handleModalSelection(
-      String value, MemoModel memo, BuildContext context) {
-    debugPrint('handleModalSelection called with value: $value');
-    switch (value) {
+  void handleModalSelection(BuildContext context, String action) {
+    final selectedMemo = _ref.read(selectedMemoIdProvider);
+    if (selectedMemo == null) return;
+
+    switch (action) {
       case '수정':
-        updateMemo(memo);
-        break;
-      case '북마크':
-        _bookmarkMemo(memo);
-        break;
-      case '공유':
-        _shareMemo(memo);
-        break;
-      case '공개':
-        _togglePublicMemo(memo);
+        final memoState = _ref.read(memoProvider);
+        memoState.maybeWhen(
+          successed: (memos) {
+            final memo =
+                memos.firstWhere((m) => m.memoId.toString() == selectedMemo);
+            context.push('/edit', extra: memo);
+          },
+          orElse: () {},
+        );
         break;
       case '삭제':
-        debugPrint('Delete case triggered');
-        deleteMemo(context, memo.memoId!);
+        deleteMemo(context, int.tryParse(selectedMemo));
+        break;
+      case '북마크':
+        final memoState = _ref.read(memoProvider);
+        memoState.maybeWhen(
+          successed: (memos) {
+            final memo =
+                memos.firstWhere((m) => m.memoId.toString() == selectedMemo);
+            _bookmarkMemo(memo);
+          },
+          orElse: () {},
+        );
+        break;
+      case '복사':
+        final memoState = _ref.read(memoProvider);
+        memoState.maybeWhen(
+          successed: (memos) {
+            final memo =
+                memos.firstWhere((m) => m.memoId.toString() == selectedMemo);
+            _copyMemo(memo, context);
+          },
+          orElse: () {},
+        );
+        break;
+      case '공유':
+        final memoState = _ref.read(memoProvider);
+        memoState.maybeWhen(
+          successed: (memos) {
+            final memo =
+                memos.firstWhere((m) => m.memoId.toString() == selectedMemo);
+            _shareMemo(memo);
+          },
+          orElse: () {},
+        );
         break;
     }
   }
@@ -203,20 +259,4 @@ class MemoHomeViewModel extends StateNotifier<MemoState> {
       ],
     );
   }
-
-  // void sortMemos(String sortOption) {
-  //   final List<MemoModel> sortedMemos = [...state.memos];
-
-  //   switch (sortOption) {
-  //     case '최근 본 메모':
-  //       sortedMemos.sort((a, b) => (b.lastViewedAt ?? b.createdAt)
-  //           .compareTo(a.lastViewedAt ?? a.createdAt));
-  //     case '최신 작성일':
-  //       sortedMemos.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-  //     case '오래된 작성일':
-  //       sortedMemos.sort((a, b) => a.createdAt.compareTo(b.createdAt));
-  //   }
-
-  //   state = state.copyWith(memos: sortedMemos);
-  // }
 }

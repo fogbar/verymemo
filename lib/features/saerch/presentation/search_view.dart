@@ -11,6 +11,7 @@ class SearchView extends ConsumerWidget {
     final state = ref.watch(searchViewModelProvider);
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: SafeArea(
         child: Column(
           children: [
@@ -24,70 +25,84 @@ class SearchView extends ConsumerWidget {
               onSearchClear: viewModel.onClear,
             ),
             Expanded(
-              child: state.when(
-                initial: () => const Center(child: Text('검색어를 입력하세요')),
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (e) => Center(child: Text('에러: $e')),
-                successed: (memos) {
-                  if (memos.isEmpty) {
-                    return const Center(child: Text('검색 결과가 없습니다'));
-                  }
-                  return ListView.builder(
-                    itemCount: memos.length,
-                    itemBuilder: (context, index) {
-                      final memo = memos[index];
-                      return GestureDetector(
-                        onTap: () => context.push('/detail/${memo.memoId}'),
-                        child: Container(
-                          color: Colors.transparent,
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              if (!memo.isLocalMemo)
+              child: Container(
+                color: Theme.of(context).colorScheme.surface,
+                child: state.when(
+                  initial: () => const Center(child: Text('검색어를 입력하세요')),
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator()),
+                  error: (e) => Center(child: Text('에러: $e')),
+                  successed: (memos) {
+                    if (memos.isEmpty) {
+                      return const Center(child: Text('검색 결과가 없습니다'));
+                    }
+                    return ListView.builder(
+                      itemCount: memos.length,
+                      itemBuilder: (context, index) {
+                        final memo = memos[index];
+                        return GestureDetector(
+                          onTap: () => context.push('/detail/${memo.memoId}'),
+                          child: Container(
+                            color: Colors.transparent,
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (!memo.isLocalMemo) ...[
+                                  const SizedBox(height: 4),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16),
+                                    child: ProfileList(
+                                      profileImageUrl: memo.profileImageUrl,
+                                      userName: memo.userName ?? '',
+                                      description: "",
+                                    ),
+                                  ),
+                                ],
+                                if (memo.content != null &&
+                                    memo.content!.isNotEmpty) ...[
+                                  const SizedBox(height: 4),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16),
+                                    child: MemoContent(text: memo.content!),
+                                  ),
+                                ],
+                                if (memo.links != null &&
+                                    memo.links!.isNotEmpty) ...[
+                                  const SizedBox(height: 4),
+                                  LinkResult(
+                                    links: memo.links!,
+                                  ),
+                                ],
+                                if (memo.images != null &&
+                                    memo.images!.isNotEmpty) ...[
+                                  const SizedBox(height: 4),
+                                  MemoImages(memo: memo),
+                                ],
+                                const SizedBox(height: 4),
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 16),
-                                  child: ProfileList(
-                                    profileImageUrl: memo.profileImageUrl,
-                                    userName: memo.userName ?? '',
-                                    description: '',
+                                  child: MemoFooter(
+                                    createdAt: memo.createdAt,
+                                    updatedAt: memo.updatedAt,
                                   ),
                                 ),
-                              if (memo.content?.isNotEmpty ?? false)
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 16),
-                                  child: MemoContent(text: memo.content!),
+                                const SizedBox(height: 4),
+                                const Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 16),
+                                  child: Divider(),
                                 ),
-                              if (memo.links?.isNotEmpty ?? false)
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 16),
-                                  child: LinkResult(links: memo.links!),
-                                ),
-                              if (memo.images?.isNotEmpty ?? false)
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 16),
-                                  child: MemoImages(memo: memo),
-                                ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
-                                child: MemoFooter(createdAt: memo.createdAt),
-                              ),
-                              const Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 16),
-                                child: Divider(),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  );
-                },
+                        );
+                      },
+                    );
+                  },
+                ),
               ),
             ),
           ],

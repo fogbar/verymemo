@@ -6,6 +6,8 @@ import 'package:verymemo/features/memo/presentation/providers/memo_provider.dart
 import 'package:go_router/go_router.dart';
 import 'dart:developer';
 
+import 'package:verymemo/features/memo/presentation/viewmodels/memo_home_viewmodel.dart';
+
 final memoDetailProvider =
     StateNotifierProvider<MemoDetailViewModel, void>((ref) {
   return MemoDetailViewModel(ref);
@@ -18,9 +20,8 @@ class MemoDetailViewModel extends StateNotifier<MemoState> {
 
   final Ref _ref;
 
-  void handleDelete(String id) {
-    debugPrint('메모 삭제 요청: $id');
-    // TODO: 삭제 로직 구현
+  void handleDelete(String id, BuildContext context) {
+    _ref.read(memoHomeProvider.notifier).deleteMemo(context, int.tryParse(id));
   }
 
   void handleShare(String id) {

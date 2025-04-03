@@ -3,6 +3,8 @@ import 'package:verymemo/common/barrel/view_common.dart';
 import 'package:verymemo/features/memo/presentation/providers/memo_provider.dart';
 import 'package:verymemo/features/memo/presentation/components/modal/select/deep_click.dart';
 import 'package:flutter/services.dart';
+import 'package:verymemo/routers/router.dart';
+import 'dart:io' show Platform;
 
 class MemoList extends ConsumerWidget {
   const MemoList({
@@ -36,11 +38,12 @@ class MemoList extends ConsumerWidget {
                 debugPrint('Haptic feedback failed: $e');
               }
 
+              ref.read(selectedMemoIdProvider.notifier).state =
+                  memo.memoId.toString();
               DeepClickSelect.show(
                 context,
                 memo,
-                (value, memo) =>
-                    viewModel.handleModalSelection(value, memo, context),
+                (value, memo) => viewModel.handleModalSelection(context, value),
               );
             },
             child: Container(

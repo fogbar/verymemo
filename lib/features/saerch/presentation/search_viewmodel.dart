@@ -5,6 +5,7 @@ import 'package:verymemo/features/memo/presentation/providers/state/memo_state.d
 import 'package:verymemo/features/memo/domain/models/model.dart';
 import 'package:verymemo/features/memo/presentation/providers/memo_sort_provider.dart';
 import 'package:verymemo/features/memo/data/repositories/memo_repository_impl.dart';
+import 'package:go_router/go_router.dart';
 
 part 'search_viewmodel.g.dart';
 
@@ -73,7 +74,7 @@ class SearchViewModel extends _$SearchViewModel {
     textController.clear();
     _debounce?.cancel();
     focusNode.unfocus();
-    Navigator.of(context).pop();
+    context.pop();
   }
 
   List<MemoModel> _sortMemos(List<MemoModel> memos, MemoSortType sortType) {
