@@ -19,8 +19,9 @@ class MemoDetailView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final memoState = ref.watch(memoProvider);
+    final memoState = ref.read(memoProvider);
     final viewModel = ref.read(memoDetailProvider.notifier);
+    final isBookmarked = ref.watch(bookmarkStateProvider);
 
     return Scaffold(
       body: Column(
@@ -165,6 +166,11 @@ class MemoDetailView extends ConsumerWidget {
           if (iconKey == 'edit') {
             viewModel.handleEdit(id, context);
           }
+        },
+        iconColors: {
+          'bookmark': isBookmarked
+              ? Theme.of(context).colorScheme.primary
+              : Theme.of(context).colorScheme.onSurface,
         },
       ),
     );

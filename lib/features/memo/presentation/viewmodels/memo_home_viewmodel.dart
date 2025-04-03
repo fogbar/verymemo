@@ -2,7 +2,7 @@ import 'package:verymemo/common/barrel/view_common.dart';
 import 'package:verymemo/features/memo/domain/caches/memo_cache.dart';
 import 'package:verymemo/features/memo/domain/models/model.dart';
 import 'package:flutter/foundation.dart';
-import 'package:verymemo/features/memo/presentation/image_detail_view.dart';
+import 'package:verymemo/features/memo/presentation/views/image_detail_view.dart';
 import 'package:verymemo/features/memo/presentation/providers/memo_provider.dart';
 import 'package:verymemo/features/memo/presentation/providers/state/memo_state.dart';
 import 'package:verymemo/features/memo/presentation/components/modal/popup/delete.dart';

@@ -4,11 +4,14 @@ import 'package:verymemo/features/memo/presentation/providers/state/memo_state.d
 import 'package:flutter/services.dart';
 import 'package:verymemo/features/memo/presentation/providers/memo_provider.dart';
 import 'package:go_router/go_router.dart';
+import 'dart:developer';
 
 final memoDetailProvider =
     StateNotifierProvider<MemoDetailViewModel, void>((ref) {
   return MemoDetailViewModel(ref);
 });
+
+final bookmarkStateProvider = StateProvider<bool>((ref) => false);
 
 class MemoDetailViewModel extends StateNotifier<MemoState> {
   MemoDetailViewModel(this._ref) : super(const MemoState.initial());
@@ -47,9 +50,35 @@ class MemoDetailViewModel extends StateNotifier<MemoState> {
     }
   }
 
-  void handleBookmark(String id) {
-    // TODO: 메모 북마크 기능 구현
-    debugPrint('메모 북마크: $id');
+  /// 북마크 토글
+  Future<void> handleBookmark(String id) async {
+    try {
+      log("---> 북마크 토글 시작");
+      final memoState = _ref.read(memoProvider);
+
+      final memo = memoState.whenOrNull(
+        successed: (memos) {
+          final memoIdInt = int.tryParse(id);
+          return memos.where((m) => m.memoId == memoIdInt).firstOrNull;
+        },
+      );
+
+      if (memo != null) {
+        log("---> 현재 북마크 상태: ${memo.isBookMarked}");
+        final updatedMemo = memo.copyWith(
+          isBookMarked: !memo.isBookMarked,
+        );
+        log("---> 업데이트된 북마크 상태: ${updatedMemo.isBookMarked}");
+
+        await _ref.read(memoProvider.notifier).updateMemo(updatedMemo);
+        _ref.read(bookmarkStateProvider.notifier).state =
+            updatedMemo.isBookMarked;
+        log("---> 북마크 업데이트 완료");
+      }
+    } catch (e, stackTrace) {
+      log("---> 북마크 토글 실패: $e");
+      log("---> 스택트레이스: $stackTrace");
+    }
   }
 
   void handleUpload(String id) {

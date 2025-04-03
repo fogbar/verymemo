@@ -12,10 +12,10 @@ import 'package:verymemo/common/ui/components/tab/tab_menu.dart';
 import 'package:verymemo/common/utils/image_util.dart';
 import 'package:verymemo/features/auth/presentation/auth_view.dart';
 import 'package:verymemo/features/feed/presentation/feed_view.dart';
-import 'package:verymemo/features/memo/presentation/memo_delete_view.dart';
-import 'package:verymemo/features/memo/presentation/memo_detail_view.dart';
-import 'package:verymemo/features/memo/presentation/memo_edit_view.dart';
-import 'package:verymemo/features/memo/presentation/memo_home_view.dart';
+import 'package:verymemo/features/memo/presentation/views/memo_delete_view.dart';
+import 'package:verymemo/features/memo/presentation/views/memo_detail_view.dart';
+import 'package:verymemo/features/memo/presentation/views/memo_edit_view.dart';
+import 'package:verymemo/features/memo/presentation/views/memo_home_view.dart';
 import 'package:verymemo/features/saerch/presentation/search_view.dart';
 import 'package:verymemo/features/intro/intro_view.dart';
 import 'package:verymemo/features/permission/permission_view.dart';
@@ -25,6 +25,8 @@ import 'package:verymemo/features/auth/presentation/profile/profile_setting_view
 import 'package:verymemo/features/splash/splash_view.dart';
 import 'package:verymemo/common/barrel/memo_list.dart';
 import 'package:verymemo/features/memo/presentation/components/modal/select/sort.dart';
+import 'package:verymemo/features/memo/presentation/views/bookmark_view.dart';
+
 
 part 'app_routes.dart';
 part 'app_router.dart';

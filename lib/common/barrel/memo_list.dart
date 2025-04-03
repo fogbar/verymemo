@@ -7,7 +7,7 @@ export 'package:verymemo/common/ui/components/list/profile_list/profile_list.dar
 export 'package:verymemo/features/memo/domain/models/model.dart';
 export 'package:verymemo/features/memo/domain/models/profile_list_model.dart';
 export 'package:verymemo/features/memo/presentation/viewmodels/memo_home_viewmodel.dart';
-export 'package:verymemo/features/memo/presentation/image_detail_view.dart';
+export 'package:verymemo/features/memo/presentation/views/image_detail_view.dart';
 export 'package:verymemo/features/memo/presentation/components/memo_list/molicure/link_preview.dart';
 export 'package:verymemo/features/memo/presentation/components/memo_list/molicure/link_result.dart';
 export 'package:verymemo/features/memo/presentation/components/memo_list/molicure/link_largeview.dart';

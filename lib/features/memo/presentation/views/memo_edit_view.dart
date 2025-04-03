@@ -1,10 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:verymemo/common/barrel/model_common.dart';
 import 'package:verymemo/common/barrel/memo_writing.dart';
-import 'package:verymemo/common/barrel/button.dart';
 import 'dart:io';
-import 'package:verymemo/features/memo/presentation/image_detail_view.dart';
+import 'package:verymemo/features/memo/presentation/views/image_detail_view.dart';
 import 'package:verymemo/features/memo/presentation/viewmodels/memo_edit_viewmodel.dart';
 
 class MemoEditView extends ConsumerWidget {

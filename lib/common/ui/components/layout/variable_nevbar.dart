@@ -34,6 +34,7 @@ class VariableNavigationBar extends StatelessWidget {
   final ValueChanged<int>? onItemSelected;
   final VoidCallback? onFloatingButtonTap;
   final WidgetRef ref;
+  final Map<String, Color>? iconColors;
 
   const VariableNavigationBar({
     super.key,
@@ -42,6 +43,7 @@ class VariableNavigationBar extends StatelessWidget {
     this.onItemSelected,
     this.onFloatingButtonTap,
     required this.ref,
+    this.iconColors,
   });
 
   @override
@@ -94,11 +96,14 @@ class VariableNavigationBar extends StatelessWidget {
 
   /// ✅ 콘텐츠 네비게이션 아이콘 (터치해도 색상 변경 없음)
   Widget _contentNavItem(String iconKey, BuildContext context) {
+    final iconColor =
+        iconColors?[iconKey] ?? Theme.of(context).colorScheme.onSurface;
+
     return Expanded(
       child: IconBtn(
         iconKey: iconKey,
         size: IconSize.large,
-        color: Theme.of(context).colorScheme.onSurface,
+        color: iconColor,
         onTap: () async {
           try {
             if (Platform.isIOS || Platform.isAndroid) {

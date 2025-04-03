@@ -1,7 +1,7 @@
 import 'package:verymemo/common/barrel/model_common.dart';
 import 'package:verymemo/common/barrel/memo_writing.dart';
 import 'dart:io';
-import 'package:verymemo/features/memo/presentation/image_detail_view.dart';
+import 'package:verymemo/features/memo/presentation/views/image_detail_view.dart';
 
 class MemoWritingView extends ConsumerWidget {
   const MemoWritingView({super.key});
