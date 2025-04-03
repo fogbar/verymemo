@@ -12,6 +12,7 @@ import 'package:verymemo/routers/router.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'dart:developer';
+import 'package:verymemo/features/memo/presentation/viewmodels/memo_delete_viewmodel.dart';
 // HapticFeedback을 위해 추가
 
 final memoHomeProvider =
@@ -137,7 +138,9 @@ class MemoHomeViewModel extends StateNotifier<MemoState> {
         );
         break;
       case '삭제':
-        deleteMemo(context, int.tryParse(selectedMemo));
+        _ref
+            .read(memoDeleteProvider)
+            .deleteMemo(context, int.tryParse(selectedMemo));
         break;
       case '북마크':
         final memoState = _ref.read(memoProvider);

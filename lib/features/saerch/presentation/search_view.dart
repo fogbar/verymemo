@@ -66,7 +66,11 @@ class SearchView extends ConsumerWidget {
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 16),
-                                    child: MemoContent(text: memo.content!),
+                                    child: MemoContent(
+                                      text: memo.content!,
+                                      searchQuery:
+                                          viewModel.textController.text,
+                                    ),
                                   ),
                                 ],
                                 if (memo.links != null &&

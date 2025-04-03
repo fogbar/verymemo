@@ -5,8 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:verymemo/features/memo/presentation/providers/memo_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'dart:developer';
+import 'package:verymemo/features/memo/presentation/viewmodels/memo_delete_viewmodel.dart';
 
-import 'package:verymemo/features/memo/presentation/viewmodels/memo_home_viewmodel.dart';
 
 final memoDetailProvider =
     StateNotifierProvider<MemoDetailViewModel, void>((ref) {
@@ -21,7 +21,7 @@ class MemoDetailViewModel extends StateNotifier<MemoState> {
   final Ref _ref;
 
   void handleDelete(String id, BuildContext context) {
-    _ref.read(memoHomeProvider.notifier).deleteMemo(context, int.tryParse(id));
+    _ref.read(memoDeleteProvider).deleteMemo(context, int.tryParse(id));
   }
 
   void handleShare(String id) {
