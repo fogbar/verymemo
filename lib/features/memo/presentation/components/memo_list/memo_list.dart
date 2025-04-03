@@ -85,6 +85,12 @@ class MemoList extends ConsumerWidget {
                     child: MemoFooter(
                       createdAt: memo.createdAt,
                       updatedAt: memo.updatedAt,
+                      isBookmarked: memo.isBookMarked,
+                      onBookmarkTap: () {
+                        ref
+                            .read(memoHomeProvider.notifier)
+                            .handleBookmark(memo.memoId.toString());
+                      },
                     ),
                   ),
                   const SizedBox(height: 4),

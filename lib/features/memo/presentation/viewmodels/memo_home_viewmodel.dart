@@ -11,6 +11,7 @@ import 'package:go_router/go_router.dart';
 import 'package:verymemo/routers/router.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'dart:developer';
 // HapticFeedback을 위해 추가
 
 final memoHomeProvider =
@@ -40,6 +41,22 @@ class MemoHomeViewModel extends StateNotifier<MemoState> {
   Future<void> updateMemo(MemoModel memo) async {
     await _ref.read(memoProvider.notifier).updateMemo(memo);
     await _loadMemos();
+  }
+
+  /// 🔄 [북마크 토글]
+  Future<void> handleBookmark(String memoId) async {
+    log("---> handleBookmark 시작: $memoId");
+    try {
+      final memo =
+          await _ref.read(memoProvider.notifier).getMemo(int.parse(memoId));
+      if (memo != null) {
+        final updatedMemo = memo.copyWith(isBookMarked: !memo.isBookMarked);
+        await _ref.read(memoProvider.notifier).updateMemo(updatedMemo);
+        await _loadMemos();
+      }
+    } catch (e) {
+      log("❌ Error toggling bookmark: $e");
+    }
   }
 
   /// 🔄 [메모 삭제]
@@ -177,8 +194,21 @@ class MemoHomeViewModel extends StateNotifier<MemoState> {
   bool shouldShowRemainingCount(List<String>? imageUrls, int index) =>
       index == 4 && getRemainingCount(imageUrls) > 0;
 
-  void _bookmarkMemo(MemoModel memo) {
-    // 북마크 로직 구현
+  void _bookmarkMemo(MemoModel memo) async {
+    try {
+      log("---> 북마크 토글 시작");
+      log("---> 현재 북마크 상태: ${memo.isBookMarked}");
+      final updatedMemo = memo.copyWith(
+        isBookMarked: !memo.isBookMarked,
+      );
+      log("---> 업데이트된 북마크 상태: ${updatedMemo.isBookMarked}");
+
+      await _ref.read(memoProvider.notifier).updateMemo(updatedMemo);
+      log("---> 북마크 업데이트 완료");
+    } catch (e, stackTrace) {
+      log("---> 북마크 토글 실패: $e");
+      log("---> 스택트레이스: $stackTrace");
+    }
   }
 
   void _shareMemo(MemoModel memo) {

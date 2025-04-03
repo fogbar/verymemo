@@ -18,14 +18,17 @@ class _MemoContentState extends State<MemoContent> {
 
   @override
   Widget build(BuildContext context) {
+    final textStyle = Theme.of(context).textTheme.bodyLarge?.copyWith(
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+          height: 1.4,
+        );
+
     return LayoutBuilder(
       builder: (context, constraints) {
         final tp = TextPainter(
           text: TextSpan(
             text: widget.text,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
+            style: textStyle,
           ),
           textDirection: TextDirection.ltr,
           maxLines: maxLines,
@@ -40,7 +43,7 @@ class _MemoContentState extends State<MemoContent> {
           children: [
             Text(
               widget.text,
-              style: Theme.of(context).textTheme.bodyLarge,
+              style: textStyle,
               maxLines: isExpanded ? null : maxLines,
               overflow: isExpanded ? null : TextOverflow.ellipsis,
             ),
@@ -68,4 +71,3 @@ class _MemoContentState extends State<MemoContent> {
     );
   }
 }
-

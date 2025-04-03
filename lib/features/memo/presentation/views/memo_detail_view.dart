@@ -71,15 +71,20 @@ class MemoDetailView extends ConsumerWidget {
                           updatedAt: currentMemo.updatedAt,
                         ),
                         const SizedBox(height: 8),
-                        if (currentMemo.content != null)
+                        if (currentMemo.content != null) ...[
                           Text(
                             currentMemo.content!,
                             style:
                                 Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                      color: Colors.black,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurfaceVariant,
+                                      height: 1.4,
                                     ),
                             textAlign: TextAlign.left,
                           ),
+                          const SizedBox(height: 8),
+                        ],
                         if (currentMemo.images != null &&
                             currentMemo.images!.isNotEmpty) ...[
                           const SizedBox(height: 8),
