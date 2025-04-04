@@ -3,6 +3,10 @@ import 'package:verymemo/common/ui/components/button/button_state.dart';
 import 'package:verymemo/common/ui/components/button/icon_btn.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:verymemo/features/memo/presentation/providers/memo_provider.dart';
+import 'package:verymemo/routers/router.dart';
+import 'package:go_router/go_router.dart';
 
 enum NavigationBarType { home, content }
 
@@ -29,6 +33,8 @@ class VariableNavigationBar extends StatelessWidget {
   final int selectedIndex;
   final ValueChanged<int>? onItemSelected;
   final VoidCallback? onFloatingButtonTap;
+  final WidgetRef ref;
+  final Map<String, Color>? iconColors;
 
   const VariableNavigationBar({
     super.key,
@@ -36,6 +42,8 @@ class VariableNavigationBar extends StatelessWidget {
     required this.selectedIndex,
     this.onItemSelected,
     this.onFloatingButtonTap,
+    required this.ref,
+    this.iconColors,
   });
 
   @override
@@ -88,11 +96,14 @@ class VariableNavigationBar extends StatelessWidget {
 
   /// ✅ 콘텐츠 네비게이션 아이콘 (터치해도 색상 변경 없음)
   Widget _contentNavItem(String iconKey, BuildContext context) {
+    final iconColor =
+        iconColors?[iconKey] ?? Theme.of(context).colorScheme.onSurface;
+
     return Expanded(
       child: IconBtn(
         iconKey: iconKey,
         size: IconSize.large,
-        color: Theme.of(context).colorScheme.onSurface,
+        color: iconColor,
         onTap: () async {
           try {
             if (Platform.isIOS || Platform.isAndroid) {
@@ -100,6 +111,20 @@ class VariableNavigationBar extends StatelessWidget {
             }
           } catch (e) {
             debugPrint('Haptic feedback failed: $e');
+          }
+          if (iconKey == "edit") {
+            final memoState = ref.read(memoProvider);
+            memoState.maybeWhen(
+              successed: (memos) {
+                final selectedMemo = ref.read(selectedMemoIdProvider);
+                if (selectedMemo != null) {
+                  final memo = memos
+                      .firstWhere((m) => m.memoId.toString() == selectedMemo);
+                  context.go('/edit', extra: memo);
+                }
+              },
+              orElse: () {},
+            );
           }
           onItemSelected
               ?.call(NavigationBarConfig.contentIcons.indexOf(iconKey));

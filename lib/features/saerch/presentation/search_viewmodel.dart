@@ -1,50 +1,95 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:verymemo/features/memo/presentation/providers/state/memo_state.dart';
+import 'package:verymemo/features/memo/domain/models/model.dart';
+import 'package:verymemo/features/memo/presentation/providers/memo_sort_provider.dart';
+import 'package:verymemo/features/memo/data/repositories/memo_repository_impl.dart';
 import 'package:go_router/go_router.dart';
-import 'package:verymemo/routers/router.dart';
 
 part 'search_viewmodel.g.dart';
 
 @riverpod
 class SearchViewModel extends _$SearchViewModel {
-  late final TextEditingController _textController;
-  late final FocusNode _focusNode;
+  Timer? _debounce;
 
   @override
-  void build() {
-    _textController = TextEditingController();
-    _focusNode = FocusNode();
-
-    // 컴포넌트가 생성되면 자동으로 포커스 설정
-    Future.microtask(() => _focusNode.requestFocus());
-
+  MemoState build() {
     ref.onDispose(() {
-      _textController.dispose();
-      _focusNode.dispose();
+      _debounce?.cancel();
+      textController.dispose();
+      focusNode.dispose();
+    });
+    return const MemoState.initial();
+  }
+
+  final textController = TextEditingController();
+  final focusNode = FocusNode();
+
+  Future<void> _performSearch(String text) async {
+    if (text.isEmpty) {
+      state = const MemoState.initial();
+      return;
+    }
+
+    state = const MemoState.loading();
+    try {
+      final repository = ref.read(memoRepositoryProvider);
+      final searchResults = await repository.searchMemos(text);
+      if (searchResults != null) {
+        final sortType = ref.read(memoSortProvider);
+        final sortedResults = _sortMemos(searchResults, sortType);
+        state = MemoState.successed(sortedResults);
+      } else {
+        state = const MemoState.successed([]);
+      }
+    } catch (e) {
+      state = MemoState.error('검색 중 오류가 발생했습니다.');
+    }
+  }
+
+  void onSearch(String value) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+
+    textController.text = value;
+    _debounce = Timer(const Duration(milliseconds: 300), () {
+      _performSearch(value.trim());
     });
   }
 
-  TextEditingController get textController => _textController;
-  FocusNode get focusNode => _focusNode;
-
-  void onSearch(String value) {
-    debugPrint('Search: $value');
-    // TODO: 검색 로직 구현
-  }
-
-  void onSubmitted() {
-    debugPrint('Search submitted');
-    // TODO: 검색 실행 로직 구현
+  void onSubmitted() async {
+    final text = textController.text.trim();
+    _debounce?.cancel();
+    await _performSearch(text);
+    focusNode.unfocus();
   }
 
   void onClear() {
-    _textController.clear();
-    debugPrint('Search cleared');
-    // TODO: 검색어 초기화 로직 구현
+    textController.clear();
+    _debounce?.cancel();
+    state = const MemoState.initial();
   }
 
   void onBack(BuildContext context) {
-    // context.go(AppRoute.home);
+    textController.clear();
+    _debounce?.cancel();
+    focusNode.unfocus();
     context.pop();
+  }
+
+  List<MemoModel> _sortMemos(List<MemoModel> memos, MemoSortType sortType) {
+    switch (sortType) {
+      case MemoSortType.lastViewed:
+        memos.sort((a, b) => (b.lastViewedAt ?? DateTime.now())
+            .compareTo(a.lastViewedAt ?? DateTime.now()));
+        break;
+      case MemoSortType.latest:
+        memos.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+        break;
+      case MemoSortType.oldest:
+        memos.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+        break;
+    }
+    return memos;
   }
 }

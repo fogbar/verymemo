@@ -67,6 +67,7 @@ class VariableHeader extends StatelessWidget {
   final bool showDelete;
   final bool showDownload;
   final FocusNode? focusNode;
+  final TextEditingController? controller;
 
   const VariableHeader({
     super.key,
@@ -83,6 +84,7 @@ class VariableHeader extends StatelessWidget {
     this.showDelete = true,
     this.showDownload = true,
     this.focusNode,
+    this.controller,
   });
 
   String _getCurrentDate() {
@@ -138,7 +140,7 @@ class VariableHeader extends StatelessWidget {
       children: [
         Text(
           _getCurrentDate(),
-          style: Theme.of(context).textTheme.titleLarge,
+          style: Theme.of(context).textTheme.headlineSmall,
         ),
         Row(
           children: [
@@ -219,6 +221,7 @@ class VariableHeader extends StatelessWidget {
             child: TextField(
               autofocus: true,
               focusNode: focusNode,
+              controller: controller,
               decoration: InputDecoration(
                 hintText: "검색어를 입력하세요",
                 border: OutlineInputBorder(
@@ -227,11 +230,12 @@ class VariableHeader extends StatelessWidget {
                 suffixIcon: IconBtn(
                   iconKey: "search",
                   onTap: onSearch,
+                  color: iconColor,
                 ),
               ),
               onChanged: onSearchChanged,
               onSubmitted: (_) => onSearch?.call(),
-              onEditingComplete: onSearchClear,
+              textInputAction: TextInputAction.search,
             ),
           ),
         ),

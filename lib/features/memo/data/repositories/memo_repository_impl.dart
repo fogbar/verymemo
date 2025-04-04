@@ -122,4 +122,9 @@ class MemoRepositoryImpl implements MemoRepository {
       log("❌ Error cleaning up images: $e");
     }
   }
+
+  @override
+  Future<List<MemoModel>?> searchMemos(String query) async {
+    return await localDataSource.searchMemos(query);
+  }
 }

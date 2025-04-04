@@ -1,7 +1,7 @@
 import 'package:verymemo/common/barrel/model_common.dart';
 import 'package:verymemo/common/barrel/memo_writing.dart';
 import 'dart:io';
-import 'package:verymemo/features/memo/presentation/image_detail_view.dart';
+import 'package:verymemo/features/memo/presentation/views/image_detail_view.dart';
 
 class MemoWritingView extends ConsumerWidget {
   const MemoWritingView({super.key});
@@ -12,7 +12,7 @@ class MemoWritingView extends ConsumerWidget {
     final viewModel = ref.read(memoWritingViewModelProvider.notifier);
     final screenHeight = MediaQuery.of(context).size.height;
     final maxHeight = screenHeight * 0.5;
-    final minHeight = screenHeight * 0.15;
+    final minHeight = screenHeight * 0.05;
 
     return PopScope(
       canPop: true,
@@ -49,18 +49,18 @@ class MemoWritingView extends ConsumerWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Container(
-                  width: 32,
-                  height: 4,
-                  margin: const EdgeInsets.only(top: 8, bottom: 8),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .onSurfaceVariant
-                        .withOpacity(0.4),
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
+                // Container(
+                //   width: 32,
+                //   height: 4,
+                //   margin: const EdgeInsets.only(top: 8, bottom: 8),
+                //   decoration: BoxDecoration(
+                //     color: Theme.of(context)
+                //         .colorScheme
+                //         .onSurfaceVariant
+                //         .withOpacity(0.4),
+                //     borderRadius: BorderRadius.circular(2),
+                //   ),
+                // ),
                 Flexible(
                   child: SingleChildScrollView(
                     child: Column(
@@ -70,6 +70,7 @@ class MemoWritingView extends ConsumerWidget {
                           AnimatedContainer(
                             duration: const Duration(milliseconds: 200),
                             height: state.showLinkInput ? 40 : 0,
+                            margin: const EdgeInsets.only(top: 24),
                             child: SingleChildScrollView(
                               child: Container(
                                 height: 40,
@@ -105,7 +106,7 @@ class MemoWritingView extends ConsumerWidget {
                                         ),
                                       ),
                                     ),
-                                    const Spacer(),
+                                    const SizedBox(width: 8),
                                     GestureDetector(
                                       onTap: state.linkController.text
                                               .trim()
@@ -234,7 +235,7 @@ class MemoWritingView extends ConsumerWidget {
                           padding: const EdgeInsets.all(16.0),
                           child: Container(
                             constraints: BoxConstraints(
-                              minHeight: minHeight * 0.2,
+                              minHeight: minHeight * 0.05,
                             ),
                             child: TextField(
                               controller: state.textController,
@@ -244,7 +245,7 @@ class MemoWritingView extends ConsumerWidget {
                               maxLines: null,
                               keyboardType: TextInputType.multiline,
                               decoration: const InputDecoration(
-                                hintText: "내용을 입력하세요...",
+                                hintText: "어디서든 빠르게 작성하세요",
                                 border: InputBorder.none,
                                 filled: false,
                                 fillColor: Colors.transparent,
@@ -263,6 +264,7 @@ class MemoWritingView extends ConsumerWidget {
                   onUploadTap: () async {
                     await viewModel.onUploadTab(context);
                   },
+                  buttonState: state.buttonState,
                 ),
               ],
             ),

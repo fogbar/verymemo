@@ -161,13 +161,15 @@ RouteBase get $editRoute => GoRouteData.$route(
     );
 
 extension $EditRouteExtension on EditRoute {
-  static EditRoute _fromState(GoRouterState state) => const EditRoute();
+  static EditRoute _fromState(GoRouterState state) => EditRoute(
+        memo: state.extra as MemoModel,
+      );
 
   String get location => GoRouteData.$location(
         '/edit',
       );
 
-  void go(BuildContext context) => context.go(location);
+  void go(BuildContext context) => context.go(AppRoute.edit, extra: memo);
 
   Future<T?> push<T>(BuildContext context) => context.push<T>(location);
 

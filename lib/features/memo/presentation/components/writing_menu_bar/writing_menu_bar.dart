@@ -12,6 +12,7 @@ class WritingMenuBar extends ConsumerWidget {
   final VoidCallback? onPrivacyTap;
   final VoidCallback? onTagTap;
   final VoidCallback? onUploadTap;
+  final ButtonState buttonState;
 
   const WritingMenuBar({
     super.key,
@@ -21,48 +22,54 @@ class WritingMenuBar extends ConsumerWidget {
     this.onPrivacyTap,
     this.onTagTap,
     this.onUploadTap,
+    this.buttonState = ButtonState.disabled,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 8,
-      ), // ✅ 전체 패딩
-      decoration: BoxDecoration(color: Theme.of(context).colorScheme.surface),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          /// ✅ 왼쪽 아이콘 그룹 (Expanded 적용)
-          Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: WritingMenuBarConfig.leadingIcons
-                  .map((icon) => _buildLeadingIcon(icon, context))
+    return SafeArea(
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 8,
+        ), // ✅ 전체 패딩
+        decoration: BoxDecoration(color: Theme.of(context).colorScheme.surface),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            /// ✅ 왼쪽 아이콘 그룹 (Expanded 적용)
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: WritingMenuBarConfig.leadingIcons
+                    .map((icon) => _buildLeadingIcon(icon, context, ref))
+                    .toList(),
+              ),
+            ),
+
+            /// ✅ 오른쪽 아이콘 그룹
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: WritingMenuBarConfig.trailingIcons
+                  .map((icon) => _buildTrailingIcon(icon, context, ref))
                   .toList(),
             ),
-          ),
-
-          /// ✅ 오른쪽 아이콘 그룹
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: WritingMenuBarConfig.trailingIcons
-                .map((icon) => _buildTrailingIcon(icon, context, ref))
-                .toList(),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
   /// ✅ 리딩 아이콘 빌드 (카메라, 갤러리, 링크, 비공개)
-  Widget _buildLeadingIcon(LeadingIcon icon, BuildContext context) {
+  Widget _buildLeadingIcon(
+      LeadingIcon icon, BuildContext context, WidgetRef ref) {
     switch (icon) {
       case LeadingIcon.camera:
         return IconBtn(
           iconKey: "camera",
-          onTap: onCameraTap,
+          onTap: () => ref
+              .read(memoWritingViewModelProvider.notifier)
+              .takePicture(context),
           size: WritingMenuBarConfig.iconSize,
         );
       case LeadingIcon.gallery:
@@ -92,10 +99,9 @@ class WritingMenuBar extends ConsumerWidget {
           size: WritingMenuBarConfig.iconSize,
         );
       case TrailingIcon.upload:
-        final buttonState = ref.watch(memoWritingViewModelProvider).buttonState;
         return IconCircleBtn(
           iconKey: "arrow-up",
-          onTap: buttonState == ButtonState.disabled ? null : onUploadTap,
+          onTap: onUploadTap,
           state: buttonState,
           circleSize: CircleButtonSize.small,
         );

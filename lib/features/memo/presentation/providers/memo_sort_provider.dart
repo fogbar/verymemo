@@ -6,9 +6,9 @@ enum MemoSortType {
   @JsonValue(0)
   lastViewed('최근 조회순'),
   @JsonValue(1)
-  latest('최신순'),
+  latest('최신 작성일'),
   @JsonValue(2)
-  oldest('오래된순');
+  oldest('오래된 작성일');
 
   final String label;
   const MemoSortType(this.label);

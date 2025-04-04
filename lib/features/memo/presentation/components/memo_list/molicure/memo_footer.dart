@@ -1,26 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:verymemo/common/ui/components/button/icon_btn.dart';
 
 class MemoFooter extends StatelessWidget {
   final DateTime createdAt;
+  final DateTime? updatedAt;
+  final bool isBookmarked;
+  final VoidCallback? onBookmarkTap;
 
   const MemoFooter({
     super.key,
     required this.createdAt,
+    this.updatedAt,
+    this.isBookmarked = false,
+    this.onBookmarkTap,
   });
 
   @override
   Widget build(BuildContext context) {
+    final displayDate = updatedAt ?? createdAt;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          _formatDate(createdAt),
+          _formatDate(displayDate),
           style: Theme.of(context).textTheme.labelSmall?.copyWith(
                 color: Theme.of(context).colorScheme.onTertiaryContainer,
               ),
         ),
-
-        // 아이콘 추가 필요
+        if (isBookmarked) ...[
+          IconBtn(
+            iconKey: "bookmark",
+            size: IconSize.small,
+            color: Theme.of(context).colorScheme.primary,
+            onTap: onBookmarkTap,
+          ),
+        ],
       ],
     );
   }
