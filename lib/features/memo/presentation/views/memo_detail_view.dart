@@ -8,8 +8,7 @@ import 'dart:io';
 import 'dart:developer';
 import 'package:go_router/go_router.dart';
 
-class MemoDetailView extends ConsumerWidget {
-  // final MemoModel memo;
+class MemoDetailView extends ConsumerStatefulWidget {
   final String id;
 
   const MemoDetailView({
@@ -18,8 +17,13 @@ class MemoDetailView extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final memoState = ref.read(memoProvider);
+  ConsumerState<MemoDetailView> createState() => _MemoDetailViewState();
+}
+
+class _MemoDetailViewState extends ConsumerState<MemoDetailView> {
+  @override
+  Widget build(BuildContext context) {
+    final memoState = ref.watch(memoProvider);
     final viewModel = ref.read(memoDetailProvider.notifier);
     final isBookmarked = ref.watch(bookmarkStateProvider);
 
@@ -35,8 +39,9 @@ class MemoDetailView extends ConsumerWidget {
                 context.go('/home');
               }
             },
-            onDelete: () => viewModel.handleDelete(id, context),
-            onShare: () => viewModel.handleShare(id),
+            onDelete: () => viewModel.handleDelete(widget.id, context),
+            onShare: () => viewModel.handleShare(widget.id),
+            onUpload: () => viewModel.handleUpload(widget.id, context),
           ),
           Expanded(
             child: memoState.when(
@@ -45,13 +50,13 @@ class MemoDetailView extends ConsumerWidget {
               error: (error) => Center(child: Text('에러: $error')),
               successed: (memos) {
                 log("---> 메모 목록에서 메모 찾기 시작");
-                log("---> 찾을 메모 ID: $id");
+                log("---> 찾을 메모 ID: ${widget.id}");
                 log("---> 전체 메모 수: ${memos.length}");
 
                 final currentMemo = memos.firstWhere(
-                  (m) => m.memoId.toString() == id,
+                  (m) => m.memoId.toString() == widget.id,
                   orElse: () {
-                    log("---> 메모를 찾을 수 없습니다. ID: $id");
+                    log("---> 메모를 찾을 수 없습니다. ID: ${widget.id}");
                     throw Exception("메모를 찾을 수 없습니다.");
                   },
                 );
@@ -160,16 +165,16 @@ class MemoDetailView extends ConsumerWidget {
           final iconKey = NavigationBarConfig.contentIcons[index];
 
           if (iconKey == 'copy') {
-            viewModel.handleCopy(id, context);
+            viewModel.handleCopy(widget.id, context);
           }
           if (iconKey == 'bookmark') {
-            viewModel.handleBookmark(id);
+            viewModel.handleBookmark(widget.id);
           }
           if (iconKey == 'upload') {
-            viewModel.handleUpload(id);
+            viewModel.handleUpload(widget.id, context);
           }
           if (iconKey == 'edit') {
-            viewModel.handleEdit(id, context);
+            viewModel.handleEdit(widget.id, context);
           }
         },
         iconColors: {

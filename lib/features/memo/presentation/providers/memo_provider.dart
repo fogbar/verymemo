@@ -133,13 +133,6 @@ class MemoNotifier extends StateNotifier<MemoState> {
         throw Exception("메모 ID가 존재하지 않습니다.");
       }
 
-      // 메모 ID를 문자열로 변환
-      final memoId = memo.memoId.toString();
-      log("---> 메모 ID를 문자열로 변환: $memoId");
-
-      state = const MemoState.loading();
-      log("---> 상태를 loading으로 변경");
-
       // 1. DB 업데이트
       log("---> DB 업데이트 시작");
       final result = await memoRepository.updateMemo(memo);
@@ -151,35 +144,23 @@ class MemoNotifier extends StateNotifier<MemoState> {
       }
       log("---> DB 업데이트 성공");
 
-      // 2. 최신 데이터 가져오기
-      log("---> 최신 데이터 가져오기 시작");
-      final memoModels = await memoRepository.getAllMemos();
-      if (memoModels == null) {
-        log("---> 최신 데이터 가져오기 실패");
-        throw Exception('메모 데이터를 가져오는데 실패했습니다.');
-      }
-      log("---> 최신 데이터 가져오기 성공");
+      // 2. 현재 상태에서 메모 업데이트
+      state.maybeWhen(
+        successed: (memos) {
+          final updatedMemos =
+              memos.map((m) => m.memoId == memo.memoId ? memo : m).toList();
 
-      // 3. 메모 모델 변환
-      log("---> 메모 모델 변환 시작");
-      final memos = memoModels.whereType<MemoModel>().toList();
-      log("---> 메모 모델 변환 완료: ${memos.length}개");
+          // 정렬 적용
+          final sortedMemos = _sortMemos(updatedMemos);
 
-      // 4. 정렬
-      log("---> 메모 정렬 시작");
-      final sortedMemos = _sortMemos(memos);
-      log("---> 메모 정렬 완료");
-
-      // 5. 캐시 업데이트
-      log("---> 캐시 업데이트 시작");
-      MemoCache().clearCache();
-      MemoCache().addMemos(sortedMemos);
-      log("---> 캐시 업데이트 완료");
-
-      // 6. 상태 업데이트
-      log("---> 상태 업데이트 시작");
-      state = MemoState.successed(sortedMemos);
-      log("---> 상태 업데이트 완료");
+          // 상태 즉시 업데이트
+          state = MemoState.successed(sortedMemos);
+        },
+        orElse: () {
+          // 상태가 successed가 아닌 경우 전체 메모 다시 로드
+          getAllMemos();
+        },
+      );
 
       log("---> MemoNotifier.updateMemo 완료");
     } catch (e, stackTrace) {
