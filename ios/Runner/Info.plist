@@ -31,6 +31,8 @@
         <array>
           <!-- Supabase 프로젝트의 URL scheme -->
           <string>io.supabase.flutterquickstart</string>
+          <!-- Google 로그인 설정 -->
+          <string>634454835385-bduobhit7vs66bdkqjca557fviul5v9q.apps.googleusercontent.com</string>
         </array>
       </dict>
     </array>
@@ -88,6 +90,5 @@
 
     <key>MinimumOSVersion</key>
     <string>13.0</string>
-
   </dict>
 </plist>

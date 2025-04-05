@@ -6,7 +6,6 @@ import 'package:verymemo/features/settings/presentation/modals/sync_modal.dart';
 import 'package:verymemo/routers/navigation_service.dart';
 import 'package:verymemo/routers/router.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:verymemo/features/auth/data/data-sources/firebase/firebase_service.dart';
 import 'package:verymemo/features/auth/domain/models/user_model.dart';
 

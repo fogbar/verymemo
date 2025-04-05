@@ -6,10 +6,7 @@ import 'package:verymemo/features/memo/presentation/views/image_detail_view.dart
 import 'package:verymemo/features/memo/presentation/providers/memo_provider.dart';
 import 'package:verymemo/features/memo/presentation/providers/state/memo_state.dart';
 import 'package:verymemo/features/memo/presentation/components/modal/popup/delete.dart';
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:verymemo/routers/router.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'dart:developer';
 import 'package:verymemo/features/memo/presentation/viewmodels/memo_delete_viewmodel.dart';

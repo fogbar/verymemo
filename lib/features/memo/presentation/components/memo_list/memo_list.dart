@@ -4,7 +4,6 @@ import 'package:verymemo/features/memo/presentation/providers/memo_provider.dart
 import 'package:verymemo/features/memo/presentation/components/modal/select/deep_click.dart';
 import 'package:flutter/services.dart';
 import 'package:verymemo/routers/router.dart';
-import 'dart:io' show Platform;
 
 class MemoList extends ConsumerWidget {
   const MemoList({

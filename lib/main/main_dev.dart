@@ -1,4 +1,5 @@
 import 'package:verymemo/common/configs/app_config.dart';
+import 'package:verymemo/features/memo/data/providers/memo_repository_provider.dart';
 import 'package:verymemo/main/main.dart';
 import 'package:verymemo/features/memo/data/repositories/memo_repository_impl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

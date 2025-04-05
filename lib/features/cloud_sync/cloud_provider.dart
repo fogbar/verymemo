@@ -1,0 +1,4 @@
+enum CloudProvider {
+  googleDrive,
+  iCloud,
+}
