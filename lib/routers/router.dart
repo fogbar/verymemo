@@ -27,14 +27,13 @@ import 'package:verymemo/common/barrel/memo_list.dart';
 import 'package:verymemo/features/memo/presentation/components/modal/select/sort.dart';
 import 'package:verymemo/features/memo/presentation/views/bookmark_view.dart';
 
-
 part 'app_routes.dart';
-part 'app_router.dart';
+// part 'app_router.dart';
 part 'app_router_provider.dart';
 part 'shell/home_scaffold.dart';
 part 'shell/intro_scaffold.dart';
 part 'shell/detail_scaffold.dart';
 part 'shell/empty_scaffold.dart';
-part 'router.g.dart';
+// part 'router.g.dart';
 
 final selectedMemoIdProvider = StateProvider<String?>((ref) => null);

@@ -64,6 +64,7 @@ class VariableHeader extends StatelessWidget {
   final VoidCallback? onDelete;
   final VoidCallback? onDownload;
   final VoidCallback? onShare;
+  final VoidCallback? onUpload;
   final bool showDelete;
   final bool showDownload;
   final FocusNode? focusNode;
@@ -81,6 +82,7 @@ class VariableHeader extends StatelessWidget {
     this.onDelete,
     this.onDownload,
     this.onShare,
+    this.onUpload,
     this.showDelete = true,
     this.showDownload = true,
     this.focusNode,

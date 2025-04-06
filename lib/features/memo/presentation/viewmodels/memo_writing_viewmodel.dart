@@ -57,25 +57,15 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
 
   /// 텍스트 변경 감지 - 버튼 상태용
   void _onTextChanged() {
-    if (!state.textController.text.isNotEmpty) {
-      state = state.copyWith(
-        buttonState: ButtonState.disabled,
-      );
-      return;
-    }
-
     final text = state.textController.text.trim();
-    log("---> _onTextChanged 호출됨");
-    log("---> 현재 텍스트: $text");
-    log("---> 현재 이미지 수: ${state.selectedImages.length}");
-    log("---> 현재 링크 수: ${state.links.length}");
-    log("---> 현재 버튼 상태: ${state.buttonState}");
-
-    // 즉시 버튼 상태 업데이트
     final hasContent = text.isNotEmpty ||
         state.selectedImages.isNotEmpty ||
         state.links.isNotEmpty;
 
+    log("---> _onTextChanged 호출됨");
+    log("---> 현재 텍스트: $text");
+    log("---> 현재 이미지 수: ${state.selectedImages.length}");
+    log("---> 현재 링크 수: ${state.links.length}");
     log("---> hasContent: $hasContent");
     log("---> 새로운 버튼 상태: ${hasContent ? ButtonState.primary : ButtonState.disabled}");
 
@@ -83,10 +73,9 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
       buttonState: hasContent ? ButtonState.primary : ButtonState.disabled,
     );
 
-    // 디바운스는 텍스트 저장에만 사용
     if (_debounce?.isActive ?? false) _debounce!.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () {
-      log("---> 디바운스 후 텍스트 저장: $text");
+      log("---> onTextChanged: $text");
       state = state.copyWith(
         debouncedText: text,
       );

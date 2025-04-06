@@ -4,7 +4,6 @@ import 'package:verymemo/features/memo/presentation/providers/memo_provider.dart
 import 'package:verymemo/features/memo/presentation/components/modal/select/deep_click.dart';
 import 'package:flutter/services.dart';
 import 'package:verymemo/routers/router.dart';
-import 'dart:io' show Platform;
 
 class MemoList extends ConsumerWidget {
   const MemoList({
@@ -52,7 +51,7 @@ class MemoList extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (!memo.isLocalMemo) ...[
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 8),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: ProfileList(
@@ -63,23 +62,23 @@ class MemoList extends ConsumerWidget {
                     ),
                   ],
                   if (memo.content != null && memo.content!.isNotEmpty) ...[
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 8),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: MemoContent(text: memo.content!),
                     ),
                   ],
                   if (memo.links != null && memo.links!.isNotEmpty) ...[
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 8),
                     LinkResult(
                       links: memo.links!,
                     ),
                   ],
                   if (memo.images != null && memo.images!.isNotEmpty) ...[
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 8),
                     MemoImages(memo: memo),
                   ],
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 8),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: MemoFooter(
@@ -93,7 +92,7 @@ class MemoList extends ConsumerWidget {
                       },
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 8),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16),
                     child: Divider(),

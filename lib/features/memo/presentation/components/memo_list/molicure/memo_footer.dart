@@ -34,6 +34,7 @@ class MemoFooter extends StatelessWidget {
             size: IconSize.small,
             color: Theme.of(context).colorScheme.primary,
             onTap: onBookmarkTap,
+            hitTestSize: 20,
           ),
         ],
       ],
