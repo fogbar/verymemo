@@ -5,7 +5,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:verymemo/externals/db/db_service.dart';
 import 'package:verymemo/features/memo/data/providers/memo_repository_provider.dart';
-import 'package:verymemo/features/memo/data/repositories/memo_repository_impl.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

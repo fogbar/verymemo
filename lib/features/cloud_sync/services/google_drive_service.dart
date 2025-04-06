@@ -6,7 +6,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/drive/v3.dart' as drive;
 import 'package:http/http.dart' as http;
 import 'package:verymemo/features/memo/domain/models/model.dart';
-import 'package:verymemo/features/memo/domain/repositories/memo_repository.dart';
 import 'package:verymemo/features/memo/data/repositories/memo_repository_impl.dart';
 
 class GoogleAuthClient extends http.BaseClient {

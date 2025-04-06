@@ -5,7 +5,6 @@ import 'package:verymemo/features/memo/data/providers/memo_repository_provider.d
 import 'package:verymemo/features/memo/presentation/providers/state/memo_state.dart';
 import 'package:verymemo/features/memo/domain/models/model.dart';
 import 'package:verymemo/features/memo/presentation/providers/memo_sort_provider.dart';
-import 'package:verymemo/features/memo/data/repositories/memo_repository_impl.dart';
 import 'package:go_router/go_router.dart';
 
 part 'search_viewmodel.g.dart';
