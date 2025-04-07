@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:verymemo/externals/db/db_scheme.dart';
 import 'package:verymemo/externals/db/db_service.dart';
+import 'package:verymemo/features/lifecycle/app_lifecycle_wrapper.dart';
 import 'package:verymemo/firebase_options.dart';
 import 'package:verymemo/main/app.dart';
 
@@ -17,5 +18,5 @@ Future<void> mainCommon() async {
   final dbInit = dbContainer.read(dbServiceProvider).initDB(dbSchemes);
   await dbInit;
 
-  runApp(ProviderScope(child: App()));
+  runApp(ProviderScope(child: AppLifecycleWrapper(child: App())));
 }
