@@ -26,7 +26,7 @@ dependencies:
   sqflite: ^2.4.2
 
   # 인증
-  google_sign_in: ^6.2.2
+  google_sign_in: ^6.2.1
   sign_in_with_apple: ^6.1.4
 
   # 상태관리
@@ -56,7 +56,7 @@ dependencies:
   flutter_file_dialog: ^3.0.1
   image: ^4.0.17 
   path_provider: ^2.1.1
-
+  image_picker: ^1.0.7
 
   # 토스트 메시지
   fluttertoast: ^8.2.12
@@ -79,9 +79,14 @@ dependencies:
   # 링크
   any_link_preview: ^3.0.3
   url_launcher: ^6.2.5
+  receive_sharing_intent: ^1.8.1
 
   # 추가
   provider: ^6.1.1
+
+  googleapis: ^12.0.0
+  googleapis_auth: ^1.4.1
+  http: ^1.2.0
 
 dev_dependencies:
   flutter_test:

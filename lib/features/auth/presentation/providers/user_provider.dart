@@ -5,6 +5,8 @@ import 'package:verymemo/features/auth/presentation/providers/state/user_state.d
 final userProvider =
     StateNotifierProvider<UserNotifier, UserState>((ref) => UserNotifier());
 
+// 실제 사용하는 유저 정보.
+// 유저 정보 참조시 userProvider 사용.
 class UserNotifier extends StateNotifier<UserState> {
   UserNotifier() : super(const UserState());
 
@@ -21,5 +23,20 @@ class UserNotifier extends StateNotifier<UserState> {
   // 사용자 정보 가져오기
   UserModel? getUser() {
     return state.user;
+  }
+
+  // 구글 로그인 판단
+  bool isGoogle() {
+    return state.user?.provider == AuthProvider.google;
+  }
+
+  // 애플 로그인 판단
+  bool isApple() {
+    return state.user?.provider == AuthProvider.apple;
+  }
+
+  // 게스트 판단
+  bool isGuest() {
+    return state.user?.provider == AuthProvider.unknown;
   }
 }

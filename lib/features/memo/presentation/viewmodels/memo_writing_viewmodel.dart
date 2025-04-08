@@ -7,6 +7,7 @@ import 'package:verymemo/common/barrel/memo_writing.dart';
 import 'package:verymemo/common/ui/components/button/button_state.dart';
 import 'package:verymemo/features/auth/presentation/providers/user_provider.dart';
 import 'package:any_link_preview/any_link_preview.dart';
+import 'package:image_picker/image_picker.dart';
 
 final memoWritingViewModelProvider =
     StateNotifierProvider<MemoWritingViewModel, MemoWritingState>((ref) {
@@ -16,6 +17,7 @@ final memoWritingViewModelProvider =
 });
 
 class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
+  static bool _isFirstLaunch = true; // 최초 실행 여부를 체크하는 static 변수
   final MemoNotifier memoProvider;
   final UserNotifier userProvider;
   Timer? _debounce;
@@ -27,13 +29,21 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
   ) : super(MemoWritingState()) {
     state.textController.addListener(_onTextChanged);
     state.linkController.addListener(_onLinkChanged);
-    // 초기화 시 즉시 상태 설정
-    state = state.copyWith(
-      visible: true,
-      isExpanded: true,
-    );
-    // 즉시 포커스 설정
-    state.focusNode.requestFocus();
+
+    // 최초 실행시에만 라이팅 뷰 열기
+    if (_isFirstLaunch) {
+      state = state.copyWith(
+        visible: true,
+        isExpanded: true,
+      );
+      state.focusNode.requestFocus();
+      _isFirstLaunch = false; // 다음부터는 자동으로 열리지 않도록 설정
+    } else {
+      state = state.copyWith(
+        visible: false,
+        isExpanded: false,
+      );
+    }
   }
 
   @override
@@ -48,13 +58,21 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
   /// 텍스트 변경 감지 - 버튼 상태용
   void _onTextChanged() {
     final text = state.textController.text.trim();
+    final hasContent = text.isNotEmpty ||
+        state.selectedImages.isNotEmpty ||
+        state.links.isNotEmpty;
+
+    log("---> _onTextChanged 호출됨");
+    log("---> 현재 텍스트: $text");
+    log("---> 현재 이미지 수: ${state.selectedImages.length}");
+    log("---> 현재 링크 수: ${state.links.length}");
+    log("---> hasContent: $hasContent");
+    log("---> 새로운 버튼 상태: ${hasContent ? ButtonState.primary : ButtonState.disabled}");
+
     state = state.copyWith(
-      buttonState: (text.isNotEmpty ||
-              state.selectedImages.isNotEmpty ||
-              state.links.isNotEmpty)
-          ? ButtonState.primary
-          : ButtonState.disabled,
+      buttonState: hasContent ? ButtonState.primary : ButtonState.disabled,
     );
+
     if (_debounce?.isActive ?? false) _debounce!.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () {
       log("---> onTextChanged: $text");
@@ -316,6 +334,34 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
       log("---> 메모 저장 실패: $e");
       log("---> 스택트레이스: $stackTrace");
       rethrow;
+    }
+  }
+
+  /// 카메라로 사진 촬영
+  Future<void> takePicture(BuildContext context) async {
+    try {
+      final ImagePicker picker = ImagePicker();
+      final XFile? image = await picker.pickImage(
+        source: ImageSource.camera,
+        imageQuality: 80,
+      );
+
+      if (image != null) {
+        state = state.copyWith(
+          selectedImages: [...state.selectedImages, image.path],
+          buttonState: ButtonState.primary,
+        );
+      }
+    } catch (e) {
+      debugPrint('Error taking picture: $e');
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('사진 촬영 중 오류가 발생했습니다.'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
     }
   }
 }

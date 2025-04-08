@@ -16,9 +16,6 @@ class PermissionView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final notifier = ref.watch(permissionNotifierProvider.notifier);
-
-    final viewModel = ref.watch(permissionProvider.notifier);
-    // final state = ref.watch(permissionProvider);
     final state = ref.watch(permissionNotifierProvider);
 
     return Column(
@@ -89,7 +86,7 @@ class PermissionView extends ConsumerWidget {
                 subtitle: '앱 이용을 위해 필요합니다',
                 onTap: () {
                   ('서비스 이용 약관 클릭됨');
-                  viewModel.onTermsPressed('service');
+                  notifier.onTermsPressed('service');
                 },
               ),
               const SizedBox(height: 24),
@@ -106,7 +103,7 @@ class PermissionView extends ConsumerWidget {
                 subtitle: '개인정보 보호를 위해 필요합니다',
                 onTap: () {
                   ('개인정보 약관 클릭됨');
-                  viewModel.onTermsPressed('privacy');
+                  notifier.onTermsPressed('privacy');
                 },
               ),
             ],
@@ -124,7 +121,6 @@ class PermissionView extends ConsumerWidget {
             onPressed: state.allGranted
                 ? () {
                     ('시작하기 버튼 클릭됨 (isAgreed: ${state.allAgree})');
-                    // viewModel.onStartButtonPressed();
                     notifier.requestAllPermissions();
                   }
                 : null,

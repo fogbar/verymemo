@@ -237,10 +237,17 @@ DB에 저장할 데이터:
       tags: tagList,
     );
 
+    // 조회 시간 업데이트
+    await db.update(
+      tableName[0],
+      {'lastViewedAt': DateTime.now().toIso8601String()},
+      where: 'id = ?',
+      whereArgs: [memoId],
+    );
+
     return memoModel;
   }
 
-  /// [Update Memo]
   /// [Update Memo]
   Future<int> updateMemo({
     required MemoDTO dto,
@@ -248,14 +255,75 @@ DB에 저장할 데이터:
     List<LinkDTO> links = const [],
     List<TagDTO> tags = const [],
   }) async {
+    log("---> MemoLocalDataSource.updateMemo 시작");
+    log("---> 업데이트할 메모 ID: ${dto.id}");
+    log("---> 업데이트할 메모 내용: ${dto.content}");
+    log("---> 업데이트할 이미지 수: ${images.length}");
+    log("---> 업데이트할 링크 수: ${links.length}");
+    log("---> 업데이트할 태그 수: ${tags.length}");
+
+    // 메모 ID 검증
+    if (dto.id == null) {
+      log("---> 메모 ID가 null입니다!");
+      throw Exception("메모 ID가 존재하지 않습니다.");
+    }
+
+    // 메모 ID를 문자열로 변환
+    final memoId = dto.id.toString();
+    log("---> 메모 ID를 문자열로 변환: $memoId");
+
+    // 메모가 존재하는지 확인
     final db = await dbService.database;
+    log("---> DB 연결 성공");
+
+    final existingMemo = await db.query(
+      tableName[0],
+      where: 'id = ?',
+      whereArgs: [memoId],
+    );
+
+    if (existingMemo.isEmpty) {
+      log("---> 메모가 존재하지 않습니다. ID: $memoId");
+      throw Exception("메모가 존재하지 않습니다.");
+    }
+
+    log("---> 메모 존재 확인 완료");
 
     return await db.transaction((txn) async {
-      await txn.update(tableName[0], dto.toJson(),
-          where: 'id = ?', whereArgs: [dto.id]);
-      final memoId = dto.id ?? (throw Exception("메모 ID가 존재하지 않습니다."));
+      log("---> 트랜잭션 시작");
 
+      log("---> 메모 테이블 업데이트 시작");
+      final currentTime = DateTime.now();
+      final updateData = {
+        ...dto.toJson(),
+        'updatedAt': currentTime.toIso8601String(),
+      };
+      log("---> 업데이트할 데이터: $updateData");
+      log("---> updatedAt 필드 값: ${updateData['updatedAt']}");
+
+      final updateResult = await txn.update(tableName[0], updateData,
+          where: 'id = ?', whereArgs: [memoId]);
+      log("---> 메모 테이블 업데이트 결과: $updateResult");
+
+      if (updateResult <= 0) {
+        log("---> 메모 업데이트 실패");
+        throw Exception("메모 업데이트에 실패했습니다.");
+      }
+
+      // 업데이트된 메모 확인
+      final updatedMemo = await txn.query(
+        tableName[0],
+        where: 'id = ?',
+        whereArgs: [memoId],
+      );
+      log("---> 업데이트된 메모 데이터: ${updatedMemo.first}");
+      log("---> 업데이트된 메모의 updatedAt: ${updatedMemo.first['updatedAt']}");
+
+      log("---> 이미지 테이블 삭제 시작");
       await txn.delete(tableName[2], where: 'memoId = ?', whereArgs: [memoId]);
+      log("---> 이미지 테이블 삭제 완료");
+
+      log("---> 이미지 테이블 업데이트 시작");
       final imageBatch = txn.batch();
       for (var image in images) {
         imageBatch.insert(tableName[2], {
@@ -265,8 +333,13 @@ DB에 저장할 데이터:
         });
       }
       await imageBatch.commit(noResult: true);
+      log("---> 이미지 테이블 업데이트 완료: ${images.length}개");
 
+      log("---> 링크 테이블 삭제 시작");
       await txn.delete(tableName[3], where: 'memoId = ?', whereArgs: [memoId]);
+      log("---> 링크 테이블 삭제 완료");
+
+      log("---> 링크 테이블 업데이트 시작");
       final linkBatch = txn.batch();
       for (var link in links) {
         linkBatch.insert(tableName[3], {
@@ -278,8 +351,13 @@ DB에 저장할 데이터:
         });
       }
       await linkBatch.commit(noResult: true);
+      log("---> 링크 테이블 업데이트 완료: ${links.length}개");
 
+      log("---> 태그 테이블 삭제 시작");
       await txn.delete('memo_tags', where: 'memoId = ?', whereArgs: [memoId]);
+      log("---> 태그 테이블 삭제 완료");
+
+      log("---> 태그 테이블 업데이트 시작");
       final tagBatch = txn.batch();
       for (var tag in tags) {
         final tagResult = await txn
@@ -291,8 +369,10 @@ DB에 저장할 데이터:
         tagBatch.insert('memo_tags', {'memoId': memoId, 'tagId': tagId});
       }
       await tagBatch.commit(noResult: true);
+      log("---> 태그 테이블 업데이트 완료: ${tags.length}개");
 
-      return memoId;
+      log("---> 트랜잭션 완료");
+      return int.parse(memoId);
     });
   }
 
@@ -313,5 +393,63 @@ DB에 저장할 데이터:
       }
       return count; // 🔄 삭제된 개수 반환
     });
+  }
+
+  /// [Search Memo]
+  Future<List<MemoModel>?> searchMemos(String query) async {
+    final db = await dbService.database;
+    try {
+      if (!db.isOpen) return null;
+
+      // 메모 내용, 태그로 검색
+      final searchResults = await db.rawQuery('''
+        SELECT DISTINCT m.* FROM memos m
+        LEFT JOIN memo_tags mt ON m.id = mt.memoId
+        LEFT JOIN tags t ON mt.tagId = t.id
+        WHERE m.content LIKE ? 
+        OR t.tagName LIKE ?
+      ''', ['%$query%', '%$query%']);
+
+      // 검색된 메모들의 관련 데이터(이미지, 링크, 태그) 가져오기
+      List<MemoModel> memoModels = [];
+      for (var memo in searchResults) {
+        final memoId = memo['id'] as int;
+
+        // 이미지 가져오기
+        final imageResults = await db.query(
+          tableName[2],
+          where: 'memoId = ?',
+          whereArgs: [memoId],
+        );
+
+        // 링크 가져오기
+        final linkResults = await db.query(
+          tableName[3],
+          where: 'memoId = ?',
+          whereArgs: [memoId],
+        );
+
+        // 태그 가져오기
+        final tagResults = await db.rawQuery('''
+          SELECT t.* FROM tags t
+          INNER JOIN memo_tags mt ON t.id = mt.tagId
+          WHERE mt.memoId = ?
+        ''', [memoId]);
+
+        // MemoModel 생성
+        final memoDTO = MemoDTO.fromJson2(memo);
+        memoModels.add(MemoMapper.toModel(
+          memoDTO,
+          images: imageResults.map((e) => ImageDTO.fromJson(e)).toList(),
+          links: linkResults.map((e) => LinkDTO.fromJson(e)).toList(),
+          tags: tagResults.map((e) => TagDTO.fromJson(e)).toList(),
+        ));
+      }
+
+      return memoModels;
+    } catch (e) {
+      log("❌ searchMemos Error: $e");
+      return null;
+    }
   }
 }

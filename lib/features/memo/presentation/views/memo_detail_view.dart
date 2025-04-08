@@ -5,9 +5,10 @@ import 'package:verymemo/common/ui/components/layout/variable_header.dart';
 import 'package:verymemo/common/ui/components/layout/variable_nevbar.dart';
 import 'package:verymemo/features/memo/presentation/viewmodels/memo_detail_viewmodel.dart';
 import 'dart:io';
+import 'dart:developer';
+import 'package:go_router/go_router.dart';
 
-class MemoDetailView extends ConsumerWidget {
-  // final MemoModel memo;
+class MemoDetailView extends ConsumerStatefulWidget {
   final String id;
 
   const MemoDetailView({
@@ -16,9 +17,15 @@ class MemoDetailView extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<MemoDetailView> createState() => _MemoDetailViewState();
+}
+
+class _MemoDetailViewState extends ConsumerState<MemoDetailView> {
+  @override
+  Widget build(BuildContext context) {
     final memoState = ref.watch(memoProvider);
     final viewModel = ref.read(memoDetailProvider.notifier);
+    final isBookmarked = ref.watch(bookmarkStateProvider);
 
     return Scaffold(
       body: Column(
@@ -26,10 +33,15 @@ class MemoDetailView extends ConsumerWidget {
           VariableHeader(
             type: HeaderType.memoDetail,
             onBack: () {
-              Navigator.of(context).maybePop();
+              if (Navigator.canPop(context)) {
+                Navigator.pop(context);
+              } else {
+                context.go('/home');
+              }
             },
-            onDelete: () => viewModel.handleDelete(id),
-            onShare: () => viewModel.handleShare(id),
+            onDelete: () => viewModel.handleDelete(widget.id, context),
+            onShare: () => viewModel.handleShare(widget.id),
+            onUpload: () => viewModel.handleUpload(widget.id, context),
           ),
           Expanded(
             child: memoState.when(
@@ -37,10 +49,20 @@ class MemoDetailView extends ConsumerWidget {
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (error) => Center(child: Text('에러: $error')),
               successed: (memos) {
-                final memoIdInt = int.tryParse(id);
+                log("---> 메모 목록에서 메모 찾기 시작");
+                log("---> 찾을 메모 ID: ${widget.id}");
+                log("---> 전체 메모 수: ${memos.length}");
+
                 final currentMemo = memos.firstWhere(
-                  (m) => m.memoId == memoIdInt,
+                  (m) => m.memoId.toString() == widget.id,
+                  orElse: () {
+                    log("---> 메모를 찾을 수 없습니다. ID: ${widget.id}");
+                    throw Exception("메모를 찾을 수 없습니다.");
+                  },
                 );
+
+                log("---> 찾은 메모 ID: ${currentMemo.memoId}");
+                log("---> 찾은 메모 내용: ${currentMemo.content}");
 
                 return SingleChildScrollView(
                   child: Container(
@@ -49,17 +71,25 @@ class MemoDetailView extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        MemoFooter(createdAt: currentMemo.createdAt),
+                        MemoFooter(
+                          createdAt: currentMemo.createdAt,
+                          updatedAt: currentMemo.updatedAt,
+                        ),
                         const SizedBox(height: 8),
-                        if (currentMemo.content != null)
+                        if (currentMemo.content != null) ...[
                           Text(
                             currentMemo.content!,
                             style:
                                 Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                      color: Colors.black,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurfaceVariant,
+                                      height: 1.4,
                                     ),
                             textAlign: TextAlign.left,
                           ),
+                          const SizedBox(height: 8),
+                        ],
                         if (currentMemo.images != null &&
                             currentMemo.images!.isNotEmpty) ...[
                           const SizedBox(height: 8),
@@ -127,6 +157,7 @@ class MemoDetailView extends ConsumerWidget {
         ],
       ),
       bottomNavigationBar: VariableNavigationBar(
+        ref: ref,
         type: NavigationBarType.content,
         selectedIndex: 0,
         onItemSelected: (index) {
@@ -134,17 +165,22 @@ class MemoDetailView extends ConsumerWidget {
           final iconKey = NavigationBarConfig.contentIcons[index];
 
           if (iconKey == 'copy') {
-            viewModel.handleCopy(id, context);
+            viewModel.handleCopy(widget.id, context);
           }
           if (iconKey == 'bookmark') {
-            viewModel.handleBookmark(id);
+            viewModel.handleBookmark(widget.id);
           }
           if (iconKey == 'upload') {
-            viewModel.handleUpload(id);
+            viewModel.handleUpload(widget.id, context);
           }
           if (iconKey == 'edit') {
-            viewModel.handleEdit(id);
+            viewModel.handleEdit(widget.id, context);
           }
+        },
+        iconColors: {
+          'bookmark': isBookmarked
+              ? Theme.of(context).colorScheme.primary
+              : Theme.of(context).colorScheme.onSurface,
         },
       ),
     );

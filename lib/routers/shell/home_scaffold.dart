@@ -67,7 +67,7 @@ class _HomeScaffoldState extends ConsumerState<HomeScaffold> {
                   child: switch (_currentTabIndex) {
                     0 => const FeedView(),
                     1 =>
-                      const FeedView(), // 향후 북마크 화면이 생기면 화면 수정하기. view를 안넣어놓으면 배경색이 이상해서 일단 넣어놓음.
+                      const BookmarkView(), // 향후 북마크 화면이 생기면 화면 수정하기. view를 안넣어놓으면 배경색이 이상해서 일단 넣어놓음.
                     2 => const GalleryView(),
                     3 => const LinkList(),
                     _ => widget.navigationShell,
@@ -79,6 +79,7 @@ class _HomeScaffoldState extends ConsumerState<HomeScaffold> {
           bottomNavigationBar: SafeArea(
             top: false,
             child: VariableNavigationBar(
+              ref: ref,
               type: _currentNavBar,
               selectedIndex: widget.navigationShell.currentIndex,
               onItemSelected: (index) {

@@ -1,16 +1,10 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:verymemo/features/memo/data/data-sources/memo_local_data_source.dart';
 import 'package:verymemo/features/memo/domain/mappers/mapper.dart';
 import 'package:verymemo/features/memo/domain/models/model.dart';
 import 'package:verymemo/features/memo/domain/repositories/memo_repository.dart';
-
-final memoRepositoryProvider = Provider<MemoRepository>((ref) {
-  final memoLocalDataSource = ref.watch(memoLocalDataSourceProvider);
-  return MemoRepositoryImpl(memoLocalDataSource);
-});
 
 class MemoRepositoryImpl implements MemoRepository {
   final MemoLocalDataSource localDataSource;
@@ -121,5 +115,10 @@ class MemoRepositoryImpl implements MemoRepository {
     } catch (e) {
       log("❌ Error cleaning up images: $e");
     }
+  }
+
+  @override
+  Future<List<MemoModel>?> searchMemos(String query) async {
+    return await localDataSource.searchMemos(query);
   }
 }

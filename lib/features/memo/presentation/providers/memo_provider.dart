@@ -1,20 +1,24 @@
 import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:verymemo/features/memo/data/repositories/memo_repository_impl.dart';
+import 'package:verymemo/features/memo/data/providers/memo_repository_provider.dart';
 import 'package:verymemo/features/memo/domain/caches/memo_cache.dart';
 import 'package:verymemo/features/memo/domain/models/model.dart';
 import 'package:verymemo/features/memo/domain/repositories/memo_repository.dart';
+import 'package:verymemo/features/memo/presentation/providers/memo_sort_provider.dart';
 import 'package:verymemo/features/memo/presentation/providers/state/memo_state.dart';
 
 final memoProvider = StateNotifierProvider<MemoNotifier, MemoState>((ref) {
   final memoRepository = ref.watch(memoRepositoryProvider);
-  return MemoNotifier(memoRepository);
+  final sortType = ref.watch(memoSortProvider);
+  return MemoNotifier(memoRepository, sortType);
 });
 
 class MemoNotifier extends StateNotifier<MemoState> {
   final MemoRepository memoRepository;
-  MemoNotifier(this.memoRepository) : super(const MemoState.initial()) {
+  final MemoSortType sortType;
+  MemoNotifier(this.memoRepository, this.sortType)
+      : super(const MemoState.initial()) {
     _initialize();
   }
 
@@ -31,16 +35,40 @@ class MemoNotifier extends StateNotifier<MemoState> {
       final memoModels = await memoRepository.getAllMemos();
       final memos = memoModels?.whereType<MemoModel>().toList() ?? [];
 
-      // 작성일 기준 내림차순 정렬 (최신순)
-      memos.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      // 정렬 적용
+      final sortedMemos = _sortMemos(memos);
 
       log("---> memos: $memos");
-      MemoCache().addMemos(memos);
-      state = MemoState.successed(memos);
+      MemoCache().addMemos(sortedMemos);
+      state = MemoState.successed(sortedMemos);
     } catch (e) {
       log("❌ Error fetching memos: $e");
       state = MemoState.error('메모를 불러오지 못했습니다.');
     }
+  }
+
+  /// [메모 정렬]
+  List<MemoModel> _sortMemos(List<MemoModel> memos) {
+    switch (sortType) {
+      case MemoSortType.lastViewed:
+        memos.sort((a, b) => b.lastViewedAt!.compareTo(a.lastViewedAt!));
+        break;
+      case MemoSortType.latest:
+        memos.sort((a, b) {
+          final aDate = a.updatedAt ?? a.createdAt;
+          final bDate = b.updatedAt ?? b.createdAt;
+          return bDate.compareTo(aDate);
+        });
+        break;
+      case MemoSortType.oldest:
+        memos.sort((a, b) {
+          final aDate = a.updatedAt ?? a.createdAt;
+          final bDate = b.updatedAt ?? b.createdAt;
+          return aDate.compareTo(bDate);
+        });
+        break;
+    }
+    return memos;
   }
 
   /// [특정 메모 가져오기]
@@ -92,16 +120,53 @@ class MemoNotifier extends StateNotifier<MemoState> {
     }
   }
 
-  /// [메모 업데이트]
+  /// [Update Memo]
   Future<void> updateMemo(MemoModel memo) async {
-    state = const MemoState.loading();
     try {
-      await memoRepository.updateMemo(memo);
-      MemoCache().updateMemo(memo);
-      state = MemoState.successed(MemoCache().getAllMemos());
-      await getAllMemos();
-    } catch (e) {
-      state = MemoState.error('메모를 업데이트하지 못했습니다.');
+      log("---> MemoNotifier.updateMemo 시작");
+      log("---> 업데이트할 메모 ID: ${memo.memoId}");
+      log("---> 업데이트할 메모 내용: ${memo.content}");
+
+      // 메모 ID 검증
+      if (memo.memoId == null) {
+        log("---> 메모 ID가 null입니다!");
+        throw Exception("메모 ID가 존재하지 않습니다.");
+      }
+
+      // 1. DB 업데이트
+      log("---> DB 업데이트 시작");
+      final result = await memoRepository.updateMemo(memo);
+      log("---> DB 업데이트 결과: $result");
+
+      if (result <= 0) {
+        log("---> DB 업데이트 실패");
+        throw Exception('메모 업데이트에 실패했습니다.');
+      }
+      log("---> DB 업데이트 성공");
+
+      // 2. 현재 상태에서 메모 업데이트
+      state.maybeWhen(
+        successed: (memos) {
+          final updatedMemos =
+              memos.map((m) => m.memoId == memo.memoId ? memo : m).toList();
+
+          // 정렬 적용
+          final sortedMemos = _sortMemos(updatedMemos);
+
+          // 상태 즉시 업데이트
+          state = MemoState.successed(sortedMemos);
+        },
+        orElse: () {
+          // 상태가 successed가 아닌 경우 전체 메모 다시 로드
+          getAllMemos();
+        },
+      );
+
+      log("---> MemoNotifier.updateMemo 완료");
+    } catch (e, stackTrace) {
+      log("---> 메모 업데이트 실패: $e");
+      log("---> 스택트레이스: $stackTrace");
+      rethrow;
     }
   }
 
@@ -147,5 +212,28 @@ class MemoNotifier extends StateNotifier<MemoState> {
           .toList(),
       orElse: () => [],
     );
+  }
+
+  /// [메모 검색]
+  Future<void> searchMemos(String query) async {
+    if (query.isEmpty) {
+      await getAllMemos();
+      return;
+    }
+
+    state = const MemoState.loading();
+    try {
+      final searchResults = await memoRepository.searchMemos(query);
+      if (searchResults != null) {
+        // 검색 결과도 정렬 적용
+        final sortedResults = _sortMemos(searchResults);
+        state = MemoState.successed(sortedResults);
+      } else {
+        state = const MemoState.successed([]);
+      }
+    } catch (e) {
+      log("❌ Error searching memos: $e");
+      state = MemoState.error('검색 중 오류가 발생했습니다.');
+    }
   }
 }

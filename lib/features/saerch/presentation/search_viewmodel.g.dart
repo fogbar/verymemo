@@ -6,12 +6,12 @@ part of 'search_viewmodel.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$searchViewModelHash() => r'94d184b108b7b149125e6a517fe04754da6fecab';
+String _$searchViewModelHash() => r'7053bd60e896ccfd3a422ea6f1dd6ab783358e14';
 
 /// See also [SearchViewModel].
 @ProviderFor(SearchViewModel)
 final searchViewModelProvider =
-    AutoDisposeNotifierProvider<SearchViewModel, void>.internal(
+    AutoDisposeNotifierProvider<SearchViewModel, MemoState>.internal(
   SearchViewModel.new,
   name: r'searchViewModelProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -21,6 +21,6 @@ final searchViewModelProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$SearchViewModel = AutoDisposeNotifier<void>;
+typedef _$SearchViewModel = AutoDisposeNotifier<MemoState>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

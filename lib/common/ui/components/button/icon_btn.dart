@@ -89,12 +89,13 @@ class IconConfig {
 
 /// ✅ 아이콘 버튼 위젯
 class IconBtn extends StatelessWidget {
-  final dynamic iconKey; // String 또는 IconData를 받을 수 있도록 변경
+  final dynamic iconKey;
   final VoidCallback? onTap;
   final IconSize size;
   final Color? color;
   final ButtonState state;
   final bool autoDisable;
+  final double? hitTestSize;
 
   const IconBtn({
     super.key,
@@ -104,6 +105,7 @@ class IconBtn extends StatelessWidget {
     this.color,
     this.state = ButtonState.transparent,
     this.autoDisable = false,
+    this.hitTestSize,
   });
 
   @override
@@ -125,8 +127,8 @@ class IconBtn extends StatelessWidget {
     return InkWell(
       onTap: effectiveState == ButtonState.disabled ? null : onTap,
       child: SizedBox(
-        width: math.max(iconSize, 44.0),
-        height: math.max(iconSize, 44.0),
+        width: hitTestSize ?? math.max(iconSize, 44.0),
+        height: hitTestSize ?? math.max(iconSize, 44.0),
         child: Center(
           child: ImageUtil.showImage(
             assetPath,

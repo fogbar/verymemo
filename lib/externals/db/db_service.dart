@@ -61,6 +61,7 @@ class DbService {
               isBookMarked INTEGER NOT NULL DEFAULT 0,
               createdAt TEXT NOT NULL,
               updatedAt TEXT,
+              lastViewedAt TEXT,
               FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
             );
             ''');

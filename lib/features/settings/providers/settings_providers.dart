@@ -1,6 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../presentation/settings_viewmodel.dart';
-
 /// settings_viewmodel 에서 settingsViewModelProvider 이 중복 선언되어 있기에
 /// 일단 settings_viewmodel 에서 사용하는 것으로 정리.
 /// auth 쪽은 auth_provider 에서 다 선언되어 있고

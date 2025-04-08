@@ -16,4 +16,6 @@ abstract class MemoRepository {
 
   /// 사용되지 않는 이미지 파일 정리
   Future<void> cleanupUnusedImages();
+
+  Future<List<MemoModel>?> searchMemos(String query);
 }
