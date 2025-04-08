@@ -45,9 +45,9 @@ abstract class AppRoute {
       case splash:
         return const SplashView();
       case intro:
-        return const PermissionView();
-      case permissionCheck:
         return const IntroView();
+      case permissionCheck:
+        return const PermissionView();
       case signup:
         return const AuthView();
       case profileSetting:

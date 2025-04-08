@@ -11,6 +11,7 @@ import 'package:verymemo/features/auth/domain/models/user_model.dart';
 import 'package:verymemo/features/auth/domain/repositories/auth_repository.dart';
 import 'package:verymemo/features/auth/presentation/providers/state/auth_state.dart';
 import 'package:verymemo/features/auth/presentation/providers/user_provider.dart';
+import 'package:verymemo/features/permission/providers/permission_provider.dart';
 import 'package:verymemo/routers/navigation_service.dart';
 import 'package:verymemo/routers/router.dart';
 
@@ -19,9 +20,10 @@ final authStateNotifierProvider =
   final authRepository = ref.watch(authRepositoryProvider);
   final storageService = ref.watch(storageProvider);
   final navigationService = ref.watch(navigationServiceProvider);
-  final userNotifierProvider = ref.read(userProvider.notifier);
-  return AuthStateNotifier(
-      authRepository, storageService, navigationService, userNotifierProvider);
+  final userNotifierProvider = ref.watch(userProvider.notifier);
+  final permissionProvider = ref.watch(permissionNotifierProvider.notifier);
+  return AuthStateNotifier(authRepository, storageService, navigationService,
+      userNotifierProvider, permissionProvider);
 });
 
 // 유저의 회원가입/로그인 상태 체크
@@ -30,9 +32,10 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
   final StorageService _storageService;
   final NavigationService _navigationService;
   final UserNotifier _userNotifier;
+  final PermissionNotifier _permissionProvider;
 
   AuthStateNotifier(this._authRepository, this._storageService,
-      this._navigationService, this._userNotifier)
+      this._navigationService, this._userNotifier, this._permissionProvider)
       : super(const AuthState.initial()) {
     _init();
   }
@@ -54,35 +57,42 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
     final deviceId = await PlatformUtil.getPlatformInfo();
 
     final user = await _storageService.get(key: userKey);
-    await _storageService.remove(key: userKey);
 
-    // 해당 deviceId가 로컬 DB에 저장되어 있는지 확인
-    if (await containsValue(deviceId)) {
-      // O
-      // 유저모델 저장 여부
-      // O
-      if (user != null && user != "") {
-        _userNotifier.saveUser(
-          UserModel.fromJson(
-            JsonUtil.stringToJson(
-              user.toString(),
-            ),
-          ),
-        );
-
-        // 정상 로그인
-        state = AuthState.authenticated(_userNotifier.getUser()!);
-        _navigationService.pushAndRemoveUntil(AppRoute.home);
-      } else {
-        // 유저가 인트로까지는 봤는데 회원가입/로그인을 안했을때.
-        state = const AuthState.unauthenticated();
-        _navigationService.pushAndRemoveUntil(AppRoute.signup);
-      }
+    // permission 체크 진행.
+    if (await _permissionProvider.shouldNavigateToPermission()) {
+      print("퍼미션 체크로 이동해야 함");
+      // permission 체크가 최상위에 한 번 진행.
+      _navigationService.pushAndRemoveUntil(AppRoute.permissionCheck);
     } else {
-      // 유저가 앱 깔자마자 처음 들어왔을때.
-      // 그 이후에는 타면 안 됨.
-      state = AuthState.intro();
-      _navigationService.pushAndRemoveUntil(AppRoute.intro);
+      // permission 체크 이미 함.
+      // 해당 deviceId가 로컬 DB에 저장되어 있는지 확인
+      if (await containsValue(deviceId)) {
+        // O
+        // 유저모델 저장 여부
+        // O
+        if (user != null && user != "") {
+          _userNotifier.saveUser(
+            UserModel.fromJson(
+              JsonUtil.stringToJson(
+                user.toString(),
+              ),
+            ),
+          );
+
+          // 정상 로그인
+          state = AuthState.authenticated(_userNotifier.getUser()!);
+          _navigationService.pushAndRemoveUntil(AppRoute.home);
+        } else {
+          // 유저가 인트로까지는 봤는데 회원가입/로그인을 안했을때.
+          state = const AuthState.unauthenticated();
+          _navigationService.pushAndRemoveUntil(AppRoute.signup);
+        }
+      } else {
+        // 유저가 앱 깔자마자 처음 들어왔을때.
+        // 그 이후에는 타면 안 됨.
+        state = AuthState.intro();
+        _navigationService.pushAndRemoveUntil(AppRoute.intro);
+      }
     }
   }
 
@@ -150,6 +160,7 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
           // 회원가입 화면으로 라우팅
           _userNotifier.removeUser();
           state = const AuthState.unauthenticated();
+          await _storageService.remove(key: userKey);
           _navigationService.pushAndRemoveUntil(AppRoute.signup);
         } else {
           state = AuthState.error("회원 탈퇴에 실패하였습니다.");
@@ -183,6 +194,7 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
         // 회원가입 화면으로 라우팅
         _userNotifier.removeUser();
         state = const AuthState.unauthenticated();
+        await _storageService.remove(key: userKey);
         _navigationService.pushAndRemoveUntil(AppRoute.signup);
       } else {
         log("❌ 회원 탈퇴 오류");
@@ -206,7 +218,6 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
   // Device Info 가져오기
   Future<bool> containsValue(String targetValue) async {
     final keys = await _storageService.getKeys();
-    await _storageService.remove(key: userKey);
 
     for (String key in keys) {
       final value = await _storageService.get(key: key);
