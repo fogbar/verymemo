@@ -49,7 +49,7 @@ class AppRouter {
   }
 
   late final config = GoRouter(
-    initialLocation: AppRoute.home,
+    initialLocation: AppRoute.splash,
     navigatorKey: NavigatorKey.routerKey,
     debugLogDiagnostics: true,
     refreshListenable: GoRouterRefreshStream(

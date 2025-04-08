@@ -1,6 +1,7 @@
 import 'package:verymemo/common/barrel/view_common.dart';
 import 'package:verymemo/common/barrel/list.dart';
 import 'package:verymemo/common/barrel/button.dart';
+import 'package:verymemo/features/auth/presentation/providers/user_provider.dart';
 import 'package:verymemo/features/settings/presentation/settings_viewmodel.dart';
 import 'package:verymemo/features/auth/domain/models/user_model.dart';
 
@@ -9,6 +10,7 @@ class SettingsView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final userNotifierProvider = ref.watch(userProvider.notifier);
     final settingsState = ref.watch(settingsViewModelProvider);
     final settingsVM = ref.read(settingsViewModelProvider.notifier);
 
@@ -136,7 +138,7 @@ class SettingsView extends ConsumerWidget {
               //   ),
               // ),
               // 디바이스 ID만 있는 미가입 유저인 경우에만 보여줌
-              if (settingsState.user.provider == AuthProvider.unknown) ...[
+              if (userNotifierProvider.isGuest()) ...[
                 SizedBox(
                   height: 56,
                   child: ListItem(
@@ -153,8 +155,23 @@ class SettingsView extends ConsumerWidget {
                   ),
                 ),
               ],
-              if (settingsState.user.provider == AuthProvider.google ||
-                  settingsState.user.provider == AuthProvider.apple) ...[
+              if (userNotifierProvider.isGoogle() ||
+                  userNotifierProvider.isApple()) ...[
+                SizedBox(
+                  height: 56,
+                  child: ListItem(
+                    config: ListItemConfig(
+                      leadingType: ListItemType.icon,
+                      leadingIconKey: 'user',
+                      leadingIconSize: IconSize.medium,
+                      itemSpacing: 12,
+                      alignment: CrossAxisAlignment.center,
+                      leadingIconColor: Theme.of(context).colorScheme.primary,
+                    ),
+                    title: '로그 아웃',
+                    onTap: () => settingsVM.logout(),
+                  ),
+                ),
                 SizedBox(
                   height: 56,
                   child: ListItem(

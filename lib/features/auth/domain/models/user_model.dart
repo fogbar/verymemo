@@ -58,6 +58,9 @@ sealed class UserModel with _$UserModel {
 
   factory UserModel.fromFBUser(fb.User user) {
     AuthProvider provider = AuthProvider.unknown;
+
+    print("user.providerData: ${user.providerData}");
+
     if (user.providerData.isNotEmpty) {
       switch (user.providerData[0].providerId) {
         case 'google.com':

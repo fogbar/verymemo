@@ -9,17 +9,17 @@ class SplashView extends ConsumerWidget {
   const SplashView({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final navigationService = ref.watch(navigationServiceProvider);
+    // final navigationService = ref.watch(navigationServiceProvider);
 
-    // 🔄 splashState의 변화를 감지하고 처리
-    ref.listen<SplashState>(splashViewModelProvider, (previous, next) {
-      next.when(
-        loading: () => {},
-        home: () => navigationService.pushAndRemoveUntil(AppRoute.home),
-        intro: () => navigationService.pushAndRemoveUntil(AppRoute.intro),
-        signup: () => navigationService.pushAndRemoveUntil(AppRoute.signup),
-      );
-    });
-    return Container();
+    // // 🔄 splashState의 변화를 감지하고 처리
+    // ref.listen<SplashState>(splashViewModelProvider, (previous, next) {
+    //   next.when(
+    //     loading: () => {},
+    //     home: () => navigationService.pushAndRemoveUntil(AppRoute.home),
+    //     intro: () => navigationService.pushAndRemoveUntil(AppRoute.intro),
+    //     signup: () => navigationService.pushAndRemoveUntil(AppRoute.signup),
+    //   );
+    // });
+    return Text("스플래시 뷰");
   }
 }

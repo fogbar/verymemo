@@ -18,5 +18,7 @@ Future<void> mainCommon() async {
   final dbInit = dbContainer.read(dbServiceProvider).initDB(dbSchemes);
   await dbInit;
 
+  print("mainCommon call");
+
   runApp(ProviderScope(child: AppLifecycleWrapper(child: App())));
 }

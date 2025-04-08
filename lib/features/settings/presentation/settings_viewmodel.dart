@@ -1,5 +1,6 @@
 import 'package:verymemo/common/barrel/view_common.dart';
 import 'package:verymemo/features/auth/presentation/providers/auth_provider.dart';
+import 'package:verymemo/features/auth/presentation/providers/state/user_state.dart';
 import 'package:verymemo/features/settings/providers/theme_providers.dart';
 import 'package:verymemo/features/settings/presentation/modals/withdrawal_modal.dart';
 import 'package:verymemo/features/settings/presentation/modals/sync_modal.dart';
@@ -19,24 +20,20 @@ final settingsViewModelProvider =
 class SettingsState {
   final bool isKeypadEnabled;
   final bool isDarkMode;
-  final UserModel user;
   // 필요한 다른 설정들...
 
   SettingsState({
     this.isKeypadEnabled = false,
     this.isDarkMode = false,
-    required this.user,
   });
 
   SettingsState copyWith({
     bool? isKeypadEnabled,
     bool? isDarkMode,
-    UserModel? user,
   }) {
     return SettingsState(
       isKeypadEnabled: isKeypadEnabled ?? this.isKeypadEnabled,
       isDarkMode: isDarkMode ?? this.isDarkMode,
-      user: user ?? this.user,
     );
   }
 }
@@ -46,10 +43,12 @@ class SettingsViewModel extends StateNotifier<SettingsState> {
   final NavigationService _navigationService;
   final Ref ref;
 
-  SettingsViewModel(this._firebaseService, this._navigationService, this.ref)
-      : super(SettingsState(
+  SettingsViewModel(
+    this._firebaseService,
+    this._navigationService,
+    this.ref,
+  ) : super(SettingsState(
           isDarkMode: false,
-          user: _firebaseService.getCurrentUser() ?? UserModel.empty(),
         ));
 
   void toggleKeypad(bool value) {
@@ -116,6 +115,10 @@ class SettingsViewModel extends StateNotifier<SettingsState> {
         ),
       ),
     );
+  }
+
+  void logout() {
+    ref.read(authStateNotifierProvider.notifier).logout();
   }
 
   void moveToSignUp() {

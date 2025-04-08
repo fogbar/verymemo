@@ -40,6 +40,11 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<UserModel?> signInWithGuest() async {
+    return await _firebaseService.signInWithGuest();
+  }
+
+  @override
   Future<void> signOutWithApple() async {
     // await _supabaseService.signOut();
     await _firebaseService.signOutWithApple();

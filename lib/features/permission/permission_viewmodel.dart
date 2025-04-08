@@ -37,9 +37,11 @@ class PermissionViewModel extends StateNotifier<PermissionState> {
     switch (type) {
       case 'service':
         // 서비스 이용 약관 페이지로 이동
+        print("서비스 이용 약관 페이지로 이동");
         break;
       case 'privacy':
         // 개인정보 처리방침 페이지로 이동
+        print("개인정보 처리방침 페이지로 이동");
         break;
     }
   }
