@@ -93,7 +93,7 @@ class MemoDetailViewModel extends StateNotifier<void> {
         await memoRef.set({
           'id': memo.memoId,
           'content': memo.content,
-          'userId': currentUser.id,
+          'userId': currentUser.uid,
           'userName': currentUser.displayName,
           'userPhotoUrl': currentUser.photoUrl,
           'createdAt': memo.createdAt.toIso8601String(),

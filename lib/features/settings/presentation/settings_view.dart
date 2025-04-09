@@ -136,7 +136,7 @@ class SettingsView extends ConsumerWidget {
               //   ),
               // ),
               // 디바이스 ID만 있는 미가입 유저인 경우에만 보여줌
-              if (settingsState.user.provider == AuthProvider.unknown) ...[
+              if (settingsState.user.authProvider == AuthProvider.unknown) ...[
                 SizedBox(
                   height: 56,
                   child: ListItem(
@@ -153,8 +153,8 @@ class SettingsView extends ConsumerWidget {
                   ),
                 ),
               ],
-              if (settingsState.user.provider == AuthProvider.google ||
-                  settingsState.user.provider == AuthProvider.apple) ...[
+              if (settingsState.user.authProvider == AuthProvider.google ||
+                  settingsState.user.authProvider == AuthProvider.apple) ...[
                 SizedBox(
                   height: 56,
                   child: ListItem(

@@ -20,11 +20,12 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$UserModel {
-  String get id => throw _privateConstructorUsedError;
+  String get uid => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
-  String? get displayName => throw _privateConstructorUsedError;
+  String get displayName => throw _privateConstructorUsedError;
+  UserType get userType => throw _privateConstructorUsedError;
   String? get photoUrl => throw _privateConstructorUsedError;
-  AuthProvider get provider => throw _privateConstructorUsedError;
+  AuthProvider get authProvider => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
   DateTime? get lastSignInAt => throw _privateConstructorUsedError;
 
@@ -44,11 +45,12 @@ abstract class $UserModelCopyWith<$Res> {
       _$UserModelCopyWithImpl<$Res, UserModel>;
   @useResult
   $Res call(
-      {String id,
+      {String uid,
       String email,
-      String? displayName,
+      String displayName,
+      UserType userType,
       String? photoUrl,
-      AuthProvider provider,
+      AuthProvider authProvider,
       DateTime createdAt,
       DateTime? lastSignInAt});
 }
@@ -68,34 +70,39 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
+    Object? uid = null,
     Object? email = null,
-    Object? displayName = freezed,
+    Object? displayName = null,
+    Object? userType = null,
     Object? photoUrl = freezed,
-    Object? provider = null,
+    Object? authProvider = null,
     Object? createdAt = null,
     Object? lastSignInAt = freezed,
   }) {
     return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
+      uid: null == uid
+          ? _value.uid
+          : uid // ignore: cast_nullable_to_non_nullable
               as String,
       email: null == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String,
-      displayName: freezed == displayName
+      displayName: null == displayName
           ? _value.displayName
           : displayName // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as String,
+      userType: null == userType
+          ? _value.userType
+          : userType // ignore: cast_nullable_to_non_nullable
+              as UserType,
       photoUrl: freezed == photoUrl
           ? _value.photoUrl
           : photoUrl // ignore: cast_nullable_to_non_nullable
               as String?,
-      provider: null == provider
-          ? _value.provider
-          : provider // ignore: cast_nullable_to_non_nullable
+      authProvider: null == authProvider
+          ? _value.authProvider
+          : authProvider // ignore: cast_nullable_to_non_nullable
               as AuthProvider,
       createdAt: null == createdAt
           ? _value.createdAt
@@ -118,11 +125,12 @@ abstract class _$$UserModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String id,
+      {String uid,
       String email,
-      String? displayName,
+      String displayName,
+      UserType userType,
       String? photoUrl,
-      AuthProvider provider,
+      AuthProvider authProvider,
       DateTime createdAt,
       DateTime? lastSignInAt});
 }
@@ -140,34 +148,39 @@ class __$$UserModelImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
+    Object? uid = null,
     Object? email = null,
-    Object? displayName = freezed,
+    Object? displayName = null,
+    Object? userType = null,
     Object? photoUrl = freezed,
-    Object? provider = null,
+    Object? authProvider = null,
     Object? createdAt = null,
     Object? lastSignInAt = freezed,
   }) {
     return _then(_$UserModelImpl(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
+      uid: null == uid
+          ? _value.uid
+          : uid // ignore: cast_nullable_to_non_nullable
               as String,
       email: null == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String,
-      displayName: freezed == displayName
+      displayName: null == displayName
           ? _value.displayName
           : displayName // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as String,
+      userType: null == userType
+          ? _value.userType
+          : userType // ignore: cast_nullable_to_non_nullable
+              as UserType,
       photoUrl: freezed == photoUrl
           ? _value.photoUrl
           : photoUrl // ignore: cast_nullable_to_non_nullable
               as String?,
-      provider: null == provider
-          ? _value.provider
-          : provider // ignore: cast_nullable_to_non_nullable
+      authProvider: null == authProvider
+          ? _value.authProvider
+          : authProvider // ignore: cast_nullable_to_non_nullable
               as AuthProvider,
       createdAt: null == createdAt
           ? _value.createdAt
@@ -183,29 +196,33 @@ class __$$UserModelImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$UserModelImpl implements _UserModel {
+class _$UserModelImpl extends _UserModel {
   const _$UserModelImpl(
-      {required this.id,
+      {required this.uid,
       required this.email,
-      this.displayName,
+      required this.displayName,
+      required this.userType,
       this.photoUrl,
-      required this.provider,
+      required this.authProvider,
       required this.createdAt,
-      this.lastSignInAt});
+      this.lastSignInAt})
+      : super._();
 
   factory _$UserModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$UserModelImplFromJson(json);
 
   @override
-  final String id;
+  final String uid;
   @override
   final String email;
   @override
-  final String? displayName;
+  final String displayName;
+  @override
+  final UserType userType;
   @override
   final String? photoUrl;
   @override
-  final AuthProvider provider;
+  final AuthProvider authProvider;
   @override
   final DateTime createdAt;
   @override
@@ -213,7 +230,7 @@ class _$UserModelImpl implements _UserModel {
 
   @override
   String toString() {
-    return 'UserModel(id: $id, email: $email, displayName: $displayName, photoUrl: $photoUrl, provider: $provider, createdAt: $createdAt, lastSignInAt: $lastSignInAt)';
+    return 'UserModel(uid: $uid, email: $email, displayName: $displayName, userType: $userType, photoUrl: $photoUrl, authProvider: $authProvider, createdAt: $createdAt, lastSignInAt: $lastSignInAt)';
   }
 
   @override
@@ -221,14 +238,16 @@ class _$UserModelImpl implements _UserModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$UserModelImpl &&
-            (identical(other.id, id) || other.id == id) &&
+            (identical(other.uid, uid) || other.uid == uid) &&
             (identical(other.email, email) || other.email == email) &&
             (identical(other.displayName, displayName) ||
                 other.displayName == displayName) &&
+            (identical(other.userType, userType) ||
+                other.userType == userType) &&
             (identical(other.photoUrl, photoUrl) ||
                 other.photoUrl == photoUrl) &&
-            (identical(other.provider, provider) ||
-                other.provider == provider) &&
+            (identical(other.authProvider, authProvider) ||
+                other.authProvider == authProvider) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.lastSignInAt, lastSignInAt) ||
@@ -237,8 +256,8 @@ class _$UserModelImpl implements _UserModel {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, email, displayName, photoUrl,
-      provider, createdAt, lastSignInAt);
+  int get hashCode => Object.hash(runtimeType, uid, email, displayName,
+      userType, photoUrl, authProvider, createdAt, lastSignInAt);
 
   /// Create a copy of UserModel
   /// with the given fields replaced by the non-null parameter values.
@@ -256,29 +275,33 @@ class _$UserModelImpl implements _UserModel {
   }
 }
 
-abstract class _UserModel implements UserModel {
+abstract class _UserModel extends UserModel {
   const factory _UserModel(
-      {required final String id,
+      {required final String uid,
       required final String email,
-      final String? displayName,
+      required final String displayName,
+      required final UserType userType,
       final String? photoUrl,
-      required final AuthProvider provider,
+      required final AuthProvider authProvider,
       required final DateTime createdAt,
       final DateTime? lastSignInAt}) = _$UserModelImpl;
+  const _UserModel._() : super._();
 
   factory _UserModel.fromJson(Map<String, dynamic> json) =
       _$UserModelImpl.fromJson;
 
   @override
-  String get id;
+  String get uid;
   @override
   String get email;
   @override
-  String? get displayName;
+  String get displayName;
+  @override
+  UserType get userType;
   @override
   String? get photoUrl;
   @override
-  AuthProvider get provider;
+  AuthProvider get authProvider;
   @override
   DateTime get createdAt;
   @override
