@@ -141,7 +141,7 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
       UserModel? user = _authRepository.getCurrentUser();
 
       if (user != null) {
-        switch (user.provider) {
+        switch (user.authProvider) {
           case AuthProvider.google:
             await _authRepository.signOutWithGoogle();
           case AuthProvider.apple:
