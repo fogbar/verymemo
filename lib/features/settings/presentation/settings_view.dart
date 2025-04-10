@@ -25,16 +25,18 @@ class SettingsView extends ConsumerWidget {
                 height: 56,
                 child: ListItem(
                   config: ListItemConfig(
-                      leadingType: ListItemType.icon,
-                      leadingIconKey: 'sync',
-                      alignment: CrossAxisAlignment.center,
-                      leadingIconSize: IconSize.medium,
-                      leadingIconColor: Theme.of(context).colorScheme.primary,
-                      itemSpacing: 12),
+                    leadingType: ListItemType.icon,
+                    leadingIconKey: 'sync',
+                    alignment: CrossAxisAlignment.center,
+                    leadingIconSize: IconSize.medium,
+                    leadingIconColor: Theme.of(context).colorScheme.primary,
+                    itemSpacing: 12,
+                  ),
                   title: '동기화',
                   onTap: () => settingsVM.onSyncTap(context),
                 ),
               ),
+
               // ListItem(
               //   config: ListItemConfig(
               //     leadingType: ListItemType.icon,
@@ -45,7 +47,6 @@ class SettingsView extends ConsumerWidget {
               //   title: '태그 관리',
               //   onTap: () => debugPrint("태그 관리 클릭!"),
               // ),
-
               SizedBox(
                 height: 56,
                 child: ListItem(

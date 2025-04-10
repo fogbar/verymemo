@@ -8,7 +8,7 @@ class MemoMapper {
 
     final dto = MemoDTO(
       id: model.memoId,
-      userId: model.user?.id ?? model.userId ?? "",
+      userId: model.user?.uid ?? model.userId ?? "",
       content: model.content,
       createdAt: _dateTimeToString(model.createdAt),
       updatedAt: _dateTimeToString(model.updatedAt),

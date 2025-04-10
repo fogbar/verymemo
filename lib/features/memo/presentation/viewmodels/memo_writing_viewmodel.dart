@@ -281,7 +281,7 @@ class MemoWritingViewModel extends StateNotifier<MemoWritingState> {
   /// 메모 데이터 저장
   Future<void> saveMemo() async {
     try {
-      final userId = userProvider.getUser()?.id ?? "1";
+      final userId = userProvider.getUser()?.uid ?? "1";
       final text = state.textController.text.trim();
 
       log("---> 메모 저장 시작");
