@@ -24,6 +24,8 @@
     <string>$(FLUTTER_BUILD_NUMBER)</string>
     <key>LSRequiresIPhoneOS</key>
     <true/>
+    <key>AppGroupId</key>
+    <string>$(CUSTOM_GROUP_ID)</string>
     <key>CFBundleURLTypes</key>
     <array>
       <dict>
@@ -47,6 +49,7 @@
           <!-- Apple 로그인 리버스 도메인 -->
           <string>io.very.verymemo</string>
           <string>com.googleusercontent.apps.634454835385-bduobhit7vs66bdkqjca557fviul5v9q</string>
+          <string>ShareMedia-$(PRODUCT_BUNDLE_IDENTIFIER)</string>
         </array>
       </dict>
     </array>

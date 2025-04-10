@@ -1,6 +1,7 @@
 import 'package:verymemo/common/barrel/view_common.dart';
 import 'package:verymemo/common/barrel/list.dart';
 import 'package:verymemo/common/barrel/button.dart';
+import 'package:verymemo/features/auth/presentation/providers/user_provider.dart';
 import 'package:verymemo/features/settings/presentation/settings_viewmodel.dart';
 import 'package:verymemo/features/auth/domain/models/user_model.dart';
 
@@ -9,6 +10,7 @@ class SettingsView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final userNotifierProvider = ref.watch(userProvider.notifier);
     final settingsState = ref.watch(settingsViewModelProvider);
     final settingsVM = ref.read(settingsViewModelProvider.notifier);
 
@@ -23,16 +25,18 @@ class SettingsView extends ConsumerWidget {
                 height: 56,
                 child: ListItem(
                   config: ListItemConfig(
-                      leadingType: ListItemType.icon,
-                      leadingIconKey: 'sync',
-                      alignment: CrossAxisAlignment.center,
-                      leadingIconSize: IconSize.medium,
-                      leadingIconColor: Theme.of(context).colorScheme.primary,
-                      itemSpacing: 12),
+                    leadingType: ListItemType.icon,
+                    leadingIconKey: 'sync',
+                    alignment: CrossAxisAlignment.center,
+                    leadingIconSize: IconSize.medium,
+                    leadingIconColor: Theme.of(context).colorScheme.primary,
+                    itemSpacing: 12,
+                  ),
                   title: '동기화',
                   onTap: () => settingsVM.onSyncTap(context),
                 ),
               ),
+
               // ListItem(
               //   config: ListItemConfig(
               //     leadingType: ListItemType.icon,
@@ -43,7 +47,6 @@ class SettingsView extends ConsumerWidget {
               //   title: '태그 관리',
               //   onTap: () => debugPrint("태그 관리 클릭!"),
               // ),
-
               SizedBox(
                 height: 56,
                 child: ListItem(
@@ -136,7 +139,7 @@ class SettingsView extends ConsumerWidget {
               //   ),
               // ),
               // 디바이스 ID만 있는 미가입 유저인 경우에만 보여줌
-              if (settingsState.user.authProvider == AuthProvider.unknown) ...[
+              if (userNotifierProvider.isGuest()) ...[
                 SizedBox(
                   height: 56,
                   child: ListItem(
@@ -153,8 +156,23 @@ class SettingsView extends ConsumerWidget {
                   ),
                 ),
               ],
-              if (settingsState.user.authProvider == AuthProvider.google ||
-                  settingsState.user.authProvider == AuthProvider.apple) ...[
+              if (userNotifierProvider.isGoogle() ||
+                  userNotifierProvider.isApple()) ...[
+                SizedBox(
+                  height: 56,
+                  child: ListItem(
+                    config: ListItemConfig(
+                      leadingType: ListItemType.icon,
+                      leadingIconKey: 'user',
+                      leadingIconSize: IconSize.medium,
+                      itemSpacing: 12,
+                      alignment: CrossAxisAlignment.center,
+                      leadingIconColor: Theme.of(context).colorScheme.primary,
+                    ),
+                    title: '로그 아웃',
+                    onTap: () => settingsVM.logout(),
+                  ),
+                ),
                 SizedBox(
                   height: 56,
                   child: ListItem(

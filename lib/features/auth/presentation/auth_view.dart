@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:verymemo/common/barrel/view_common.dart';
 import 'package:verymemo/common/ui/common/config/login_channel_config.dart';
 import 'package:verymemo/common/ui/common/config/login_channel.dart';
@@ -6,8 +5,6 @@ import 'package:verymemo/common/ui/components/button/button_state.dart';
 import 'package:verymemo/common/ui/components/button/round_btn.dart';
 import 'package:verymemo/common/utils/platform_util.dart';
 import 'package:verymemo/features/auth/presentation/providers/auth_provider.dart';
-import 'package:verymemo/features/auth/presentation/providers/state/auth_state.dart';
-import 'package:verymemo/routers/router.dart';
 
 class AuthView extends ConsumerStatefulWidget {
   const AuthView({super.key});
@@ -46,16 +43,6 @@ class _AuthViewState extends ConsumerState<AuthView>
 
   @override
   Widget build(BuildContext context) {
-    ref.listen<AuthState>(authStateNotifierProvider, (previous, current) {
-      current.whenOrNull(
-        error: (message) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(message)),
-          );
-          log(message);
-        },
-      );
-    });
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -146,19 +133,11 @@ class _LoginButton extends ConsumerWidget {
         iconSpacing: 4,
         text: channel.title,
         leadingIcon: channel.logo,
-        onPressed: channel.isUser
-            ? () {
-                if (channel.title == "동기화를 위한 가입") {
-                  ref.read(authStateNotifierProvider.notifier).signIn(
-                        "google",
-                      );
-                } else {
-                  ref.read(authStateNotifierProvider.notifier).signIn(
-                        "apple",
-                      );
-                }
-              }
-            : () => context.replace(AppRoute.home),
+        onPressed: () {
+          ref.read(authStateNotifierProvider.notifier).signIn(
+                channel.provider,
+              );
+        },
         state: channel.isUser ? ButtonState.white : ButtonState.transparent,
         isExpanded: true,
       ),

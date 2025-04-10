@@ -2,12 +2,16 @@ import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:verymemo/common/configs/storage_key.dart';
+import 'package:verymemo/common/utils/json_util.dart';
+import 'package:verymemo/common/utils/platform_util.dart';
 // import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:verymemo/externals/storage/storage_service.dart';
 import 'package:verymemo/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:verymemo/features/auth/domain/models/user_model.dart';
 import 'package:verymemo/features/auth/domain/repositories/auth_repository.dart';
 import 'package:verymemo/features/auth/presentation/providers/state/auth_state.dart';
+import 'package:verymemo/features/auth/presentation/providers/user_provider.dart';
+import 'package:verymemo/features/permission/providers/permission_provider.dart';
 import 'package:verymemo/routers/navigation_service.dart';
 import 'package:verymemo/routers/router.dart';
 
@@ -16,19 +20,81 @@ final authStateNotifierProvider =
   final authRepository = ref.watch(authRepositoryProvider);
   final storageService = ref.watch(storageProvider);
   final navigationService = ref.watch(navigationServiceProvider);
-  return AuthStateNotifier(authRepository, storageService, navigationService);
+  final userNotifierProvider = ref.watch(userProvider.notifier);
+  final permissionProvider = ref.watch(permissionNotifierProvider.notifier);
+  return AuthStateNotifier(authRepository, storageService, navigationService,
+      userNotifierProvider, permissionProvider);
 });
 
+// 유저의 회원가입/로그인 상태 체크
 class AuthStateNotifier extends StateNotifier<AuthState> {
   final AuthRepository _authRepository;
   final StorageService _storageService;
   final NavigationService _navigationService;
+  final UserNotifier _userNotifier;
+  final PermissionNotifier _permissionProvider;
 
-  AuthStateNotifier(
-      this._authRepository, this._storageService, this._navigationService)
-      : super(
-          const AuthState.initial(),
-        );
+  AuthStateNotifier(this._authRepository, this._storageService,
+      this._navigationService, this._userNotifier, this._permissionProvider)
+      : super(const AuthState.initial()) {
+    _init();
+  }
+
+  /// 1. DeviceId가 저장되어 있는지 체크
+  ///  - O
+  ///   - UserModel이 저장되어 있는지 체크
+  ///     - O
+  ///       - 회원 / 비회원 -> 저장된 UserModel을 메모리에 올림
+  ///       - AppRoute.home 으로 보냄
+  ///     - X : 최초는 X, 가입정보 입력 X
+  ///       - AppRoute.auth로 보내버림
+  ///
+  ///   - X : 최초 접근인 경우
+  ///    -> AppRoute.intro 로 보내버림
+
+  // Init
+  Future<void> _init() async {
+    final deviceId = await PlatformUtil.getPlatformInfo();
+
+    final user = await _storageService.get(key: userKey);
+
+    // permission 체크 진행.
+    if (await _permissionProvider.shouldNavigateToPermission()) {
+      print("퍼미션 체크로 이동해야 함");
+      // permission 체크가 최상위에 한 번 진행.
+      _navigationService.pushAndRemoveUntil(AppRoute.permissionCheck);
+    } else {
+      // permission 체크 이미 함.
+      // 해당 deviceId가 로컬 DB에 저장되어 있는지 확인
+      if (await containsValue(deviceId)) {
+        // O
+        // 유저모델 저장 여부
+        // O
+        if (user != null && user != "") {
+          _userNotifier.saveUser(
+            UserModel.fromJson(
+              JsonUtil.stringToJson(
+                user.toString(),
+              ),
+            ),
+          );
+
+          // 정상 로그인
+          state = AuthState.authenticated(_userNotifier.getUser()!);
+          _navigationService.pushAndRemoveUntil(AppRoute.home);
+        } else {
+          // 유저가 인트로까지는 봤는데 회원가입/로그인을 안했을때.
+          state = const AuthState.unauthenticated();
+          _navigationService.pushAndRemoveUntil(AppRoute.signup);
+        }
+      } else {
+        // 유저가 앱 깔자마자 처음 들어왔을때.
+        // 그 이후에는 타면 안 됨.
+        state = AuthState.intro();
+        _navigationService.pushAndRemoveUntil(AppRoute.intro);
+      }
+    }
+  }
 
   Future<void> signIn(String provider) async {
     try {
@@ -46,18 +112,24 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
           user = await _authRepository.signInWithGoogle();
         case "apple":
           user = await _authRepository.signInWithApple();
+        case "guest":
+          // 게스트로 가입시 home 으로 리다이렉트
+          // 향후 해당 부분 구현 필요.
+          _navigationService.pushAndRemoveUntil(AppRoute.home);
+          return;
         default:
           user = null;
       }
 
       if (user != null) {
         state = AuthState.authenticated(user);
+        _userNotifier.saveUser(user);
         await _storageService.set(key: userKey, data: user.toJson());
         _navigationService.pushAndRemoveUntil(AppRoute.home);
       } else {
         state = const AuthState.unauthenticated();
+        _navigationService.pushAndRemoveUntil(AppRoute.signup);
       }
-      // final user = await _authRepository.sign
     } catch (e) {
       state = AuthState.error(e.toString());
     }
@@ -86,16 +158,51 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
 
         if (isRemoved) {
           // 회원가입 화면으로 라우팅
+          _userNotifier.removeUser();
+          state = const AuthState.unauthenticated();
+          await _storageService.remove(key: userKey);
           _navigationService.pushAndRemoveUntil(AppRoute.signup);
         } else {
           state = AuthState.error("회원 탈퇴에 실패하였습니다.");
         }
       } else {
-        state = const AuthState.unauthenticated();
+        log("❌ 회원 탈퇴 오류");
+        state = AuthState.error("존재하지 않는 유저 입니다.");
       }
     } catch (e) {
       log("❌ 회원 탈퇴 오류: $e");
       state = AuthState.error("회원 탈퇴에 실패하였습니다.");
+    }
+  }
+
+  Future<void> logout() async {
+    try {
+      state = const AuthState.loading();
+      UserModel? user = _authRepository.getCurrentUser();
+
+      if (user != null) {
+        switch (user.authProvider) {
+          case AuthProvider.google:
+            await _authRepository.signOutWithGoogle();
+          case AuthProvider.apple:
+            await _authRepository.signOutWithApple();
+          case AuthProvider.unknown:
+            state = AuthState.error("로그아웃에 실패하였습니다.");
+            return;
+        }
+
+        // 회원가입 화면으로 라우팅
+        _userNotifier.removeUser();
+        state = const AuthState.unauthenticated();
+        await _storageService.remove(key: userKey);
+        _navigationService.pushAndRemoveUntil(AppRoute.signup);
+      } else {
+        log("❌ 회원 탈퇴 오류");
+        state = AuthState.error("존재하지 않는 유저 입니다.");
+      }
+    } catch (e) {
+      log("❌ 로그아웃 오류: $e");
+      state = AuthState.error("로그아웃에 실패하였습니다.");
     }
   }
 
@@ -106,5 +213,19 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
     } catch (e) {
       state = AuthState.error(e.toString());
     }
+  }
+
+  // Device Info 가져오기
+  Future<bool> containsValue(String targetValue) async {
+    final keys = await _storageService.getKeys();
+
+    for (String key in keys) {
+      final value = await _storageService.get(key: key);
+      if (value == targetValue) {
+        log("---> targetValue: $targetValue");
+        return true;
+      }
+    }
+    return false;
   }
 }

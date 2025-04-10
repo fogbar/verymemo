@@ -113,6 +113,49 @@ class FirebaseService {
     }
   }
 
+  // 임시 함수.
+  // 향후 수정 필요. 반드시 수정 필요.
+  Future<UserModel?> signInWithGuest() async {
+    try {
+      final GoogleSignInAccount? account = await _googleSignIn.signIn();
+
+      if (account == null) return null;
+
+      final GoogleSignInAuthentication authentication =
+          await account.authentication;
+
+      final OAuthCredential googleCredential = GoogleAuthProvider.credential(
+        idToken: authentication.idToken,
+        accessToken: authentication.accessToken,
+      );
+
+      UserCredential credential =
+          await _auth.signInWithCredential(googleCredential);
+
+      final user = credential.user;
+      if (user == null) return null;
+
+      return UserModel.fromFBUser(user);
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case 'account-exists-with-different-credential':
+          throw Exception('이미 다른 방법으로 가입된 계정입니다.');
+        case 'invalid-credential':
+          throw Exception('인증 정보가 유효하지 않습니다.');
+        case 'operation-not-allowed':
+          throw Exception('게스트 로그인이 활성화되지 않았습니다.');
+        case 'user-disabled':
+          throw Exception('사용자 계정이 비활성화되었습니다.');
+        case 'user-not-found':
+          throw Exception('사용자를 찾을 수 없습니다.');
+        default:
+          throw Exception('게스트 로그인 중 오류가 발생했습니다: ${e.message}');
+      }
+    } catch (e) {
+      throw Exception("---> signInWithGuest Error: $e");
+    }
+  }
+
   Future<void> signOutWithGoogle() async {
     await Future.wait(
       [

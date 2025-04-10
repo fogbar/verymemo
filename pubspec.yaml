@@ -79,6 +79,7 @@ dependencies:
   # 링크
   any_link_preview: ^3.0.3
   url_launcher: ^6.2.5
+  receive_sharing_intent: ^1.8.1
 
   # 추가
   provider: ^6.1.1
