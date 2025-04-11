@@ -1,9 +1,12 @@
+import 'package:verymemo/common/barrel/model_common.dart';
 import 'package:verymemo/common/configs/app_config.dart';
 import 'package:verymemo/features/memo/data/providers/memo_repository_provider.dart';
 import 'package:verymemo/main/main.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   AppConfig.initialize(
     apiUrl: const String.fromEnvironment('API_URL',
         defaultValue: 'https://dev-api.example.com'),
