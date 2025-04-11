@@ -18,5 +18,5 @@ Future<void> mainCommon() async {
 
   print("mainCommon call");
 
-  runApp(ProviderScope(child: AppLifecycleWrapper(child: App())));
+  runApp(ProviderScope(child: App()));
 }
