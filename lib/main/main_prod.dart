@@ -1,7 +1,10 @@
+import 'package:verymemo/common/barrel/model_common.dart';
 import 'package:verymemo/common/configs/app_config.dart';
 import 'package:verymemo/main/main.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
   AppConfig.initialize(
     apiUrl: const String.fromEnvironment('API_URL',
         defaultValue: 'https://api.example.com'),

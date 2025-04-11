@@ -10,8 +10,6 @@ import 'package:verymemo/main/app.dart';
 final dbContainer = ProviderContainer();
 
 Future<void> mainCommon() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -20,5 +18,5 @@ Future<void> mainCommon() async {
 
   print("mainCommon call");
 
-  runApp(ProviderScope(child: AppLifecycleWrapper(child: App())));
+  runApp(ProviderScope(child: App()));
 }
