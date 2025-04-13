@@ -1,14 +1,14 @@
 class AppConfig {
   final String apiUrl;
   final String environment;
-  final String supabaseUrl;
-  final String supabaseAnonKey;
+  // final String supabaseUrl;
+  // final String supabaseAnonKey;
 
   AppConfig({
     required this.apiUrl,
     required this.environment,
-    required this.supabaseUrl,
-    required this.supabaseAnonKey,
+    // required this.supabaseUrl,
+    // required this.supabaseAnonKey,
   });
 
   static late AppConfig _instance;
@@ -18,14 +18,14 @@ class AppConfig {
   static void initialize({
     required String apiUrl,
     required String environment,
-    required String supabaseUrl,
-    required String supabaseAnonKey,
+    // required String supabaseUrl,
+    // required String supabaseAnonKey,
   }) {
     _instance = AppConfig(
       apiUrl: apiUrl,
       environment: environment,
-      supabaseUrl: supabaseUrl,
-      supabaseAnonKey: supabaseAnonKey,
+      // supabaseUrl: supabaseUrl,
+      // supabaseAnonKey: supabaseAnonKey,
     );
   }
 }
