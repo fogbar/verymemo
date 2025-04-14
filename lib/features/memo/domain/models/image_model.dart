@@ -5,7 +5,7 @@ part of 'model.dart';
 class ImageModel with _$ImageModel {
   const factory ImageModel({
     int? imageId, // 해당 image의 인덱스
-    @Default("") String? imageUrl,
+    String? imageUrl,
     @Default("") String? description, // 주석
   }) = _ImageModel;
 

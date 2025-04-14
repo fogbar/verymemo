@@ -1,8 +1,14 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:verymemo/common/barrel/model_common.dart';
+import 'package:verymemo/common/utils/image_compresion_util.dart';
+import 'package:verymemo/externals/firebase/firebase_storage_helpder.dart';
 import 'package:verymemo/features/memo/data/providers/memo_repository_provider.dart';
+import 'package:verymemo/features/memo/domain/caches/images_cache.dart';
 import 'package:verymemo/features/memo/domain/caches/memo_cache.dart';
+import 'package:verymemo/features/memo/domain/mappers/mapper.dart';
 import 'package:verymemo/features/memo/domain/models/model.dart';
 import 'package:verymemo/features/memo/domain/repositories/memo_repository.dart';
 import 'package:verymemo/features/memo/presentation/providers/memo_sort_provider.dart';
@@ -21,6 +27,9 @@ class MemoNotifier extends StateNotifier<MemoState> {
       : super(const MemoState.initial()) {
     _initialize();
   }
+
+  // 임시 이미지 관리를 위한 별도의 상태
+  final Map<String, String> _tempImages = {};
 
   /// [초기 데터 로드]
   Future<void> _initialize() async {
@@ -99,7 +108,20 @@ class MemoNotifier extends StateNotifier<MemoState> {
   Future<void> addMemo(MemoModel memo) async {
     try {
       state = const MemoState.loading();
+
+      // 임시 이미지를 Fire Storage에 업로드
+      final tempImages = ImagesCache.getTempImages(memo.userId ?? '');
+      if (tempImages != null && tempImages.isNotEmpty) {
+        final uploadedImages = await ImageMapper.prepareImageModelsForMemo(
+          tempImages,
+          memo.userId ?? '',
+        );
+        // memo.images = uploadedImages;
+        memo = memo.copyWith(images: uploadedImages);
+      }
+
       await memoRepository.addMemo(memo);
+      await clearTempImages(memo.userId ?? ''); // 임시 이미지 정리
 
       // 메모 추가 후 전체 메모 다시 로드
       final memoModels = await memoRepository.getAllMemos();
@@ -235,5 +257,64 @@ class MemoNotifier extends StateNotifier<MemoState> {
       log("❌ Error searching memos: $e");
       state = MemoState.error('검색 중 오류가 발생했습니다.');
     }
+  }
+
+  /// [임시 이미지 추가]
+  Future<void> addTempImage(String userId, File image,
+      {String? tempUrl}) async {
+    try {
+      // 이미지 크기 체크
+      if (await image.length() > 10 * 1024 * 1024) {
+        throw Exception('이미지 크기가 너무 큽니다. (최대 10MB)');
+      }
+
+      // 이미지 압축
+      final compressedFile =
+          await ImageCompressionUtil.compressAndResizeImage(image);
+
+      // Firebase Storage에 임시 이미지 업로드
+      final storageUrl = tempUrl ??
+          await FirebaseStorageHelper.uploadImage(
+            compressedFile,
+            userId,
+          );
+
+      // 임시 이미지 캐시에 추가
+      ImagesCache.addTempImage(userId, compressedFile);
+
+      // 임시 이미지 상태 업데이트
+      _tempImages[compressedFile.path] = storageUrl;
+    } catch (e) {
+      log('임시 이미지 추가 실패: $e');
+      rethrow;
+    }
+  }
+
+  /// [임시 이미지 삭제]
+  Future<void> clearTempImages(String userId) async {
+    try {
+      final tempImages = ImagesCache.getTempImages(userId);
+      if (tempImages != null) {
+        for (final image in tempImages) {
+          try {
+            await image.delete();
+          } catch (e) {
+            log('임시 이미지 삭제 실패: $e');
+          }
+        }
+      }
+      ImagesCache.clearTempImages(userId);
+
+      // 임시 이미지 상태 초기화
+      _tempImages.clear();
+    } catch (e) {
+      log('임시 이미지 정리 실패: $e');
+      rethrow;
+    }
+  }
+
+  // 임시 이미지 URL 가져오기
+  String? getTempImageUrl(String filePath) {
+    return _tempImages[filePath];
   }
 }

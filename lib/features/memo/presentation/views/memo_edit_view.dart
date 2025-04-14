@@ -156,7 +156,7 @@ class MemoEditView extends ConsumerWidget {
                                 right: 4,
                                 child: GestureDetector(
                                   onTap: () {
-                                    viewModel.removeImage(index);
+                                    viewModel.removeImage(context, index);
                                   },
                                   child: Container(
                                     padding: const EdgeInsets.all(6),

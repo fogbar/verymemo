@@ -39,4 +39,46 @@ class ImageMapper {
     if (dtos == null || dtos.isEmpty) return '[]';
     return jsonEncode(dtos.map((e) => e.toJson()).toList());
   }
+
+  /// [이미지 업로드 준비]
+  static Future<List<ImageModel>> prepareImageModelsForMemo(
+      List<File> files, String userId) async {
+    final List<ImageModel> result = [];
+
+    try {
+      for (final file in files) {
+        // 이미지 크기 체크
+        if (await file.length() > 10 * 1024 * 1024) {
+          throw Exception('이미지 크기가 너무 큽니다. (최대 10MB)');
+        }
+
+        // 이미지 압축 및 리사이징
+        final compressedFile =
+            await ImageCompressionUtil.compressAndResizeImage(file);
+
+        // 압축된 이미지 업로드
+        final url = await uploadImageToFirebase(compressedFile, userId);
+
+        result.add(ImageModel(
+          imageUrl: url,
+          description: 'firebase_storage',
+        ));
+
+        // 임시 파일 정리
+        await compressedFile.delete();
+      }
+      return result;
+    } catch (e) {
+      log('이미지 업로드 실패: $e');
+      // 실패한 이미지 정리
+      for (final file in files) {
+        try {
+          await file.delete();
+        } catch (e) {
+          log('임시 파일 삭제 실패: $e');
+        }
+      }
+      rethrow;
+    }
+  }
 }
