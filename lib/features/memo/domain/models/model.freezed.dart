@@ -828,14 +828,12 @@ class __$$ImageModelImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable(createFactory: false)
 class _$ImageModelImpl implements _ImageModel {
-  const _$ImageModelImpl(
-      {this.imageId, this.imageUrl = "", this.description = ""});
+  const _$ImageModelImpl({this.imageId, this.imageUrl, this.description = ""});
 
   @override
   final int? imageId;
 // 해당 image의 인덱스
   @override
-  @JsonKey()
   final String? imageUrl;
   @override
   @JsonKey()
