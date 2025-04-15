@@ -18,7 +18,7 @@ class MemoLocalDataSource {
   MemoLocalDataSource(this.dbService);
 
   /// [Create Memo]
-  Future<void> addMemo({
+  Future<int?> addMemo({
     required MemoDTO dto,
     List<ImageDTO> images = const [],
     List<LinkDTO> links = const [],
@@ -27,7 +27,8 @@ class MemoLocalDataSource {
     final db = await dbService.database;
 
     // 🔄 트랜잭션 사용해 원자성 확보
-    await db.transaction((txn) async {
+    // return을 통하여 트랜젝션 완료 후 어떤 메모가 추가되었는지 해당 메모의 id 값을 리턴해준다.
+    return db.transaction((txn) async {
       try {
         // 🔄 memos 테이블에 저장 및 memoId 획득
         final memoData = dto.toJson();
@@ -110,6 +111,8 @@ DB에 저장할 데이터:
         }
 
         ("---> 트랜잭션 완료");
+
+        return memoId;
       } catch (e, stackTrace) {
         ("---> DB 저장 실패: $e");
         ("---> 스택트레이스: $stackTrace");

@@ -8,6 +8,7 @@ part of 'dto.dart';
 
 MemoDTO _$MemoDTOFromJson(Map<String, dynamic> json) => MemoDTO(
       id: (json['id'] as num?)?.toInt(),
+      docId: json['docId'] as String?,
       userId: json['userId'] as String?,
       content: json['content'] as String?,
       createdAt: json['createdAt'] as String?,
@@ -19,6 +20,7 @@ MemoDTO _$MemoDTOFromJson(Map<String, dynamic> json) => MemoDTO(
 
 Map<String, dynamic> _$MemoDTOToJson(MemoDTO instance) => <String, dynamic>{
       'id': instance.id,
+      'docId': instance.docId,
       'userId': instance.userId,
       'content': instance.content,
       'createdAt': instance.createdAt,
@@ -73,6 +75,7 @@ Map<String, dynamic> _$TagDTOToJson(TagDTO instance) => <String, dynamic>{
 Map<String, dynamic> _$$MemoDTOImplToJson(_$MemoDTOImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
+      'docId': instance.docId,
       'userId': instance.userId,
       'content': instance.content,
       'createdAt': instance.createdAt,

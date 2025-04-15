@@ -4,7 +4,9 @@ part of 'model.dart';
 @JsonSerializable()
 class MemoModel with _$MemoModel {
   const factory MemoModel({
-    int? memoId,
+    @JsonKey(name: 'memoId')
+    int? memoId, // SQLite 자동 증가 ID // ✅ Firestore의 'id' 필드와 매핑
+    @JsonKey(ignore: true) String? docId, // Firestore 문서 ID (가져오는 것만 진행)
     @JsonKey(ignore: true) UserModel? user,
     String? profileImageUrl,
     String? userId,

@@ -8,6 +8,7 @@ class MemoMapper {
 
     final dto = MemoDTO(
       id: model.memoId,
+      docId: model.docId,
       userId: model.user?.uid ?? model.userId ?? "",
       content: model.content,
       createdAt: _dateTimeToString(model.createdAt),
@@ -30,6 +31,7 @@ class MemoMapper {
   }) {
     return MemoModel(
       memoId: dto.id,
+      docId: dto.docId,
       userId: dto.userId?.toString(),
       content: dto.content ?? "",
       images: images

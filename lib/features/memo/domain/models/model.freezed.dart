@@ -16,7 +16,10 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$MemoModel {
-  int? get memoId => throw _privateConstructorUsedError;
+  int? get memoId => throw _privateConstructorUsedError; // SQLite 자동 증가 ID
+  @JsonKey(ignore: true)
+  String? get docId =>
+      throw _privateConstructorUsedError; // Firestore 문서 ID (가져오는 것만 진행)
   @JsonKey(ignore: true)
   UserModel? get user => throw _privateConstructorUsedError;
   String? get profileImageUrl => throw _privateConstructorUsedError;
@@ -49,6 +52,7 @@ abstract class $MemoModelCopyWith<$Res> {
   @useResult
   $Res call(
       {int? memoId,
+      @JsonKey(ignore: true) String? docId,
       @JsonKey(ignore: true) UserModel? user,
       String? profileImageUrl,
       String? userId,
@@ -82,6 +86,7 @@ class _$MemoModelCopyWithImpl<$Res, $Val extends MemoModel>
   @override
   $Res call({
     Object? memoId = freezed,
+    Object? docId = freezed,
     Object? user = freezed,
     Object? profileImageUrl = freezed,
     Object? userId = freezed,
@@ -101,6 +106,10 @@ class _$MemoModelCopyWithImpl<$Res, $Val extends MemoModel>
           ? _value.memoId
           : memoId // ignore: cast_nullable_to_non_nullable
               as int?,
+      docId: freezed == docId
+          ? _value.docId
+          : docId // ignore: cast_nullable_to_non_nullable
+              as String?,
       user: freezed == user
           ? _value.user
           : user // ignore: cast_nullable_to_non_nullable
@@ -181,6 +190,7 @@ abstract class _$$MemoModelImplCopyWith<$Res>
   @useResult
   $Res call(
       {int? memoId,
+      @JsonKey(ignore: true) String? docId,
       @JsonKey(ignore: true) UserModel? user,
       String? profileImageUrl,
       String? userId,
@@ -213,6 +223,7 @@ class __$$MemoModelImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? memoId = freezed,
+    Object? docId = freezed,
     Object? user = freezed,
     Object? profileImageUrl = freezed,
     Object? userId = freezed,
@@ -232,6 +243,10 @@ class __$$MemoModelImplCopyWithImpl<$Res>
           ? _value.memoId
           : memoId // ignore: cast_nullable_to_non_nullable
               as int?,
+      docId: freezed == docId
+          ? _value.docId
+          : docId // ignore: cast_nullable_to_non_nullable
+              as String?,
       user: freezed == user
           ? _value.user
           : user // ignore: cast_nullable_to_non_nullable
@@ -293,6 +308,7 @@ class __$$MemoModelImplCopyWithImpl<$Res>
 class _$MemoModelImpl implements _MemoModel {
   const _$MemoModelImpl(
       {this.memoId,
+      @JsonKey(ignore: true) this.docId,
       @JsonKey(ignore: true) this.user,
       this.profileImageUrl,
       this.userId,
@@ -312,6 +328,11 @@ class _$MemoModelImpl implements _MemoModel {
 
   @override
   final int? memoId;
+// SQLite 자동 증가 ID
+  @override
+  @JsonKey(ignore: true)
+  final String? docId;
+// Firestore 문서 ID (가져오는 것만 진행)
   @override
   @JsonKey(ignore: true)
   final UserModel? user;
@@ -368,7 +389,7 @@ class _$MemoModelImpl implements _MemoModel {
 
   @override
   String toString() {
-    return 'MemoModel(memoId: $memoId, user: $user, profileImageUrl: $profileImageUrl, userId: $userId, userName: $userName, content: $content, images: $images, links: $links, tags: $tags, createdAt: $createdAt, updatedAt: $updatedAt, lastViewedAt: $lastViewedAt, isLocalMemo: $isLocalMemo, isBookMarked: $isBookMarked)';
+    return 'MemoModel(memoId: $memoId, docId: $docId, user: $user, profileImageUrl: $profileImageUrl, userId: $userId, userName: $userName, content: $content, images: $images, links: $links, tags: $tags, createdAt: $createdAt, updatedAt: $updatedAt, lastViewedAt: $lastViewedAt, isLocalMemo: $isLocalMemo, isBookMarked: $isBookMarked)';
   }
 
   @override
@@ -377,6 +398,7 @@ class _$MemoModelImpl implements _MemoModel {
         (other.runtimeType == runtimeType &&
             other is _$MemoModelImpl &&
             (identical(other.memoId, memoId) || other.memoId == memoId) &&
+            (identical(other.docId, docId) || other.docId == docId) &&
             (identical(other.user, user) || other.user == user) &&
             (identical(other.profileImageUrl, profileImageUrl) ||
                 other.profileImageUrl == profileImageUrl) &&
@@ -404,6 +426,7 @@ class _$MemoModelImpl implements _MemoModel {
   int get hashCode => Object.hash(
       runtimeType,
       memoId,
+      docId,
       user,
       profileImageUrl,
       userId,
@@ -437,6 +460,7 @@ class _$MemoModelImpl implements _MemoModel {
 abstract class _MemoModel implements MemoModel {
   const factory _MemoModel(
       {final int? memoId,
+      @JsonKey(ignore: true) final String? docId,
       @JsonKey(ignore: true) final UserModel? user,
       final String? profileImageUrl,
       final String? userId,
@@ -452,7 +476,10 @@ abstract class _MemoModel implements MemoModel {
       final bool isBookMarked}) = _$MemoModelImpl;
 
   @override
-  int? get memoId;
+  int? get memoId; // SQLite 자동 증가 ID
+  @override
+  @JsonKey(ignore: true)
+  String? get docId; // Firestore 문서 ID (가져오는 것만 진행)
   @override
   @JsonKey(ignore: true)
   UserModel? get user;

@@ -4,7 +4,8 @@ part of 'dto.dart';
 @JsonSerializable()
 class MemoDTO with _$MemoDTO {
   const factory MemoDTO({
-    int? id,
+    int? id, // SQLite 자동 증가 ID
+    String? docId, // Firestore 문서 ID
     String? userId,
     String? content,
     String? createdAt,

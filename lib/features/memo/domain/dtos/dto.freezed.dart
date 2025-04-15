@@ -16,7 +16,8 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$MemoDTO {
-  int? get id => throw _privateConstructorUsedError;
+  int? get id => throw _privateConstructorUsedError; // SQLite 자동 증가 ID
+  String? get docId => throw _privateConstructorUsedError; // Firestore 문서 ID
   String? get userId => throw _privateConstructorUsedError;
   String? get content => throw _privateConstructorUsedError;
   String? get createdAt => throw _privateConstructorUsedError;
@@ -44,6 +45,7 @@ abstract class $MemoDTOCopyWith<$Res> {
   @useResult
   $Res call(
       {int? id,
+      String? docId,
       String? userId,
       String? content,
       String? createdAt,
@@ -69,6 +71,7 @@ class _$MemoDTOCopyWithImpl<$Res, $Val extends MemoDTO>
   @override
   $Res call({
     Object? id = freezed,
+    Object? docId = freezed,
     Object? userId = freezed,
     Object? content = freezed,
     Object? createdAt = freezed,
@@ -82,6 +85,10 @@ class _$MemoDTOCopyWithImpl<$Res, $Val extends MemoDTO>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int?,
+      docId: freezed == docId
+          ? _value.docId
+          : docId // ignore: cast_nullable_to_non_nullable
+              as String?,
       userId: freezed == userId
           ? _value.userId
           : userId // ignore: cast_nullable_to_non_nullable
@@ -123,6 +130,7 @@ abstract class _$$MemoDTOImplCopyWith<$Res> implements $MemoDTOCopyWith<$Res> {
   @useResult
   $Res call(
       {int? id,
+      String? docId,
       String? userId,
       String? content,
       String? createdAt,
@@ -146,6 +154,7 @@ class __$$MemoDTOImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = freezed,
+    Object? docId = freezed,
     Object? userId = freezed,
     Object? content = freezed,
     Object? createdAt = freezed,
@@ -159,6 +168,10 @@ class __$$MemoDTOImplCopyWithImpl<$Res>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int?,
+      docId: freezed == docId
+          ? _value.docId
+          : docId // ignore: cast_nullable_to_non_nullable
+              as String?,
       userId: freezed == userId
           ? _value.userId
           : userId // ignore: cast_nullable_to_non_nullable
@@ -196,6 +209,7 @@ class __$$MemoDTOImplCopyWithImpl<$Res>
 class _$MemoDTOImpl implements _MemoDTO {
   const _$MemoDTOImpl(
       {this.id,
+      this.docId,
       this.userId,
       this.content,
       this.createdAt,
@@ -206,6 +220,10 @@ class _$MemoDTOImpl implements _MemoDTO {
 
   @override
   final int? id;
+// SQLite 자동 증가 ID
+  @override
+  final String? docId;
+// Firestore 문서 ID
   @override
   final String? userId;
   @override
@@ -227,7 +245,7 @@ class _$MemoDTOImpl implements _MemoDTO {
 
   @override
   String toString() {
-    return 'MemoDTO(id: $id, userId: $userId, content: $content, createdAt: $createdAt, updatedAt: $updatedAt, lastViewedAt: $lastViewedAt, isLocalMemo: $isLocalMemo, isBookMarked: $isBookMarked)';
+    return 'MemoDTO(id: $id, docId: $docId, userId: $userId, content: $content, createdAt: $createdAt, updatedAt: $updatedAt, lastViewedAt: $lastViewedAt, isLocalMemo: $isLocalMemo, isBookMarked: $isBookMarked)';
   }
 
   @override
@@ -236,6 +254,7 @@ class _$MemoDTOImpl implements _MemoDTO {
         (other.runtimeType == runtimeType &&
             other is _$MemoDTOImpl &&
             (identical(other.id, id) || other.id == id) &&
+            (identical(other.docId, docId) || other.docId == docId) &&
             (identical(other.userId, userId) || other.userId == userId) &&
             (identical(other.content, content) || other.content == content) &&
             (identical(other.createdAt, createdAt) ||
@@ -252,8 +271,8 @@ class _$MemoDTOImpl implements _MemoDTO {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, userId, content, createdAt,
-      updatedAt, lastViewedAt, isLocalMemo, isBookMarked);
+  int get hashCode => Object.hash(runtimeType, id, docId, userId, content,
+      createdAt, updatedAt, lastViewedAt, isLocalMemo, isBookMarked);
 
   /// Create a copy of MemoDTO
   /// with the given fields replaced by the non-null parameter values.
@@ -274,6 +293,7 @@ class _$MemoDTOImpl implements _MemoDTO {
 abstract class _MemoDTO implements MemoDTO {
   const factory _MemoDTO(
       {final int? id,
+      final String? docId,
       final String? userId,
       final String? content,
       final String? createdAt,
@@ -283,7 +303,9 @@ abstract class _MemoDTO implements MemoDTO {
       final int? isBookMarked}) = _$MemoDTOImpl;
 
   @override
-  int? get id;
+  int? get id; // SQLite 자동 증가 ID
+  @override
+  String? get docId; // Firestore 문서 ID
   @override
   String? get userId;
   @override

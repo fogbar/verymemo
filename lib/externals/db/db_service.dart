@@ -55,6 +55,7 @@ class DbService {
         await db.execute('''
             CREATE TABLE IF NOT EXISTS memos (
               id INTEGER PRIMARY KEY AUTOINCREMENT,
+              docId TEXT,
               userId INTEGER NOT NULL,
               content TEXT NOT NULL,
               isLocalMemo INTEGER NOT NULL DEFAULT 0,

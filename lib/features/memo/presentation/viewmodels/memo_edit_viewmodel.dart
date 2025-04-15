@@ -458,6 +458,10 @@ class MemoEditViewModel extends StateNotifier<MemoWritingState> {
       final memoId = originalMemo.memoId.toString();
       log("---> 메모 ID를 문자열로 변환: $memoId");
 
+      // FireStore document ID를 문자열로 변환하여 저장
+      final docId = originalMemo.docId.toString();
+      log("---> FireStore document ID를 문자열로 변환: $docId");
+
       final currentTime = DateTime.now();
       log("---> 현재 시간: $currentTime");
 
@@ -477,6 +481,7 @@ class MemoEditViewModel extends StateNotifier<MemoWritingState> {
 
       final updatedMemo = MemoModel(
         memoId: int.parse(memoId), // 문자열을 다시 정수로 변환
+        docId: docId,
         userId: originalMemo.userId,
         content: text,
         // images: state.selectedImages
