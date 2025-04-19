@@ -122,7 +122,7 @@ DB에 저장할 데이터:
   }
 
   /// [Read Memo]
-  Future<List<MemoModel>?> getAllMemos() async {
+  Future<List<MemoModel>?> getAllMemos(String userId) async {
     final db = await dbService.database;
     try {
       if (!db.isOpen) return null;
@@ -376,6 +376,21 @@ DB에 저장할 데이터:
 
       log("---> 트랜잭션 완료");
       return int.parse(memoId);
+    });
+  }
+
+  /// FireStore에 업로드 후 벌크 업데이트를 위한 함수
+  Future<void> bulkUpdateDocIds(Map<int, String> docIdMap) async {
+    final db = await dbService.database;
+    await db.transaction((txn) async {
+      for (final entry in docIdMap.entries) {
+        await txn.update(
+          'memos',
+          {'docId': entry.value},
+          where: 'id = ?',
+          whereArgs: [entry.key],
+        );
+      }
     });
   }
 

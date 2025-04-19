@@ -5,8 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:verymemo/common/barrel/model_common.dart';
 import 'package:verymemo/common/utils/image_compresion_util.dart';
 import 'package:verymemo/externals/firebase/firebase_storage_helpder.dart';
-import 'package:verymemo/features/auth/domain/models/user_model.dart';
-import 'package:verymemo/features/auth/presentation/providers/auth_provider.dart';
 import 'package:verymemo/features/memo/data/providers/memo_repository_provider.dart';
 import 'package:verymemo/features/memo/domain/caches/images_cache.dart';
 import 'package:verymemo/features/memo/domain/caches/memo_cache.dart';
@@ -19,14 +17,13 @@ import 'package:verymemo/features/memo/presentation/providers/state/memo_state.d
 final memoProvider = StateNotifierProvider<MemoNotifier, MemoState>((ref) {
   final memoRepository = ref.watch(memoRepositoryProvider);
   final sortType = ref.watch(memoSortProvider);
-  return MemoNotifier(ref, memoRepository, sortType);
+  return MemoNotifier(memoRepository, sortType);
 });
 
 class MemoNotifier extends StateNotifier<MemoState> {
-  final Ref _ref;
   final MemoRepository memoRepository;
   final MemoSortType sortType;
-  MemoNotifier(this._ref, this.memoRepository, this.sortType)
+  MemoNotifier(this.memoRepository, this.sortType)
       : super(const MemoState.initial()) {
     _initialize();
   }
@@ -44,8 +41,7 @@ class MemoNotifier extends StateNotifier<MemoState> {
   Future<void> getAllMemos() async {
     state = const MemoState.loading();
     try {
-      final userId = _getCurrentUserId();
-      final memoModels = await memoRepository.getAllMemos(userId);
+      final memoModels = await memoRepository.getAllMemos();
       final memos = memoModels?.whereType<MemoModel>().toList() ?? [];
 
       // 정렬 적용
@@ -128,8 +124,7 @@ class MemoNotifier extends StateNotifier<MemoState> {
       await clearTempImages(memo.userId ?? ''); // 임시 이미지 정리
 
       // 메모 추가 후 전체 메모 다시 로드
-      final userId = _getCurrentUserId();
-      final memoModels = await memoRepository.getAllMemos(userId);
+      final memoModels = await memoRepository.getAllMemos();
       final memos = memoModels?.whereType<MemoModel>().toList() ?? [];
 
       // 작성일 기준 내림차순 정렬 (최신순)
@@ -321,21 +316,5 @@ class MemoNotifier extends StateNotifier<MemoState> {
   // 임시 이미지 URL 가져오기
   String? getTempImageUrl(String filePath) {
     return _tempImages[filePath];
-  }
-
-  /// 현재 로그인된 유저를 반환하고, 없으면 예외를 던진다.
-  /// 활용 예시: final user = requireCurrentUser(ref);
-  UserModel _getCurrentUser() {
-    final user = _ref.read(authStateNotifierProvider).maybeWhen(
-          authenticated: (user) => user,
-          orElse: () => null,
-        );
-    if (user == null) throw Exception('로그인이 필요합니다');
-    return user;
-  }
-
-  String _getCurrentUserId() {
-    final currentUser = _getCurrentUser();
-    return currentUser.uid;
   }
 }

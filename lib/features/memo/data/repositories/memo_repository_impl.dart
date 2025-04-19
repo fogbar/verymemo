@@ -1,6 +1,9 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
+import 'package:verymemo/common/barrel/model_common.dart';
+import 'package:verymemo/features/auth/domain/models/user_model.dart';
+import 'package:verymemo/features/auth/presentation/providers/auth_provider.dart';
 import 'package:verymemo/features/memo/data/data-sources/memo_local_data_source.dart';
 import 'package:verymemo/features/memo/data/data-sources/memo_remote_data_source.dart';
 import 'package:verymemo/features/memo/domain/mappers/mapper.dart';
@@ -8,10 +11,27 @@ import 'package:verymemo/features/memo/domain/models/model.dart';
 import 'package:verymemo/features/memo/domain/repositories/memo_repository.dart';
 
 class MemoRepositoryImpl implements MemoRepository {
+  final Ref ref;
   final MemoLocalDataSource localDataSource;
   final MemoRemoteDataSource remoteDataSource;
 
-  MemoRepositoryImpl(this.localDataSource, this.remoteDataSource);
+  MemoRepositoryImpl(this.ref, this.localDataSource, this.remoteDataSource);
+
+  /// 현재 로그인된 유저를 반환하고, 없으면 예외를 던진다.
+  /// 활용 예시: final user = requireCurrentUser(ref);
+  UserModel _getCurrentUser() {
+    final user = ref.read(authStateNotifierProvider).maybeWhen(
+          authenticated: (user) => user,
+          orElse: () => null,
+        );
+    if (user == null) throw Exception('로그인이 필요합니다');
+    return user;
+  }
+
+  String _getCurrentUserId() {
+    final currentUser = _getCurrentUser();
+    return currentUser.uid;
+  }
 
   Map<String, dynamic> _mapToDTOs(MemoModel memo) {
     return {
@@ -35,15 +55,16 @@ class MemoRepositoryImpl implements MemoRepository {
   }
 
   @override
-  Future<List<MemoModel>?> getAllMemos(String userId) async {
+  Future<List<MemoModel>?> getAllMemos() async {
     try {
-      // final localMemos = await localDataSource.getAllMemos();
-      // return localMemos?.isNotEmpty == true ? localMemos : [];
+      final userId = _getCurrentUserId();
+      final localMemos = await localDataSource.getAllMemos(userId);
+      return localMemos?.isNotEmpty == true ? localMemos : [];
 
       // == 동기화 클릭한 유저는 remote 에서 가져오도록 한다 ==
-      final remoteMemos = await remoteDataSource.getAllMemos(userId);
-      print("remoteMemos: ${remoteMemos}");
-      return remoteMemos?.isNotEmpty == true ? remoteMemos : [];
+      // final remoteMemos = await remoteDataSource.getAllMemos(userId);
+      // print("remoteMemos: ${remoteMemos}");
+      // return remoteMemos?.isNotEmpty == true ? remoteMemos : [];
     } catch (e) {
       log("❌ Error fetching all memos: $e");
       return [];
@@ -71,7 +92,7 @@ class MemoRepositoryImpl implements MemoRepository {
 
       // == 동기화 클릭한 유저만 진행 ==
       // FireStore 저장
-      await remoteDataSource.addMemo(memo, localMemoId);
+      // await remoteDataSource.addMemo(memo, localMemoId);
 
       // == 동기화 클릭한 유저만 진행 ==
     } catch (e) {
@@ -95,7 +116,7 @@ class MemoRepositoryImpl implements MemoRepository {
       final docId = memo.docId ?? '없는 경우 예외 처리 필요.';
       print("updateMemo docId: ${docId}");
       // == 동기화 클릭한 유저는 remote 에서 가져오도록 한다 ==
-      await remoteDataSource.updateMemo(docId, memo);
+      // await remoteDataSource.updateMemo(docId, memo);
 
       return updatedLocalMemoId;
     } catch (e) {
@@ -110,6 +131,7 @@ class MemoRepositoryImpl implements MemoRepository {
   Future<int> deleteMemo(List<int> memoIds) async {
     try {
       return await localDataSource.deleteMemos(memoIds);
+      // return await remoteDataSource.deleteMemos(docIds);
     } catch (e) {
       log("❌ Error deleting memo: $e");
       return 0; // 🔄 에러 발생 시 0 반환
@@ -158,5 +180,45 @@ class MemoRepositoryImpl implements MemoRepository {
   @override
   Future<List<MemoModel>?> searchMemos(String query) async {
     return await localDataSource.searchMemos(query);
+  }
+
+  @override
+  Future<void> syncMemoWithFireStore() async {
+    // 동기화 성능 측정
+    final stopwatch = Stopwatch()..start();
+    try {
+      final userId = _getCurrentUserId();
+
+      final localMemos = await localDataSource.getAllMemos(userId);
+      if (localMemos == null || localMemos.isEmpty) return;
+
+      final existingMemos = localMemos.where((m) => m.docId != null).toList();
+      final newMemos = localMemos.where((m) => m.docId == null).toList();
+
+      // Firestore 배치 업데이트
+      if (existingMemos.isNotEmpty) {
+        await remoteDataSource.updateMemos(existingMemos);
+      }
+
+      // Firestore 배치 추가 및 로컬 docId 매핑
+      if (newMemos.isNotEmpty) {
+        final docIdMap = await remoteDataSource.addMemos(newMemos);
+        await _bulkUpdateLocalDocIds(docIdMap);
+      }
+
+      log("✅ 동기화 완료: ${existingMemos.length}개 업데이트, ${newMemos.length}개 추가");
+    } catch (e, stackTrace) {
+      log("❌ 동기화 실패: $e", error: e, stackTrace: stackTrace);
+      rethrow;
+    } finally {
+      stopwatch.stop();
+      print("동기화 완료 시간 : ${stopwatch.elapsed}");
+      // Analytics().logSyncDuration(stopwatch.elapsed);
+    }
+  }
+
+// SQLite 벌크 업데이트 추가
+  Future<void> _bulkUpdateLocalDocIds(Map<int, String> docIdMap) async {
+    await localDataSource.bulkUpdateDocIds(docIdMap);
   }
 }

@@ -6,5 +6,5 @@ import 'package:verymemo/features/memo/data/repositories/memo_repository_impl.da
 final memoRepositoryProvider = Provider<MemoRepositoryImpl>((ref) {
   final memoLocalDataSource = ref.watch(memoLocalDataSourceProvider);
   final memoRemoteDataSource = ref.watch(memoRemoteDataSourceProvider);
-  return MemoRepositoryImpl(memoLocalDataSource, memoRemoteDataSource);
+  return MemoRepositoryImpl(ref, memoLocalDataSource, memoRemoteDataSource);
 });

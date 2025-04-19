@@ -9,8 +9,10 @@ final memoRemoteDataSourceProvider = Provider<MemoRemoteDataSource>(
 
 abstract class MemoRemoteDataSource {
   Future<String> addMemo(MemoModel memo, int localMemoId);
+  Future<Map<int, String>> addMemos(List<MemoModel> memos);
   Future<void> updateMemo(String docId, MemoModel memo);
-  Future<void> deleteMemo(String docId);
+  Future<void> updateMemos(List<MemoModel> memos);
+  Future<void> deleteMemos(List<String> docIds);
   Future<Map<String, dynamic>?> getMemoById(String docId);
   Future<List<MemoModel>?> getAllMemos(String userId);
 }
@@ -30,6 +32,30 @@ class FirestoreMemoDataSource implements MemoRemoteDataSource {
     return docRef.id;
   }
 
+  // 청크 단위 업데이트 (create를 최소화하여 비용 최소화)
+  @override
+  Future<Map<int, String>> addMemos(List<MemoModel> memos) async {
+    final docIds = <int, String>{};
+    const batchLimit = 500; // 500이 맥시멈
+
+    for (var i = 0; i < memos.length; i += batchLimit) {
+      final batch = FirebaseFirestore.instance.batch();
+      final chunk = memos.sublist(
+          i, i + batchLimit > memos.length ? memos.length : i + batchLimit);
+
+      chunk.forEach((memo) {
+        final docRef = _collection.doc();
+        final data = _convertToFirestoreData(memo, memo.memoId!);
+        batch.set(docRef, data);
+        docIds[memo.memoId!] = docRef.id;
+      });
+
+      await batch.commit();
+    }
+    return docIds;
+  }
+
+  // 단일 메모 업데이트
   @override
   Future<void> updateMemo(String docId, MemoModel memo) async {
     if (memo.memoId == null) throw Exception("존재하지 않는 메모 입니다");
@@ -38,9 +64,32 @@ class FirestoreMemoDataSource implements MemoRemoteDataSource {
     await _collection.doc(docId).update(data);
   }
 
+  // 청크 단위 업데이트 (update를 최소화하여 비용 최소화)
   @override
-  Future<void> deleteMemo(String docId) async {
-    await _collection.doc(docId).delete();
+  Future<void> updateMemos(List<MemoModel> memos) async {
+    const batchLimit = 500; // 500이 맥시멈
+    List<MemoModel> failedMemos = [];
+
+    for (var i = 0; i < memos.length; i += batchLimit) {
+      final batch = FirebaseFirestore.instance.batch();
+      final chunk = memos.sublist(
+          i, i + batchLimit > memos.length ? memos.length : i + batchLimit);
+
+      chunk.forEach((memo) {
+        final data = _convertToFirestoreData(memo, memo.memoId!);
+        batch.update(_collection.doc(memo.docId!), data);
+      });
+
+      await batch.commit();
+    }
+  }
+
+  // memoId와 일치하는 FireStore의 docId로 삭제
+  @override
+  Future<void> deleteMemos(List<String> docIds) async {
+    for (final docId in docIds) {
+      await _collection.doc(docId).delete();
+    }
   }
 
   /// FireStore의 모든 메모를 가져오는 함수

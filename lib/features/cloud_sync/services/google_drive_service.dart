@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/drive/v3.dart' as drive;
 import 'package:http/http.dart' as http;
-import 'package:verymemo/features/auth/presentation/providers/auth_provider.dart';
 import 'package:verymemo/features/memo/domain/models/model.dart';
 import 'package:verymemo/features/memo/data/repositories/memo_repository_impl.dart';
 
@@ -166,17 +165,8 @@ class GoogleDriveService {
     }
 
     try {
-      final currentUser = ref.read(authStateNotifierProvider).maybeWhen(
-            authenticated: (user) => user,
-            orElse: () => null,
-          );
-
-      if (currentUser == null) throw Exception("로그인 필요");
-
-      final userId = currentUser.uid;
-
       // 1. 로컬 메모 데이터 가져오기
-      final localMemos = await memoRepository.getAllMemos(userId);
+      final localMemos = await memoRepository.getAllMemos();
       if (localMemos == null) return;
 
       // 2. 동기화 파일 검색
