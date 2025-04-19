@@ -25,6 +25,8 @@ class FirebaseService {
 
       final doc = await _firestore.collection('users').doc(user.uid).get();
 
+      print("getCurrentUser - doc.data()!: ${doc.data()!}");
+
       return doc.exists
           ? UserModel.fromFirestore(doc.data()!)
           : UserModel.fromFBUser(user);

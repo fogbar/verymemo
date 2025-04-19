@@ -161,6 +161,7 @@ class UserModel with _$UserModel {
 
   // FireStore에 저장된 유저 데이터 가져오는 factory 함수
   factory UserModel.fromFirestore(Map<String, dynamic> data) {
+    print("fromFirestore data: ${data}");
     // Enum 파싱
     UserType userType = UserType.values.firstWhere(
       (e) => e.name == data['userType'],
@@ -196,12 +197,27 @@ class UserModel with _$UserModel {
       userType: userType,
       photoUrl: data['photoUrl'],
       authProvider: authProvider,
-      createdAt: (data['createdAt'] as Timestamp).toDate(),
+      createdAt: _parseDate(data['createdAt']),
       lastSignInAt: data['lastSignInAt'] != null
-          ? (data['lastSignInAt'] as Timestamp).toDate()
+          ? _parseDate(data['lastSignInAt'])
           : null,
       isSynced: isSynced,
       syncType: syncType,
     );
   }
+}
+
+DateTime _parseDate(dynamic value) {
+  if (value == null) return DateTime.now();
+  if (value is Timestamp) {
+    return value.toDate();
+  }
+  if (value is DateTime) {
+    return value;
+  }
+  if (value is String) {
+    // ISO8601 문자열로 저장된 경우
+    return DateTime.parse(value);
+  }
+  throw Exception('Unknown date type: $value');
 }

@@ -118,11 +118,13 @@ class FirestoreMemoDataSource implements MemoRemoteDataSource {
         // 날짜 파싱
         final createdAt = _parseFirestoreDate(data['createdAt']);
         final updatedAt = _parseFirestoreDate(data['updatedAt']);
+        final lastViewedAt = _parseFirestoreDate(data['lastViewedAt']);
 
         return MemoModel.fromJson({
           ...data,
           'createdAt': createdAt?.toIso8601String(), // ✅ ISO 문자열로 변환
           'updatedAt': updatedAt?.toIso8601String(),
+          'lastViewedAt': lastViewedAt?.toIso8601String(),
         }).copyWith(docId: doc.id); // 문서 ID 추가 (FireStore에는 따로 처리 X)
       }).toList();
     } catch (e) {

@@ -60,7 +60,14 @@ class MemoNotifier extends StateNotifier<MemoState> {
   List<MemoModel> _sortMemos(List<MemoModel> memos) {
     switch (sortType) {
       case MemoSortType.lastViewed:
-        memos.sort((a, b) => b.lastViewedAt!.compareTo(a.lastViewedAt!));
+        // 조회하지 않으면 null이기에 예외 처리
+        memos.sort((a, b) {
+          // null은 가장 뒤로 정렬
+          if (a.lastViewedAt == null && b.lastViewedAt == null) return 0;
+          if (a.lastViewedAt == null) return 1;
+          if (b.lastViewedAt == null) return -1;
+          return b.lastViewedAt!.compareTo(a.lastViewedAt!);
+        });
         break;
       case MemoSortType.latest:
         memos.sort((a, b) {

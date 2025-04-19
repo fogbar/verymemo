@@ -72,7 +72,7 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
         // O
         if (user != null && user != "") {
           _userNotifier.saveUser(
-            UserModel.fromJson(
+            UserModel.fromFirestore(
               JsonUtil.stringToJson(
                 user.toString(),
               ),

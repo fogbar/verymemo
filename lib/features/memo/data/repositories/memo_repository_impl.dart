@@ -24,6 +24,9 @@ class MemoRepositoryImpl implements MemoRepository {
           authenticated: (user) => user,
           orElse: () => null,
         );
+
+    print("_getCurrentUser - user: ${user}");
+
     if (user == null) throw Exception('로그인이 필요합니다');
     return user;
   }
@@ -65,13 +68,15 @@ class MemoRepositoryImpl implements MemoRepository {
   Future<List<MemoModel>?> getAllMemos() async {
     try {
       final userId = _getCurrentUserId();
+      print("MemoRepositoryImpl getAllMemos - userId: ${userId}");
       if (isFirestoreSync()) {
         // == 동기화 클릭한 유저는 remote 에서 가져오도록 한다 ==
         final remoteMemos = await remoteDataSource.getAllMemos(userId);
-        print("remoteMemos: ${remoteMemos}");
+        print("MemoRepositoryImpl remoteMemos: ${remoteMemos}");
         return remoteMemos?.isNotEmpty == true ? remoteMemos : [];
       } else {
         final localMemos = await localDataSource.getAllMemos(userId);
+        print("MemoRepositoryImpl localMemos: ${localMemos}");
         return localMemos?.isNotEmpty == true ? localMemos : [];
       }
     } catch (e) {

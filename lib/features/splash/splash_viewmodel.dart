@@ -50,7 +50,7 @@ class SplashViewmodel extends StateNotifier<SplashState> {
       // O
       if (user != null && user != "") {
         _userNotifier.saveUser(
-          UserModel.fromJson(
+          UserModel.fromFirestore(
             JsonUtil.stringToJson(
               user.toString(),
             ),
