@@ -71,9 +71,8 @@ class FirebaseService {
       final user = credential.user;
       if (user == null) return null;
 
-      await createNewUserDocument(credential, user, UserAuthProvider.google);
-
-      return UserModel.fromFBUser(user);
+      return await createNewUserDocument(
+          credential, user, UserAuthProvider.google);
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'account-exists-with-different-credential':
@@ -133,9 +132,8 @@ class FirebaseService {
         await user.reload();
       }
 
-      await createNewUserDocument(credential, user, UserAuthProvider.apple);
-
-      return UserModel.fromFBUser(user);
+      return await createNewUserDocument(
+          credential, user, UserAuthProvider.apple);
     } on SignInWithAppleAuthorizationException catch (e) {
       if (e.code == AuthorizationErrorCode.canceled) {
         throw Exception("사용자가 Apple 로그인을 취소했습니다.");
@@ -209,24 +207,38 @@ class FirebaseService {
   /// Firestore에 유저 정보 저장
   /// 신규 회원가입 일때만 저장.
   ///
-  Future<void> createNewUserDocument(
+  /// 여기 UserModel 바뀌면 반드시 업데이트 해주기
+  Future<UserModel> createNewUserDocument(
     UserCredential credential,
     User user,
     UserAuthProvider authProvider,
   ) async {
-    if (!(credential.additionalUserInfo?.isNewUser ?? false)) return;
+    final userRef = _firestore.collection('users').doc(user.uid);
 
-    await _firestore.collection('users').doc(user.uid).set({
+    // 신규 유저가 아닌 경우 기존 데이터 반환
+    if (!(credential.additionalUserInfo?.isNewUser ?? false)) {
+      final doc = await userRef.get();
+      return UserModel.fromFirestore(doc.data()! as Map<String, dynamic>);
+    }
+
+    // 신규 유저 문서 생성
+    await userRef.set({
       'uid': user.uid,
       'email': user.email,
       'displayName': user.displayName,
-      'userType': UserType.anonymous.name, // 기본값 'anonymous'
+      'userType': UserType.anonymous.name,
       'photoUrl': user.photoURL,
       'authProvider': authProvider.name,
       'createdAt': FieldValue.serverTimestamp(),
-      'lastSignInAt': FieldValue.serverTimestamp(), // 신규 필드 추가
+      'lastSignInAt': FieldValue.serverTimestamp(),
       'updatedAt': FieldValue.serverTimestamp(),
+      'isSynced': false,
+      'syncType': null,
     });
+
+    // 생성된 문서 가져와서 모델로 변환
+    final docSnapshot = await userRef.get();
+    return UserModel.fromFirestore(docSnapshot.data()!);
   }
 
   /// FireStore에 저장된 유저 정보 업데이트 하는 함수
@@ -235,6 +247,8 @@ class FirebaseService {
     String? displayName,
     String? photoUrl,
     UserType? userType,
+    bool? isSynced,
+    UserSyncType? syncType,
   }) async {
     final user = _auth.currentUser;
     if (user == null) return;
@@ -251,6 +265,8 @@ class FirebaseService {
     if (displayName != null) updateData['displayName'] = displayName;
     if (photoUrl != null) updateData['photoUrl'] = photoUrl;
     if (userType != null) updateData['userType'] = userType.name;
+    if (isSynced != null) updateData['isSynced'] = isSynced;
+    if (syncType != null) updateData['syncType'] = syncType.name;
 
     await _firestore.collection('users').doc(user.uid).update(updateData);
   }

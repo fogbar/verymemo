@@ -30,6 +30,7 @@ class SyncModal extends ConsumerWidget {
 
           if (context.mounted) {
             Navigator.of(context).pop();
+            Navigator.of(context).pop();
           }
         } catch (e) {
           print('동기화 실패: $e');

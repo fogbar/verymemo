@@ -228,4 +228,32 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
     }
     return false;
   }
+
+  Future<void> updateUserIsSynced({
+    bool? isSynced,
+    UserSyncType? syncType,
+  }) async {
+    await _authRepository.updateUserProfile(
+      isSynced: isSynced,
+      syncType: syncType,
+    );
+  }
+
+  Future<void> refreshUser() async {
+    try {
+      UserModel? updatedUser = await _authRepository.getCurrentUser();
+      if (updatedUser != null) {
+        // 상태 갱신
+        state = AuthState.authenticated(updatedUser);
+        // 유저 프로바이더 업데이트
+        _userNotifier.saveUser(updatedUser);
+        // 로컬 스토리지 저장
+        await _storageService.set(key: userKey, data: updatedUser.toJson());
+        log("✅ 유저 정보 갱신 완료: ${updatedUser.toJson()}");
+      }
+    } catch (e) {
+      log("❌ 유저 정보 갱신 실패: $e");
+      throw Exception("유저 정보 갱신 실패");
+    }
+  }
 }

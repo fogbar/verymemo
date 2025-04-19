@@ -1,7 +1,9 @@
 import 'package:verymemo/common/barrel/view_common.dart';
 import 'package:verymemo/common/barrel/list.dart';
 import 'package:verymemo/common/barrel/button.dart';
+import 'package:verymemo/features/auth/presentation/providers/auth_provider.dart';
 import 'package:verymemo/features/auth/presentation/providers/user_provider.dart';
+import 'package:verymemo/features/memo/data/providers/memo_repository_provider.dart';
 import 'package:verymemo/features/settings/presentation/settings_viewmodel.dart';
 import 'package:verymemo/features/auth/domain/models/user_model.dart';
 
@@ -10,6 +12,10 @@ class SettingsView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // _memoRepositoryProvider 를 여기에 선언한 이유는 isFirestoreSync 때문
+    // 향후 동기화 관련 정책 제대로 잡히면 유저 관련 정보 판단 하는 쪽으로 모두 몰아서
+    // 처리되면 될 듯
+    final _memoRepositoryProvider = ref.read(memoRepositoryProvider);
     final userNotifierProvider = ref.watch(userProvider.notifier);
     final settingsState = ref.watch(settingsViewModelProvider);
     final settingsVM = ref.read(settingsViewModelProvider.notifier);
@@ -21,21 +27,25 @@ class SettingsView extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
             children: [
-              SizedBox(
-                height: 56,
-                child: ListItem(
-                  config: ListItemConfig(
-                    leadingType: ListItemType.icon,
-                    leadingIconKey: 'sync',
-                    alignment: CrossAxisAlignment.center,
-                    leadingIconSize: IconSize.medium,
-                    leadingIconColor: Theme.of(context).colorScheme.primary,
-                    itemSpacing: 12,
+              // 일단 FireStore만 있기에 이렇게 처리.
+              // 향후 정책에 따라 변경될 가능성 있음.
+              if (_memoRepositoryProvider.isFirestoreSync() == false) ...[
+                SizedBox(
+                  height: 56,
+                  child: ListItem(
+                    config: ListItemConfig(
+                      leadingType: ListItemType.icon,
+                      leadingIconKey: 'sync',
+                      alignment: CrossAxisAlignment.center,
+                      leadingIconSize: IconSize.medium,
+                      leadingIconColor: Theme.of(context).colorScheme.primary,
+                      itemSpacing: 12,
+                    ),
+                    title: '동기화',
+                    onTap: () => settingsVM.onSyncTap(context),
                   ),
-                  title: '동기화',
-                  onTap: () => settingsVM.onSyncTap(context),
                 ),
-              ),
+              ],
 
               // ListItem(
               //   config: ListItemConfig(

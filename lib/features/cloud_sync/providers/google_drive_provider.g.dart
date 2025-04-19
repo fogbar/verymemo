@@ -7,7 +7,7 @@ part of 'google_drive_provider.dart';
 // **************************************************************************
 
 String _$googleDriveServiceHash() =>
-    r'74a2c2ccce07c4b100dabcc6e80b987ad056964e';
+    r'827a9e0114af3bae215b57bdf61b55e97c07e22d';
 
 /// See also [googleDriveService].
 @ProviderFor(googleDriveService)

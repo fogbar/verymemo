@@ -19,6 +19,8 @@ _$UserModelImpl _$$UserModelImplFromJson(Map<String, dynamic> json) =>
       lastSignInAt: json['lastSignInAt'] == null
           ? null
           : DateTime.parse(json['lastSignInAt'] as String),
+      isSynced: json['isSynced'] as bool?,
+      syncType: $enumDecodeNullable(_$UserSyncTypeEnumMap, json['syncType']),
     );
 
 Map<String, dynamic> _$$UserModelImplToJson(_$UserModelImpl instance) =>
@@ -31,6 +33,8 @@ Map<String, dynamic> _$$UserModelImplToJson(_$UserModelImpl instance) =>
       'authProvider': _$UserAuthProviderEnumMap[instance.authProvider]!,
       'createdAt': instance.createdAt.toIso8601String(),
       'lastSignInAt': instance.lastSignInAt?.toIso8601String(),
+      'isSynced': instance.isSynced,
+      'syncType': _$UserSyncTypeEnumMap[instance.syncType],
     };
 
 const _$UserTypeEnumMap = {
@@ -43,4 +47,9 @@ const _$UserAuthProviderEnumMap = {
   UserAuthProvider.google: 'google',
   UserAuthProvider.apple: 'apple',
   UserAuthProvider.unknown: 'unknown',
+};
+
+const _$UserSyncTypeEnumMap = {
+  UserSyncType.firestore: 'firestore',
+  UserSyncType.cloud: 'cloud',
 };

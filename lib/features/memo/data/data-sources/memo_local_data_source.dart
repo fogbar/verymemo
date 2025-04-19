@@ -380,6 +380,7 @@ DB에 저장할 데이터:
   }
 
   /// FireStore에 업로드 후 벌크 업데이트를 위한 함수
+  /// 이는 firestore의 docId를 local memo에 docId 컬럼에 업데이트 해주기 위함.
   Future<void> bulkUpdateDocIds(Map<int, String> docIdMap) async {
     final db = await dbService.database;
     await db.transaction((txn) async {

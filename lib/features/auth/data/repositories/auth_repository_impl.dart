@@ -55,4 +55,21 @@ class AuthRepositoryImpl implements AuthRepository {
     // await _supabaseService.signOut();
     await _firebaseService.signOutWithGoogle();
   }
+
+  @override
+  Future<void> updateUserProfile({
+    String? displayName,
+    String? photoUrl,
+    UserType? userType,
+    bool? isSynced,
+    UserSyncType? syncType,
+  }) async {
+    await _firebaseService.updateUserProfile(
+      displayName: displayName,
+      photoUrl: photoUrl,
+      userType: userType,
+      isSynced: isSynced,
+      syncType: syncType,
+    );
+  }
 }

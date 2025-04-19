@@ -30,7 +30,14 @@ class MemoRepositoryImpl implements MemoRepository {
 
   String _getCurrentUserId() {
     final currentUser = _getCurrentUser();
-    return currentUser.uid;
+    return currentUser.uid; // uid임. 명심.
+  }
+
+  // 유저가 메모 crud시 firestore에 바로 동기화 되야하는지 안되도 되는지 판단하는 로직
+  bool isFirestoreSync() {
+    final currentUser = _getCurrentUser();
+    return (currentUser.isSynced ?? false) &&
+        currentUser.syncType == UserSyncType.firestore;
   }
 
   Map<String, dynamic> _mapToDTOs(MemoModel memo) {
@@ -58,13 +65,15 @@ class MemoRepositoryImpl implements MemoRepository {
   Future<List<MemoModel>?> getAllMemos() async {
     try {
       final userId = _getCurrentUserId();
-      final localMemos = await localDataSource.getAllMemos(userId);
-      return localMemos?.isNotEmpty == true ? localMemos : [];
-
-      // == 동기화 클릭한 유저는 remote 에서 가져오도록 한다 ==
-      // final remoteMemos = await remoteDataSource.getAllMemos(userId);
-      // print("remoteMemos: ${remoteMemos}");
-      // return remoteMemos?.isNotEmpty == true ? remoteMemos : [];
+      if (isFirestoreSync()) {
+        // == 동기화 클릭한 유저는 remote 에서 가져오도록 한다 ==
+        final remoteMemos = await remoteDataSource.getAllMemos(userId);
+        print("remoteMemos: ${remoteMemos}");
+        return remoteMemos?.isNotEmpty == true ? remoteMemos : [];
+      } else {
+        final localMemos = await localDataSource.getAllMemos(userId);
+        return localMemos?.isNotEmpty == true ? localMemos : [];
+      }
     } catch (e) {
       log("❌ Error fetching all memos: $e");
       return [];
@@ -91,10 +100,14 @@ class MemoRepositoryImpl implements MemoRepository {
       print("addMemo: localMemoId ${localMemoId}");
 
       // == 동기화 클릭한 유저만 진행 ==
-      // FireStore 저장
-      // await remoteDataSource.addMemo(memo, localMemoId);
+      if (isFirestoreSync()) {
+        // FireStore 저장
+        final remoteMemoDocId =
+            await remoteDataSource.addMemo(memo, localMemoId);
 
-      // == 동기화 클릭한 유저만 진행 ==
+        // 🔥 로컬 DB에 Firestore docId 매핑
+        await localDataSource.bulkUpdateDocIds({localMemoId: remoteMemoDocId});
+      }
     } catch (e) {
       log("❌ Error adding memo: $e");
       rethrow; // 🔄 에러를 다시 던져서 상위에서 처리할 수 있게
@@ -113,10 +126,13 @@ class MemoRepositoryImpl implements MemoRepository {
         tags: mappedData['tags'],
       );
 
-      final docId = memo.docId ?? '없는 경우 예외 처리 필요.';
-      print("updateMemo docId: ${docId}");
-      // == 동기화 클릭한 유저는 remote 에서 가져오도록 한다 ==
-      // await remoteDataSource.updateMemo(docId, memo);
+      // == 동기화 클릭한 유저만 진행 ==
+      if (isFirestoreSync()) {
+        final docId = memo.docId!;
+        print("updateMemo docId: ${docId}");
+        // == 동기화 클릭한 유저는 remote 에서 가져오도록 한다 ==
+        await remoteDataSource.updateMemo(docId, memo);
+      }
 
       return updatedLocalMemoId;
     } catch (e) {
@@ -206,6 +222,16 @@ class MemoRepositoryImpl implements MemoRepository {
         await _bulkUpdateLocalDocIds(docIdMap);
       }
 
+      // 유저가 FireStore와 동기화 되었다는 것을 알기 위해 컬럼 업데이트
+      final authStateNotiProvider =
+          ref.read(authStateNotifierProvider.notifier);
+
+      authStateNotiProvider.updateUserIsSynced(
+          isSynced: true, syncType: UserSyncType.firestore);
+
+      // 🔥 추가된 부분: 유저 정보 강제 갱신
+      await authStateNotiProvider.refreshUser();
+
       log("✅ 동기화 완료: ${existingMemos.length}개 업데이트, ${newMemos.length}개 추가");
     } catch (e, stackTrace) {
       log("❌ 동기화 실패: $e", error: e, stackTrace: stackTrace);
@@ -217,7 +243,7 @@ class MemoRepositoryImpl implements MemoRepository {
     }
   }
 
-// SQLite 벌크 업데이트 추가
+  // SQLite 벌크 업데이트 추가
   Future<void> _bulkUpdateLocalDocIds(Map<int, String> docIdMap) async {
     await localDataSource.bulkUpdateDocIds(docIdMap);
   }

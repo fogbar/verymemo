@@ -28,6 +28,8 @@ mixin _$UserModel {
   UserAuthProvider get authProvider => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
   DateTime? get lastSignInAt => throw _privateConstructorUsedError;
+  bool? get isSynced => throw _privateConstructorUsedError; // 동기화 진행하는지 확인
+  UserSyncType? get syncType => throw _privateConstructorUsedError;
 
   /// Serializes this UserModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -52,7 +54,9 @@ abstract class $UserModelCopyWith<$Res> {
       String? photoUrl,
       UserAuthProvider authProvider,
       DateTime createdAt,
-      DateTime? lastSignInAt});
+      DateTime? lastSignInAt,
+      bool? isSynced,
+      UserSyncType? syncType});
 }
 
 /// @nodoc
@@ -78,6 +82,8 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
     Object? authProvider = null,
     Object? createdAt = null,
     Object? lastSignInAt = freezed,
+    Object? isSynced = freezed,
+    Object? syncType = freezed,
   }) {
     return _then(_value.copyWith(
       uid: null == uid
@@ -112,6 +118,14 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
           ? _value.lastSignInAt
           : lastSignInAt // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      isSynced: freezed == isSynced
+          ? _value.isSynced
+          : isSynced // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      syncType: freezed == syncType
+          ? _value.syncType
+          : syncType // ignore: cast_nullable_to_non_nullable
+              as UserSyncType?,
     ) as $Val);
   }
 }
@@ -132,7 +146,9 @@ abstract class _$$UserModelImplCopyWith<$Res>
       String? photoUrl,
       UserAuthProvider authProvider,
       DateTime createdAt,
-      DateTime? lastSignInAt});
+      DateTime? lastSignInAt,
+      bool? isSynced,
+      UserSyncType? syncType});
 }
 
 /// @nodoc
@@ -156,6 +172,8 @@ class __$$UserModelImplCopyWithImpl<$Res>
     Object? authProvider = null,
     Object? createdAt = null,
     Object? lastSignInAt = freezed,
+    Object? isSynced = freezed,
+    Object? syncType = freezed,
   }) {
     return _then(_$UserModelImpl(
       uid: null == uid
@@ -190,6 +208,14 @@ class __$$UserModelImplCopyWithImpl<$Res>
           ? _value.lastSignInAt
           : lastSignInAt // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      isSynced: freezed == isSynced
+          ? _value.isSynced
+          : isSynced // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      syncType: freezed == syncType
+          ? _value.syncType
+          : syncType // ignore: cast_nullable_to_non_nullable
+              as UserSyncType?,
     ));
   }
 }
@@ -205,7 +231,9 @@ class _$UserModelImpl extends _UserModel {
       this.photoUrl,
       required this.authProvider,
       required this.createdAt,
-      this.lastSignInAt})
+      this.lastSignInAt,
+      required this.isSynced,
+      required this.syncType})
       : super._();
 
   factory _$UserModelImpl.fromJson(Map<String, dynamic> json) =>
@@ -227,10 +255,15 @@ class _$UserModelImpl extends _UserModel {
   final DateTime createdAt;
   @override
   final DateTime? lastSignInAt;
+  @override
+  final bool? isSynced;
+// 동기화 진행하는지 확인
+  @override
+  final UserSyncType? syncType;
 
   @override
   String toString() {
-    return 'UserModel(uid: $uid, email: $email, displayName: $displayName, userType: $userType, photoUrl: $photoUrl, authProvider: $authProvider, createdAt: $createdAt, lastSignInAt: $lastSignInAt)';
+    return 'UserModel(uid: $uid, email: $email, displayName: $displayName, userType: $userType, photoUrl: $photoUrl, authProvider: $authProvider, createdAt: $createdAt, lastSignInAt: $lastSignInAt, isSynced: $isSynced, syncType: $syncType)';
   }
 
   @override
@@ -251,13 +284,27 @@ class _$UserModelImpl extends _UserModel {
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.lastSignInAt, lastSignInAt) ||
-                other.lastSignInAt == lastSignInAt));
+                other.lastSignInAt == lastSignInAt) &&
+            (identical(other.isSynced, isSynced) ||
+                other.isSynced == isSynced) &&
+            (identical(other.syncType, syncType) ||
+                other.syncType == syncType));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, uid, email, displayName,
-      userType, photoUrl, authProvider, createdAt, lastSignInAt);
+  int get hashCode => Object.hash(
+      runtimeType,
+      uid,
+      email,
+      displayName,
+      userType,
+      photoUrl,
+      authProvider,
+      createdAt,
+      lastSignInAt,
+      isSynced,
+      syncType);
 
   /// Create a copy of UserModel
   /// with the given fields replaced by the non-null parameter values.
@@ -284,7 +331,9 @@ abstract class _UserModel extends UserModel {
       final String? photoUrl,
       required final UserAuthProvider authProvider,
       required final DateTime createdAt,
-      final DateTime? lastSignInAt}) = _$UserModelImpl;
+      final DateTime? lastSignInAt,
+      required final bool? isSynced,
+      required final UserSyncType? syncType}) = _$UserModelImpl;
   const _UserModel._() : super._();
 
   factory _UserModel.fromJson(Map<String, dynamic> json) =
@@ -306,6 +355,10 @@ abstract class _UserModel extends UserModel {
   DateTime get createdAt;
   @override
   DateTime? get lastSignInAt;
+  @override
+  bool? get isSynced; // 동기화 진행하는지 확인
+  @override
+  UserSyncType? get syncType;
 
   /// Create a copy of UserModel
   /// with the given fields replaced by the non-null parameter values.

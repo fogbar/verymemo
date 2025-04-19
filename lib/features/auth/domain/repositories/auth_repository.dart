@@ -8,6 +8,13 @@ abstract class AuthRepository {
   Future<void> signOutWithApple();
   Stream<UserModel?> authStateChanges();
   Future<UserModel?> getCurrentUser();
+  Future<void> updateUserProfile({
+    String? displayName,
+    String? photoUrl,
+    UserType? userType,
+    bool? isSynced,
+    UserSyncType? syncType,
+  });
 }
 
 // 인증 결과를 나타내는 sealed class
