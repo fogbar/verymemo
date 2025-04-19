@@ -25,7 +25,7 @@ mixin _$UserModel {
   String get displayName => throw _privateConstructorUsedError;
   UserType get userType => throw _privateConstructorUsedError;
   String? get photoUrl => throw _privateConstructorUsedError;
-  AuthProvider get authProvider => throw _privateConstructorUsedError;
+  UserAuthProvider get authProvider => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
   DateTime? get lastSignInAt => throw _privateConstructorUsedError;
 
@@ -50,7 +50,7 @@ abstract class $UserModelCopyWith<$Res> {
       String displayName,
       UserType userType,
       String? photoUrl,
-      AuthProvider authProvider,
+      UserAuthProvider authProvider,
       DateTime createdAt,
       DateTime? lastSignInAt});
 }
@@ -103,7 +103,7 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
       authProvider: null == authProvider
           ? _value.authProvider
           : authProvider // ignore: cast_nullable_to_non_nullable
-              as AuthProvider,
+              as UserAuthProvider,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -130,7 +130,7 @@ abstract class _$$UserModelImplCopyWith<$Res>
       String displayName,
       UserType userType,
       String? photoUrl,
-      AuthProvider authProvider,
+      UserAuthProvider authProvider,
       DateTime createdAt,
       DateTime? lastSignInAt});
 }
@@ -181,7 +181,7 @@ class __$$UserModelImplCopyWithImpl<$Res>
       authProvider: null == authProvider
           ? _value.authProvider
           : authProvider // ignore: cast_nullable_to_non_nullable
-              as AuthProvider,
+              as UserAuthProvider,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -222,7 +222,7 @@ class _$UserModelImpl extends _UserModel {
   @override
   final String? photoUrl;
   @override
-  final AuthProvider authProvider;
+  final UserAuthProvider authProvider;
   @override
   final DateTime createdAt;
   @override
@@ -282,7 +282,7 @@ abstract class _UserModel extends UserModel {
       required final String displayName,
       required final UserType userType,
       final String? photoUrl,
-      required final AuthProvider authProvider,
+      required final UserAuthProvider authProvider,
       required final DateTime createdAt,
       final DateTime? lastSignInAt}) = _$UserModelImpl;
   const _UserModel._() : super._();
@@ -301,7 +301,7 @@ abstract class _UserModel extends UserModel {
   @override
   String? get photoUrl;
   @override
-  AuthProvider get authProvider;
+  UserAuthProvider get authProvider;
   @override
   DateTime get createdAt;
   @override

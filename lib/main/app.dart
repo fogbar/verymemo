@@ -7,6 +7,9 @@ import 'package:verymemo/features/auth/presentation/providers/state/auth_state.d
 import 'package:verymemo/routers/router.dart';
 import 'package:verymemo/features/settings/providers/theme_providers.dart';
 
+// main.dart 또는 최상위 파일
+final scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+
 class App extends ConsumerWidget {
   const App({super.key});
 
@@ -23,7 +26,7 @@ class App extends ConsumerWidget {
     ref.listen<AuthState>(authStateNotifierProvider, (previous, current) {
       current.whenOrNull(
         error: (message) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          scaffoldMessengerKey.currentState?.showSnackBar(
             SnackBar(content: Text(message)),
           );
           log(message);
@@ -34,9 +37,7 @@ class App extends ConsumerWidget {
     return PopScope(
       canPop: false, // 앱 종료 방지
       child: MaterialApp.router(
-        scaffoldMessengerKey: GlobalKey<ScaffoldMessengerState>(
-          debugLabel: "scaffold_key",
-        ),
+        scaffoldMessengerKey: scaffoldMessengerKey,
         routerConfig: router.config,
         theme: theme,
         darkTheme: theme,

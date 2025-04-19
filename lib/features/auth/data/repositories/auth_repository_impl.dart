@@ -22,9 +22,9 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  UserModel? getCurrentUser() {
+  Future<UserModel?> getCurrentUser() async {
     // return _supabaseService.getCurrentUser();
-    return _firebaseService.getCurrentUser();
+    return await _firebaseService.getCurrentUser();
   }
 
   @override

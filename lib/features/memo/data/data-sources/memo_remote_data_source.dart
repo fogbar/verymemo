@@ -12,7 +12,7 @@ abstract class MemoRemoteDataSource {
   Future<void> updateMemo(String docId, MemoModel memo);
   Future<void> deleteMemo(String docId);
   Future<Map<String, dynamic>?> getMemoById(String docId);
-  Future<List<MemoModel>?> getAllMemos();
+  Future<List<MemoModel>?> getAllMemos(String userId);
 }
 
 // Firestore 구현체
@@ -43,11 +43,21 @@ class FirestoreMemoDataSource implements MemoRemoteDataSource {
     await _collection.doc(docId).delete();
   }
 
+  /// FireStore의 모든 메모를 가져오는 함수
+  ///
+  /// userId 파라미터는 로그인한 유저가 작성한 메모만 가져오도록 하기 위함
+  ///
+  /// 메모 get 부분은 Stream 처리하는게 나을지 생각 필요
   @override
-  Future<List<MemoModel>?> getAllMemos() async {
+  Future<List<MemoModel>?> getAllMemos(String userId) async {
+    print("FirestoreMemoDataSource getAllMemos parmas - userId");
     try {
-      final snapshot =
-          await _collection.orderBy('createdAt', descending: true).get();
+      // 가장 최근 업데이트 된 메모가 우선 보여지도록 한다.
+      // FireStore에서 아래처럼 쿼리를 태울시 index (=색인)을 걸어야 하여 색인 추가함.
+      final snapshot = await _collection
+          .where('userId', isEqualTo: userId)
+          .orderBy('updatedAt', descending: true)
+          .get();
 
       print("getAllMemos - snapshot: ${snapshot}");
 

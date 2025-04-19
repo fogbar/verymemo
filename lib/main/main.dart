@@ -11,6 +11,7 @@ import 'package:verymemo/main/app.dart';
 final dbContainer = ProviderContainer();
 
 Future<void> main() async {
+  print("main call");
   WidgetsFlutterBinding.ensureInitialized();
 
   // 환경 설정 초기화

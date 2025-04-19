@@ -138,15 +138,15 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
   Future<void> signOut() async {
     try {
       state = const AuthState.loading();
-      UserModel? user = _authRepository.getCurrentUser();
+      UserModel? user = await _authRepository.getCurrentUser();
 
       if (user != null) {
         switch (user.authProvider) {
-          case AuthProvider.google:
+          case UserAuthProvider.google:
             await _authRepository.signOutWithGoogle();
-          case AuthProvider.apple:
+          case UserAuthProvider.apple:
             await _authRepository.signOutWithApple();
-          case AuthProvider.unknown:
+          case UserAuthProvider.unknown:
             state = AuthState.error("회원 탈퇴에 실패하였습니다.");
             return;
         }
@@ -178,15 +178,15 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
   Future<void> logout() async {
     try {
       state = const AuthState.loading();
-      UserModel? user = _authRepository.getCurrentUser();
+      UserModel? user = await _authRepository.getCurrentUser();
 
       if (user != null) {
         switch (user.authProvider) {
-          case AuthProvider.google:
+          case UserAuthProvider.google:
             await _authRepository.signOutWithGoogle();
-          case AuthProvider.apple:
+          case UserAuthProvider.apple:
             await _authRepository.signOutWithApple();
-          case AuthProvider.unknown:
+          case UserAuthProvider.unknown:
             state = AuthState.error("로그아웃에 실패하였습니다.");
             return;
         }

@@ -16,7 +16,9 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$MemoModel {
-  int? get memoId => throw _privateConstructorUsedError; // SQLite 자동 증가 ID
+  @JsonKey(name: 'memoId')
+  int? get memoId =>
+      throw _privateConstructorUsedError; // SQLite 자동 증가 ID // ✅ Firestore의 'id' 필드와 매핑
   @JsonKey(ignore: true)
   String? get docId =>
       throw _privateConstructorUsedError; // Firestore 문서 ID (가져오는 것만 진행)
@@ -51,7 +53,7 @@ abstract class $MemoModelCopyWith<$Res> {
       _$MemoModelCopyWithImpl<$Res, MemoModel>;
   @useResult
   $Res call(
-      {int? memoId,
+      {@JsonKey(name: 'memoId') int? memoId,
       @JsonKey(ignore: true) String? docId,
       @JsonKey(ignore: true) UserModel? user,
       String? profileImageUrl,
@@ -189,7 +191,7 @@ abstract class _$$MemoModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {int? memoId,
+      {@JsonKey(name: 'memoId') int? memoId,
       @JsonKey(ignore: true) String? docId,
       @JsonKey(ignore: true) UserModel? user,
       String? profileImageUrl,
@@ -307,7 +309,7 @@ class __$$MemoModelImplCopyWithImpl<$Res>
 @JsonSerializable(createFactory: false)
 class _$MemoModelImpl implements _MemoModel {
   const _$MemoModelImpl(
-      {this.memoId,
+      {@JsonKey(name: 'memoId') this.memoId,
       @JsonKey(ignore: true) this.docId,
       @JsonKey(ignore: true) this.user,
       this.profileImageUrl,
@@ -327,8 +329,9 @@ class _$MemoModelImpl implements _MemoModel {
         _tags = tags;
 
   @override
+  @JsonKey(name: 'memoId')
   final int? memoId;
-// SQLite 자동 증가 ID
+// SQLite 자동 증가 ID // ✅ Firestore의 'id' 필드와 매핑
   @override
   @JsonKey(ignore: true)
   final String? docId;
@@ -459,7 +462,7 @@ class _$MemoModelImpl implements _MemoModel {
 
 abstract class _MemoModel implements MemoModel {
   const factory _MemoModel(
-      {final int? memoId,
+      {@JsonKey(name: 'memoId') final int? memoId,
       @JsonKey(ignore: true) final String? docId,
       @JsonKey(ignore: true) final UserModel? user,
       final String? profileImageUrl,
@@ -476,7 +479,8 @@ abstract class _MemoModel implements MemoModel {
       final bool isBookMarked}) = _$MemoModelImpl;
 
   @override
-  int? get memoId; // SQLite 자동 증가 ID
+  @JsonKey(name: 'memoId')
+  int? get memoId; // SQLite 자동 증가 ID // ✅ Firestore의 'id' 필드와 매핑
   @override
   @JsonKey(ignore: true)
   String? get docId; // Firestore 문서 ID (가져오는 것만 진행)

@@ -6,7 +6,7 @@ abstract class MemoRepository {
 
   /// [Read Memo]
   Future<MemoModel?> getMemoById(int memoId);
-  Future<List<MemoModel>?> getAllMemos();
+  Future<List<MemoModel>?> getAllMemos(String userId);
 
   /// [Update Memo]
   Future<int> updateMemo(MemoModel memo);

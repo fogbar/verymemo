@@ -7,7 +7,7 @@ abstract class AuthRepository {
   Future<void> signOutWithGoogle();
   Future<void> signOutWithApple();
   Stream<UserModel?> authStateChanges();
-  UserModel? getCurrentUser();
+  Future<UserModel?> getCurrentUser();
 }
 
 // 인증 결과를 나타내는 sealed class

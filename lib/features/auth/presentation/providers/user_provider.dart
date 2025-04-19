@@ -27,16 +27,16 @@ class UserNotifier extends StateNotifier<UserState> {
 
   // 구글 로그인 판단
   bool isGoogle() {
-    return state.user?.authProvider == AuthProvider.google;
+    return state.user?.authProvider == UserAuthProvider.google;
   }
 
   // 애플 로그인 판단
   bool isApple() {
-    return state.user?.authProvider == AuthProvider.apple;
+    return state.user?.authProvider == UserAuthProvider.apple;
   }
 
   // 게스트 판단
   bool isGuest() {
-    return state.user?.authProvider == AuthProvider.unknown;
+    return state.user?.authProvider == UserAuthProvider.unknown;
   }
 }

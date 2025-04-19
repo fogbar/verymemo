@@ -35,13 +35,13 @@ class MemoRepositoryImpl implements MemoRepository {
   }
 
   @override
-  Future<List<MemoModel>?> getAllMemos() async {
+  Future<List<MemoModel>?> getAllMemos(String userId) async {
     try {
       // final localMemos = await localDataSource.getAllMemos();
       // return localMemos?.isNotEmpty == true ? localMemos : [];
 
       // == 동기화 클릭한 유저는 remote 에서 가져오도록 한다 ==
-      final remoteMemos = await remoteDataSource.getAllMemos();
+      final remoteMemos = await remoteDataSource.getAllMemos(userId);
       print("remoteMemos: ${remoteMemos}");
       return remoteMemos?.isNotEmpty == true ? remoteMemos : [];
     } catch (e) {
@@ -116,34 +116,43 @@ class MemoRepositoryImpl implements MemoRepository {
     }
   }
 
+  /// 해당 이미지 구현 의도를 모르겠습니다.
+  /// 애초에 불필요한 이미지는 저장이 되면 안되는데, 굳이 저장한 이유는 무엇이며,
+  /// 이렇게 앱 실행시마다 초기화하는 이유는 무엇일까요?
+  /// 혹시 production이 아닌 개발 시에만 처리되도록 하는 것이 의도였을까요?
+  /// 만약 그렇다면 main 부분에서 제대로 처리가 필요해보입니다.
+  /// 해당 함수 관련하여 보시는대로 설명 요청드립니다 :)
+  ///
+  /// main 에서 실행하게 될 경우 userId 값을 못가져오므로 우선 FireStore 관련 개발 먼저 마무리 후
+  /// 추가하더라도 향후 추가하는 쪽으로 가면 좋을 것 같습니다. 로컬에서만 필요해보여서요.
   @override
   Future<void> cleanupUnusedImages() async {
-    try {
-      final memos = await getAllMemos();
-      final usedImages = <String>{};
+    // try {
+    //   final memos = await getAllMemos(userId);
+    //   final usedImages = <String>{};
 
-      for (var memo in memos ?? []) {
-        for (var image in memo.images) {
-          if (image.imageUrl != null &&
-              image.description == 'internal_storage') {
-            usedImages.add(image.imageUrl!);
-          }
-        }
-      }
+    //   for (var memo in memos ?? []) {
+    //     for (var image in memo.images) {
+    //       if (image.imageUrl != null &&
+    //           image.description == 'internal_storage') {
+    //         usedImages.add(image.imageUrl!);
+    //       }
+    //     }
+    //   }
 
-      final appDir = await getApplicationDocumentsDirectory();
-      final imageDir = Directory('${appDir.path}/memo_images');
+    //   final appDir = await getApplicationDocumentsDirectory();
+    //   final imageDir = Directory('${appDir.path}/memo_images');
 
-      if (await imageDir.exists()) {
-        await for (var entity in imageDir.list()) {
-          if (entity is File && !usedImages.contains(entity.path)) {
-            await entity.delete();
-          }
-        }
-      }
-    } catch (e) {
-      log("❌ Error cleaning up images: $e");
-    }
+    //   if (await imageDir.exists()) {
+    //     await for (var entity in imageDir.list()) {
+    //       if (entity is File && !usedImages.contains(entity.path)) {
+    //         await entity.delete();
+    //       }
+    //     }
+    //   }
+    // } catch (e) {
+    //   log("❌ Error cleaning up images: $e");
+    // }
   }
 
   @override

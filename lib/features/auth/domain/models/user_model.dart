@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 // import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:verymemo/common/types/typedef.dart';
@@ -33,10 +34,12 @@ enum UserType {
   });
 }
 
-enum AuthProvider {
-  google,
-  apple,
-  unknown;
+// firebase의 user에서도 AuthProvider라는 이름을 사용하여
+// 혼동이와 UserAuthProvider 로 수정
+enum UserAuthProvider {
+  google, // 구글 로그인
+  apple, // 애플 로그인
+  unknown; // 비회원 로그인
 
   String get name => toString().split('.').last;
 }
@@ -51,7 +54,7 @@ class UserModel with _$UserModel {
     required String displayName,
     required UserType userType,
     String? photoUrl,
-    required AuthProvider authProvider,
+    required UserAuthProvider authProvider,
     required DateTime createdAt,
     DateTime? lastSignInAt,
   }) = _UserModel;
@@ -68,7 +71,7 @@ class UserModel with _$UserModel {
   factory UserModel.fromJson(MAP json) => _$UserModelFromJson(json);
 
   factory UserModel.empty() {
-    AuthProvider provider = AuthProvider.unknown;
+    UserAuthProvider provider = UserAuthProvider.unknown;
     return UserModel(
       uid: "",
       email: "",
@@ -81,20 +84,20 @@ class UserModel with _$UserModel {
     );
   }
   factory UserModel.fromFBUser(fb.User user) {
-    AuthProvider provider = AuthProvider.unknown;
+    UserAuthProvider provider = UserAuthProvider.unknown;
 
     print("user.providerData: ${user.providerData}");
 
     if (user.providerData.isNotEmpty) {
       switch (user.providerData[0].providerId) {
         case 'google.com':
-          provider = AuthProvider.google;
+          provider = UserAuthProvider.google;
           break;
         case 'apple.com':
-          provider = AuthProvider.apple;
+          provider = UserAuthProvider.apple;
           break;
         default:
-          provider = AuthProvider.unknown;
+          provider = UserAuthProvider.unknown;
       }
     }
     return UserModel(
@@ -106,6 +109,28 @@ class UserModel with _$UserModel {
       authProvider: provider,
       createdAt: user.metadata.creationTime ?? DateTime.now(),
       lastSignInAt: user.metadata.lastSignInTime,
+    );
+  }
+
+  // FireStore에 저장된 유저 데이터 가져오는 factory 함수
+  factory UserModel.fromFirestore(Map<String, dynamic> data) {
+    return UserModel(
+      uid: data['uid'],
+      email: data['email'],
+      displayName: data['displayName'],
+      userType: UserType.values.firstWhere(
+        (e) => e.name == data['userType'],
+        orElse: () => UserType.free,
+      ),
+      photoUrl: data['photoUrl'],
+      authProvider: UserAuthProvider.values.firstWhere(
+        (e) => e.name == data['authProvider'],
+        orElse: () => UserAuthProvider.unknown,
+      ),
+      createdAt: (data['createdAt'] as Timestamp).toDate(),
+      lastSignInAt: data['lastSignInAt'] != null
+          ? (data['lastSignInAt'] as Timestamp).toDate()
+          : null,
     );
   }
 }

@@ -9,7 +9,7 @@ part 'google_drive_provider.g.dart';
 @riverpod
 GoogleDriveService googleDriveService(Ref ref) {
   final memoRepository = ref.watch(memoRepositoryProvider);
-  return GoogleDriveService(memoRepository: memoRepository);
+  return GoogleDriveService(ref: ref, memoRepository: memoRepository);
 }
 
 class GoogleDriveState {

@@ -16,7 +16,7 @@
       "name": "Test",
       "request": "launch",
       "type": "dart",
-      "program": "lib/main/main_test.dart",
+      "program": "lib/main/main.dart",
       "args": [
         "--dart-define=API_URL=https://oiwxxkyijaawnqrfqbsm.supabase.co",
         "--dart-define=SUPABASE_URL=https://oiwxxkyijaawnqrfqbsm.supabase.co",
@@ -27,7 +27,7 @@
       "name": "Prod",
       "request": "launch",
       "type": "dart",
-      "program": "lib/main/main_prod.dart",
+      "program": "lib/main/main.dart",
       "args": [
         "--dart-define=API_URL=https://oiwxxkyijaawnqrfqbsm.supabase.co",
         "--dart-define=SUPABASE_URL=https://oiwxxkyijaawnqrfqbsm.supabase.co",

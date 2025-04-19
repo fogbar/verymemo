@@ -70,7 +70,7 @@ class MemoDetailViewModel extends StateNotifier<void> {
       log("---> 메모 업로드 시작");
       final memoState = _ref.read(memoProvider);
       final firebaseService = _ref.read(firebaseServiceProvider);
-      final currentUser = firebaseService.getCurrentUser();
+      final currentUser = await firebaseService.getCurrentUser();
 
       if (currentUser == null) {
         ScaffoldMessenger.of(context).showSnackBar(
